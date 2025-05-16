@@ -26,11 +26,12 @@ public class ProductController {
             @RequestParam(required = false) Integer brandId,
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "9") int size) {
 
         return productService.getProductsWithFilters(
-                categoryId, brandId, minPrice, maxPrice, page, size);
+                categoryId, brandId, minPrice, maxPrice, name, page, size);
     }
     @GetMapping("/list")
     public String listProductsPage(

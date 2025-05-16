@@ -23,9 +23,11 @@ public class ProductService {
             Integer brandId,
             Double minPrice,
             Double maxPrice,
+            String name, // новый параметр
             int page,
             int size) {
 
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
         Specification<Product> spec = Specification.where(null);
 
         if (categoryId != null) {
@@ -40,10 +42,13 @@ public class ProductService {
         if (maxPrice != null) {
             spec = spec.and(ProductSpecifications.hasMaxPrice(maxPrice));
         }
+        if (name != null && !name.isEmpty()) {
+            spec = spec.and(ProductSpecifications.hasNameLike(name));
+        }
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
         return productRepository.findAll(spec, pageable)
                 .map(ProductResponseDTO::fromEntity);
     }
+
 
 }

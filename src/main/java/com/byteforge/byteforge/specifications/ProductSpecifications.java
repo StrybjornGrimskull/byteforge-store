@@ -20,4 +20,8 @@ public class ProductSpecifications {
     public static Specification<Product> hasMaxPrice(Double maxPrice) {
         return (root, query, cb) -> maxPrice == null ? null : cb.le(root.get("price"), maxPrice);
     }
+    public static Specification<Product> hasNameLike(String name) {
+        return (root, query, cb) ->
+                name == null || name.isEmpty() ? null : cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%");
+    }
 }
