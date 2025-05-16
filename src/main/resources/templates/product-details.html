@@ -1,59 +1,44 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GPU Details - <span th:text="${product.name}"></span></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title th:text="${product.name} + ' Details'">Product Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
     <style>
-        .specs-table {
-            margin-top: 20px;
-        }
         .product-image {
             max-width: 100%;
             height: auto;
         }
-        .product-header {
-            margin-bottom: 30px;
+        .specs-card {
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .price-badge {
-            font-size: 1.5rem;
-            padding: 10px 20px;
+        .nav-tabs .nav-link.active {
+            font-weight: 600;
+            border-bottom: 3px solid #0d6efd;
         }
         .brand-logo {
             height: 40px;
-            margin-right: 15px;
+            max-width: 120px;
             object-fit: contain;
         }
+        .price-badge {
+            font-size: 1.5rem;
+        }
         .stock-badge {
-            font-size: 1rem;
-            padding: 5px 10px;
-        }
-        .btn-add-to-cart {
-            transition: all 0.3s ease;
-        }
-        .btn-add-to-cart:disabled {
-            background-color: #6c757d;
-            border-color: #6c757d;
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-        .specs-table th {
-            width: 30%;
-        }
-        .nav-tabs .nav-link.active {
-            font-weight: bold;
-            border-bottom: 3px solid #0d6efd;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-<div class="container mt-4 mb-5">
+<div class="container py-4">
     <!-- Breadcrumb navigation -->
-    <nav aria-label="breadcrumb">
+    <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item"><a th:href="@{/}">Catigories</a></li>
+            <li class="breadcrumb-item"><a href="#" th:href="@{/}">Catigories</a></li>
             <li class="breadcrumb-item">
                 <a th:href="@{/products/mvc/list(categoryId=${product.categoryId})}"
                    th:text="${product.categoryName}"></a>
@@ -63,146 +48,332 @@
     </nav>
 
     <!-- Main product information -->
-    <div class="row product-header">
-        <div class="col-md-6">
+    <div class="row mb-5">
+        <div class="col-lg-6 mb-4">
             <img th:src="@{'/uploads/' + ${product.imageUrl}}"
-                 alt="GPU image"
-                 class="product-image img-fluid mb-3"
-                 onerror="this.src='https://via.placeholder.com/600x400?text=Product+Image'">
+                 th:alt="${product.name}"
+                 class="product-image img-fluid">
+
         </div>
-        <div class="col-md-6">
+        <div class="col-lg-6">
             <h1 class="mb-3" th:text="${product.name}"></h1>
+
             <div class="d-flex align-items-center mb-3">
                 <img th:src="@{'/uploads/' + ${product.brandLogo}}"
-                     alt="Brand logo"
-                     class="brand-logo"
-                     onerror="this.src='https://via.placeholder.com/100x40?text=Brand+Logo'">
+                     class="brand-logo me-3">
             </div>
 
             <div class="d-flex align-items-center mb-4">
                 <span class="badge bg-success price-badge me-3" th:text="'$' + ${product.price}"></span>
-                <span th:if="${product.stockQuantity > 0}"
-                      class="badge bg-success stock-badge">In Stock</span>
-                <span th:unless="${product.stockQuantity > 0}"
-                      class="badge bg-danger stock-badge">Out of Stock</span>
+                <span th:class="${product.stockQuantity > 0} ? 'badge bg-success' : 'badge bg-danger'"
+                      class="stock-badge"
+                      th:text="${product.stockQuantity > 0} ? 'In Stock' : 'Out of Stock'">
+                </span>
             </div>
 
             <p class="lead mb-4" th:text="${product.shortDescription}"></p>
 
-            <div class="d-grid gap-2 d-md-flex mt-4">
+            <div class="d-flex gap-3 mb-5">
                 <button th:classappend="${product.stockQuantity <= 0} ? 'disabled' : ''"
-                        class="btn btn-primary btn-lg btn-add-to-cart me-2"
-                        type="button"
+                        class="btn btn-primary btn-lg px-4"
                         th:disabled="${product.stockQuantity <= 0}">
-                    Add to Cart
+                    <i class="bi bi-cart-plus me-2"></i>Add to Cart
                 </button>
-                <button class="btn btn-outline-secondary btn-lg" type="button">
-                    <i class="bi bi-heart"></i> Wishlist
+                <button class="btn btn-outline-secondary btn-lg px-4">
+                    <i class="bi bi-heart me-2"></i>Wishlist
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- GPU specifications -->
-    <div class="card specs-table mt-5">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">GPU Specifications</h3>
+    <!-- Product specifications - улучшенная версия -->
+    <div class="card mb-5 border-0 shadow-sm">
+        <div class="card-header bg-primary bg-gradient text-white py-3">
+            <h3 class="mb-0 fs-4 fw-semibold">
+                <i class="bi bi-list-check me-2"></i>Specifications
+            </h3>
         </div>
-        <div class="card-body">
-            <table class="table table-striped" th:if="${product.spec != null}">
-                <tbody>
-                <tr>
-                    <th scope="row">Memory Size</th>
-                    <td th:text="${product.spec.memorySize} + ' GB'"></td>
-                </tr>
-                <tr>
-                    <th scope="row">Memory Type</th>
-                    <td th:text="${product.spec.memoryType}"></td>
-                </tr>
-                <tr>
-                    <th scope="row">Bus Width</th>
-                    <td th:text="${product.spec.busWidth} + '-bit'"></td>
-                </tr>
-                <tr>
-                    <th scope="row">Base Clock</th>
-                    <td th:text="${product.spec.baseClock} + ' MHz'"></td>
-                </tr>
-                <tr>
-                    <th scope="row">Boost Clock</th>
-                    <td th:text="${product.spec.boostClock} + ' MHz'"></td>
-                </tr>
-                <tr>
-                    <th scope="row">TDP</th>
-                    <td th:text="${product.spec.tdp} + ' W'"></td>
-                </tr>
-                <tr>
-                    <th scope="row">Length</th>
-                    <td th:text="${product.spec.length} + ' mm'"></td>
-                </tr>
-                <tr>
-                    <th scope="row">Display Outputs</th>
-                    <td th:text="${product.spec.displayOutputs}"></td>
-                </tr>
-                <tr>
-                    <th scope="row">Release Year</th>
-                    <td th:text="${product.releaseYear}"></td>
-                </tr>
-                <tr>
-                    <th scope="row">Warranty</th>
-                    <td th:text="${product.warrantyMonths} + ' months'"></td>
-                </tr>
-                </tbody>
-            </table>
-            <div th:unless="${product.spec != null}" class="alert alert-warning">
-                Specifications for this product are not available.
-            </div>
-        </div>
-    </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="specsTable">
+                    <tbody>
+                    <tr class="border-bottom">
+                        <th class="ps-4 py-3 text-muted" style="width: 35%; min-width: 200px;">Category</th>
+                        <td class="pe-4 py-3 fw-medium" th:text="${product.categoryName}"></td>
+                    </tr>
+                    <tr class="border-bottom">
+                        <th class="ps-4 py-3 text-muted">Brand</th>
+                        <td class="pe-4 py-3 fw-medium" th:text="${product.brandName}"></td>
+                    </tr>
+                    <tr class="border-bottom">
+                        <th class="ps-4 py-3 text-muted">Release Year</th>
+                        <td class="pe-4 py-3 fw-medium" th:text="${product.releaseYear}"></td>
+                    </tr>
+                    <tr class="border-bottom">
+                        <th class="ps-4 py-3 text-muted">Warranty</th>
+                        <td class="pe-4 py-3 fw-medium" th:text="${product.warrantyMonths} + ' months'"></td>
+                    </tr>
 
-    <!-- Additional sections -->
-    <div class="mt-5">
-        <ul class="nav nav-tabs" id="productTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">Description</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">Reviews</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping" type="button" role="tab">Shipping & Returns</button>
-            </li>
-        </ul>
-        <div class="tab-content p-4 border border-top-0 rounded-bottom">
-            <div class="tab-pane fade show active" id="description" role="tabpanel">
-                <h4>Product Description</h4>
-                <p>Detailed product description would appear here. In a real application, this field should come from the database.</p>
-                <div th:if="${product.spec != null}">
-                    <h5 class="mt-4">Technical Details</h5>
-                    <ul>
-                        <li th:if="${product.spec.memorySize != null}">Memory: <span th:text="${product.spec.memorySize} + 'GB ' + ${product.spec.memoryType}"></span></li>
-                        <li th:if="${product.spec.baseClock != null}">Base Clock: <span th:text="${product.spec.baseClock} + ' MHz'"></span></li>
-                        <li th:if="${product.spec.boostClock != null}">Boost Clock: <span th:text="${product.spec.boostClock} + ' MHz'"></span></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="reviews" role="tabpanel">
-                <h4>Customer Reviews</h4>
-                <p>Product reviews would appear here. In a real application, this would include a review form and list of existing reviews.</p>
-                <div class="alert alert-info">
-                    No reviews yet. Be the first to review this product!
-                </div>
-            </div>
-            <div class="tab-pane fade" id="shipping" role="tabpanel">
-                <h4>Shipping Information</h4>
-                <p>Standard shipping: 3-5 business days</p>
-                <p>Express shipping: 1-2 business days (additional charge)</p>
-                <h4 class="mt-4">Return Policy</h4>
-                <p>30-day money back guarantee</p>
+                    <!-- Разделитель для технических характеристик -->
+                    <tr class="bg-light">
+                        <td colspan="2" class="px-4 py-2">
+                            <div class="d-flex  align-items-center">
+                                <span class="text-primary fw-semibold small me-2">TECHNICAL SPECIFICATIONS</span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Динамические характеристики будут добавлены здесь -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    window.productData = {
+        spec: /*[[${specJson}]]*/ {},
+        categoryId: /*[[${product.categoryId}]]*/ 0
+    };
+    /*]]>*/
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            const productData = window.productData;
+            let productSpec;
+
+            if (typeof productData.spec === 'string') {
+                try {
+                    productSpec = JSON.parse(productData.spec);
+                } catch (e) {
+                    console.error("Failed to parse spec JSON:", e);
+                    productSpec = {};
+                }
+            } else {
+                productSpec = productData.spec || {};
+            }
+
+            const categoryId = productData.categoryId || 0;
+
+            if (!productSpec || Object.keys(productSpec).length === 0) {
+                return;
+            }
+
+            renderSpecifications(productSpec, categoryId);
+        } catch (e) {
+            console.error("Error:", e);
+        }
+    });
+
+    function renderSpecifications(spec, categoryId) {
+        const table = document.getElementById('specsTable');
+
+        switch (categoryId) {
+            case 1: // GPU
+                appendSpecRow(table, 'Memory Size', spec.memorySize, ' GB');
+                appendSpecRow(table, 'Memory Type', spec.memoryType);
+                appendSpecRow(table, 'Bus Width', spec.busWidth, '-bit');
+                appendSpecRow(table, 'Base Clock', spec.baseClock, ' MHz');
+                appendSpecRow(table, 'Boost Clock', spec.boostClock, ' MHz');
+                appendSpecRow(table, 'TDP', spec.tdp, ' W');
+                appendSpecRow(table, 'Length', spec.length, ' mm');
+                appendSpecRow(table, 'Display Outputs', spec.displayOutputs);
+                break;
+
+            case 2: // CPU
+                appendSpecRow(table, 'Cores', spec.cores);
+                appendSpecRow(table, 'Threads', spec.threads);
+                appendSpecRow(table, 'Base Clock', spec.baseClock, ' GHz');
+                appendSpecRow(table, 'Boost Clock', spec.boostClock, ' GHz');
+                appendSpecRow(table, 'Socket', spec.socket);
+                appendSpecRow(table, 'Cache Size', spec.cacheSize, ' MB');
+                appendSpecRow(table, 'TDP', spec.tdp, ' W');
+                appendSpecRow(table, 'Integrated GPU', spec.integratedGpu);
+                break;
+
+            case 3: // Motherboard
+                appendSpecRow(table, 'Socket', spec.socket);
+                appendSpecRow(table, 'Chipset', spec.chipset);
+                appendSpecRow(table, 'Form Factor', spec.formFactor);
+                appendSpecRow(table, 'Memory Slots', spec.memorySlots);
+                appendSpecRow(table, 'Max Memory', spec.maxMemory, ' GB');
+                appendSpecRow(table, 'Memory Type', spec.memoryType);
+                appendSpecRow(table, 'M.2 Slots', spec.m2Slots);
+                appendSpecRow(table, 'SATA Ports', spec.sataPorts);
+                break;
+
+            case 4: // RAM
+                appendSpecRow(table, 'Memory Size', spec.memorySize, ' GB');
+                appendSpecRow(table, 'Modules Count', spec.modulesCount);
+                appendSpecRow(table, 'Speed', spec.speed, ' MHz');
+                appendSpecRow(table, 'Type', spec.type);
+                appendSpecRow(table, 'Timings', spec.timings);
+                appendSpecRow(table, 'Voltage', spec.voltage, ' V');
+                break;
+
+            case 5: // PSU
+                appendSpecRow(table, 'Wattage', spec.wattage, ' W');
+                appendSpecRow(table, 'Form Factor', spec.formFactor);
+                appendSpecRow(table, 'Efficiency Certification', spec.efficiencyCert);
+                appendSpecRow(table, 'Modularity', spec.modularity);
+                appendSpecRow(table, 'PCIe 8-pin Connectors', spec.pcie8pinConnectors);
+                appendSpecRow(table, 'SATA Connectors', spec.sataConnectors);
+                break;
+
+            case 6: // Case
+                appendSpecRow(table, 'Form Factor', spec.formFactor);
+                appendSpecRow(table, 'Motherboard Support', spec.motherboardSupport);
+                appendSpecRow(table, 'Max GPU Length', spec.maxGpuLength, ' mm');
+                appendSpecRow(table, 'Max CPU Cooler Height', spec.maxCpuCoolerHeight, ' mm');
+                appendSpecRow(table, 'Included Fans', spec.fansIncluded);
+                appendSpecRow(table, 'Radiator Support', spec.radiatorSupport);
+                break;
+
+            case 7: // Monitor
+                appendSpecRow(table, 'Screen Size', spec.screenSize, ' inches');
+                appendSpecRow(table, 'Resolution', spec.resolution);
+                appendSpecRow(table, 'Panel Type', spec.panelType);
+                appendSpecRow(table, 'Refresh Rate', spec.refreshRate, ' Hz');
+                appendSpecRow(table, 'Response Time', spec.responseTime, ' ms');
+                break;
+
+            case 8: // SSD
+                appendSpecRow(table, 'Capacity', spec.capacity, ' GB');
+                appendSpecRow(table, 'Form Factor', spec.formFactor);
+                appendSpecRow(table, 'Interface', spec.interfaceType);
+                appendSpecRow(table, 'Read Speed', spec.readSpeed, ' MB/s');
+                appendSpecRow(table, 'Write Speed', spec.writeSpeed, ' MB/s');
+                appendSpecRow(table, 'Memory Type', spec.memoryType);
+                appendSpecRow(table, 'Endurance', spec.enduranceTbw, ' TBW');
+                appendSpecRow(table, 'DRAM Cache', spec.dramCache);
+                appendSpecRow(table, 'Encryption', spec.encryption);
+                appendSpecRow(table, 'Thickness', spec.thickness, ' mm');
+                break;
+
+            case 9: // Wireless Keyboard
+                appendSpecRow(table, 'Layout', spec.layout);
+                appendSpecRow(table, 'Switch Type', spec.switchType);
+                appendSpecRow(table, 'Switch Brand', spec.switchBrand);
+                appendSpecRow(table, 'Switch Model', spec.switchModel);
+                appendSpecRow(table, 'Wireless Technology', spec.wirelessTech);
+                appendSpecRow(table, 'RGB Lighting', spec.rgbLighting);
+                appendSpecRow(table, 'Hot Swappable', spec.hotSwappable);
+                appendSpecRow(table, 'Actuation Force', spec.actuationForce, ' g');
+                appendSpecRow(table, 'Travel Distance', spec.travelDistance, ' mm');
+                appendSpecRow(table, 'Weight', spec.weight, ' g');
+                appendSpecRow(table, 'Battery Life', spec.batteryLife, ' hours');
+                appendSpecRow(table, 'Charging Type', spec.chargingType);
+                appendSpecRow(table, 'Multi-device Pairing', spec.multiDevicePairing);
+                break;
+
+            case 10: // Wired Keyboard
+                appendSpecRow(table, 'Layout', spec.layout);
+                appendSpecRow(table, 'Switch Type', spec.switchType);
+                appendSpecRow(table, 'Switch Brand', spec.switchBrand);
+                appendSpecRow(table, 'Switch Model', spec.switchModel);
+                appendSpecRow(table, 'RGB Lighting', spec.rgbLighting);
+                appendSpecRow(table, 'Hot Swappable', spec.hotSwappable);
+                appendSpecRow(table, 'Actuation Force', spec.actuationForce, ' g');
+                appendSpecRow(table, 'Travel Distance', spec.travelDistance, ' mm');
+                appendSpecRow(table, 'Weight', spec.weight, ' g');
+                appendSpecRow(table, 'Cable Length', spec.cableLength, ' m');
+                appendSpecRow(table, 'USB Passthrough', spec.usbPassthrough);
+                appendSpecRow(table, 'Detachable Cable', spec.detachableCable);
+                break;
+
+            case 11: // Wired Mouse
+                appendSpecRow(table, 'Sensor Type', spec.sensorType);
+                appendSpecRow(table, 'Sensor Model', spec.sensorModel);
+                appendSpecRow(table, 'Max DPI', spec.maxDpi);
+                appendSpecRow(table, 'Adjustable DPI', spec.adjustableDpi);
+                appendSpecRow(table, 'Buttons', spec.buttons);
+                appendSpecRow(table, 'Cable Length', spec.cableLength, ' m');
+                appendSpecRow(table, 'Cable Type', spec.cableType);
+                appendSpecRow(table, 'USB Connector', spec.usbConnector);
+                appendSpecRow(table, 'Weight', spec.weight, ' g');
+                appendSpecRow(table, 'RGB Lighting', spec.rgbLighting);
+                appendSpecRow(table, 'Onboard Memory', spec.onboardMemory);
+                break;
+
+            case 12: // Wireless Mouse
+                appendSpecRow(table, 'Sensor Type', spec.sensorType);
+                appendSpecRow(table, 'Sensor Model', spec.sensorModel);
+                appendSpecRow(table, 'Max DPI', spec.maxDpi);
+                appendSpecRow(table, 'Buttons', spec.buttons);
+                appendSpecRow(table, 'Wireless Technology', spec.wirelessTech);
+                appendSpecRow(table, 'Polling Rate', spec.pollingRate, ' Hz');
+                appendSpecRow(table, 'Weight', spec.weight, ' g');
+                appendSpecRow(table, 'RGB Lighting', spec.rgbLighting);
+                appendSpecRow(table, 'Battery Type', spec.batteryType);
+                appendSpecRow(table, 'Battery Life', spec.batteryLife, ' hours');
+                appendSpecRow(table, 'Standby Battery Life', spec.standbyBatteryLife, ' hours');
+                appendSpecRow(table, 'Charging Time', spec.chargingTime, ' hours');
+                appendSpecRow(table, 'Onboard Memory', spec.onboardMemory);
+                break;
+
+            default:
+                for (const [key, value] of Object.entries(spec)) {
+                    if (value !== null && value !== undefined) {
+                        appendSpecRow(table, key, value);
+                    }
+                }
+        }
+    }
+
+    function appendSpecRow(table, label, value, suffix = '') {
+        if (value == null || value === '') return;
+
+        let displayValue;
+
+        switch (typeof value) {
+            case 'boolean':
+                displayValue = value ? 'Yes' : 'No';
+                break;
+            case 'number':
+                displayValue = value;
+                if (suffix) displayValue += suffix;
+                break;
+            case 'string':
+                displayValue = value;
+                break;
+            case 'object':
+                if (Array.isArray(value)) {
+                    displayValue = value.join(', ');
+                } else {
+                    return;
+                }
+                break;
+            default:
+                return;
+        }
+
+        if (displayValue !== undefined && displayValue !== '') {
+            const row = table.insertRow();
+            const th = document.createElement('th');
+            th.textContent = formatLabel(label);
+            const td = document.createElement('td');
+            td.textContent = displayValue;
+            row.appendChild(th);
+            row.appendChild(td);
+        }
+    }
+
+    function formatLabel(label) {
+        return label
+            .replace(/^./, str => str.toUpperCase())
+            .replace(/Id$/i, 'ID')
+            .replace(/Tdp/i, 'TDP')
+            .replace(/Dpi/i, 'DPI')
+            .replace(/Rgb/i, 'RGB')
+            .replace(/Usb/i, 'USB')
+            .replace(/M 2/i, 'M.2')
+            .replace(/Sata/i, 'SATA')
+            .replace(/Pcie/i, 'PCIe');
+    }
+</script>
 </body>
 </html>
