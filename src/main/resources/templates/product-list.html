@@ -53,9 +53,15 @@
     </style>
 </head>
 <body class="bg-light">
-<div class="container py-4">
-    <h1 class="mb-4">Product Catalog</h1>
 
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item"><a href="#" th:href="@{/}">Catigories</a></li>
+        </ol>
+    </nav>
+    <h1 class="mb-4">Product Catalog</h1>
     <!-- Форма поиска и фильтров (без выбора категории!) -->
     <form id="filterForm" class="row g-3 mb-4 align-items-end" onsubmit="event.preventDefault(); loadProducts(0);">
         <input type="hidden" name="categoryId" id="categoryIdHidden" th:value="${categoryId}">

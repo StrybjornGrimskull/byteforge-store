@@ -23,7 +23,7 @@ public class CategoryController {
     public String showCategories(Model model) {
         List<Category> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);
-        return "categories"; // имя thymeleaf-шаблона
+        return "categories";
     }
 }
 

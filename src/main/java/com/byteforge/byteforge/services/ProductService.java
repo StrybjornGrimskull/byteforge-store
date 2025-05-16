@@ -50,5 +50,11 @@ public class ProductService {
                 .map(ProductResponseDTO::fromEntity);
     }
 
+    public ProductResponseDTO getProductById(Integer id) {
+        return productRepository.findById(id)
+                .map(ProductResponseDTO::fromEntity)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+    }
+
 
 }

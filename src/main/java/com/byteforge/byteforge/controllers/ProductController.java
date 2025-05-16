@@ -52,4 +52,10 @@ public class ProductController {
 
         return "product-list";
     }
+    @GetMapping("/details/{id}")
+    public String showProductDetails(@PathVariable Integer id, Model model) {
+        ProductResponseDTO product = productService.getProductById(id);
+        model.addAttribute("product", product);
+        return "product-details";
+    }
 }

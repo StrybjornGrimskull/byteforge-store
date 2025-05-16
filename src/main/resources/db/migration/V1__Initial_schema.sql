@@ -182,7 +182,7 @@ CREATE TABLE wired_keyboards_spec (
 );
 
 CREATE TABLE stock_quantity(
-    product_id INT NOT NULL REFERENCES products(id),
+    product_id INT PRIMARY KEY REFERENCES products(id),
     quantity INT DEFAULT 0
 );
  

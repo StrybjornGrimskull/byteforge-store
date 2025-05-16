@@ -8,8 +8,10 @@ INSERT INTO categories (name, slug) VALUES
 ('PC cases', 'case'),
 ('Monitors', 'moni'),
 ('Solid state drive', 'ssd'),
-('Mice', 'mice'),
-('Computer keyboard', 'keybrd'); 
+('Wired keyboard', 'wiredk'),
+('Wireless keyboard','wirelessk'),
+('Wired mice','wiredm'),
+('Wireless mice', 'wirelessm');
 
 -- Brands
 INSERT INTO brands (name, logo_url) VALUES

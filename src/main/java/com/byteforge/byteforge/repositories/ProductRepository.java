@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
@@ -19,4 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
     @EntityGraph(value = FULL_GRAPH, type = EntityGraph.EntityGraphType.LOAD)
     Page<Product> findAll(Specification<Product> spec, Pageable pageable);
 
+    @Override
+    @EntityGraph(value = FULL_GRAPH, type = EntityGraph.EntityGraphType.LOAD)
+    Optional<Product> findById(Integer id);
 }
