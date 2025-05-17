@@ -1,7 +1,6 @@
 package com.byteforge.byteforge.services;
 
 import com.byteforge.byteforge.dto.BrandDto;
-import com.byteforge.byteforge.entities.Brand;
 import com.byteforge.byteforge.repositories.BrandRepository;
 
 import lombok.RequiredArgsConstructor;

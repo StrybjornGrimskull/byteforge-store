@@ -4,7 +4,7 @@ import com.byteforge.byteforge.dto.specifications.ProductSpecDTO;
 
 import java.math.BigDecimal;
 
-public record ProductCreateRequestDTO(
+public record ProductCreateRequestDto(
         String name,
         BigDecimal price,
         Integer categoryId,

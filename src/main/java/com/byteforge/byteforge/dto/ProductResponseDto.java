@@ -5,7 +5,7 @@ import com.byteforge.byteforge.entities.Product;
 
 import java.math.BigDecimal;
 
-public record ProductResponseDTO(
+public record ProductResponseDto(
         Integer id,
         String name,
         BigDecimal price,
@@ -20,8 +20,8 @@ public record ProductResponseDTO(
         Integer stockQuantity,
         ProductSpecDTO spec
 ) {
-    public static ProductResponseDTO fromEntity(Product product) {
-        return new ProductResponseDTO(
+    public static ProductResponseDto fromEntity(Product product) {
+        return new ProductResponseDto(
                 product.getId(),
                 product.getName(),
                 product.getPrice(),

@@ -1,6 +1,6 @@
 package com.byteforge.byteforge.services;
 
-import com.byteforge.byteforge.dto.ProductResponseDTO;
+import com.byteforge.byteforge.dto.ProductResponseDto;
 import com.byteforge.byteforge.entities.Product;
 import com.byteforge.byteforge.repositories.ProductRepository;
 import com.byteforge.byteforge.specifications.ProductSpecifications;
@@ -18,7 +18,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public Page<ProductResponseDTO> getProductsWithFilters(
+    public Page<ProductResponseDto> getProductsWithFilters(
             Integer categoryId,
             Integer brandId,
             Double minPrice,
@@ -47,12 +47,12 @@ public class ProductService {
         }
 
         return productRepository.findAll(spec, pageable)
-                .map(ProductResponseDTO::fromEntity);
+                .map(ProductResponseDto::fromEntity);
     }
 
-    public ProductResponseDTO getProductById(Integer id) {
+    public ProductResponseDto getProductById(Integer id) {
         return productRepository.findById(id)
-                .map(ProductResponseDTO::fromEntity)
+                .map(ProductResponseDto::fromEntity)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
     }
 

@@ -1,6 +1,6 @@
 package com.byteforge.byteforge.utils;
 
-import com.byteforge.byteforge.dto.ProductResponseDTO;
+import com.byteforge.byteforge.dto.ProductResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ public class ProductMapper {
         this.objectMapper = objectMapper;
     }
 
-    public String convertSpecToJson(ProductResponseDTO product) {
+    public String convertSpecToJson(ProductResponseDto product) {
         if (product.spec() == null) {
             return "{}";
         }

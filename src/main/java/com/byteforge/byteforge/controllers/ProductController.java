@@ -1,12 +1,10 @@
 package com.byteforge.byteforge.controllers;
 
-import com.byteforge.byteforge.dto.ProductResponseDTO;
+import com.byteforge.byteforge.dto.ProductResponseDto;
 import com.byteforge.byteforge.services.BrandService;
 import com.byteforge.byteforge.services.CategoryService;
 import com.byteforge.byteforge.services.ProductService;
 import com.byteforge.byteforge.utils.ProductMapper;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -25,7 +23,7 @@ public class ProductController {
 
     @GetMapping("/list/json")
     @ResponseBody
-    public Page<ProductResponseDTO> listProductsJson(
+    public Page<ProductResponseDto> listProductsJson(
             @RequestParam(required = false) Integer categoryId,
             @RequestParam(required = false) Integer brandId,
             @RequestParam(required = false) Double minPrice,
@@ -58,7 +56,7 @@ public class ProductController {
     }
     @GetMapping("/details/{id}")
     public String showProductDetails(@PathVariable Integer id, Model model) {
-        ProductResponseDTO product = productService.getProductById(id);
+        ProductResponseDto product = productService.getProductById(id);
         model.addAttribute("product", product);
         model.addAttribute("specJson", productMapper.convertSpecToJson(product));
         return "product-details";
