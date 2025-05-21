@@ -111,7 +111,9 @@
     </div>
 
     <!-- Пагинация -->
-    <nav id="pagination" class="mt-4"></nav>
+    <nav id="pagination" class="mt-4 d-flex justify-content-center">
+        <ul class="pagination pagination-sm flex-wrap justify-content-center"></ul>
+    </nav>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -180,7 +182,7 @@
         params.set('page', page);
         params.set('size', 9);
 
-        fetch('/products/mvc/list/json?' + params)
+        fetch('/products/list/json?' + params)
             .then(response => response.json())
             .then(data => {
                 renderProducts(data.content || data);
@@ -193,7 +195,7 @@
         // Обновляем скрытое поле при изменении категории
         document.getElementById('categoryIdHidden').value = categoryId;
 
-        fetch('/mvc/brands?categoryId=' + categoryId)
+        fetch('/brands?categoryId=' + categoryId)
             .then(response => response.json())
             .then(brands => {
                 const brandSelect = document.getElementById('brandId');
@@ -225,33 +227,70 @@
                 <div class="mb-2" style="font-weight:bold;${product.stockQuantity > 0 ? 'color:#198754' : 'color:#6c757d'}">
                     ${product.stockQuantity > 0 ? 'In stock' : 'Out of stock'}
                 </div>
-                <a href="/products/mvc/details/${product.id}" class="btn btn-outline-primary w-100 mt-auto">Details</a>
+                <a href="/products/details/${product.id}" class="btn btn-outline-primary w-100 mt-auto">Details</a>
             </div>
         `).join('');
     }
 
     function renderPagination(totalPages, currentPage) {
-        const container = document.getElementById('pagination');
+        const container = document.getElementById('pagination').querySelector('ul');
         if (totalPages <= 1) {
             container.innerHTML = '';
             return;
         }
-        let html = '<ul class="pagination justify-content-center">';
-        for (let i = 0; i < totalPages; i++) {
-            html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
-                <a href="#" class="page-link" onclick="loadProducts(${i});return false;">${i + 1}</a>
-            </li>`;
-        }
-        html += '</ul>';
-        container.innerHTML = html;
-    }
 
-    function resetFilters() {
-        document.getElementById('filterForm').reset();
-        document.getElementById('categoryId').value = '';
-        document.getElementById('categoryIdHidden').value = '';
-        updateBrands();
-        loadProducts(0);
+        // Определяем диапазон отображаемых страниц
+        const maxVisiblePages = 5; // Максимальное количество видимых номеров страниц
+        let startPage = Math.max(0, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 1);
+
+        // Корректируем startPage, если endPage достиг максимума
+        startPage = Math.max(0, endPage - maxVisiblePages + 1);
+
+        let html = '';
+
+        // Кнопка "Previous"
+        html += `<li class="page-item ${currentPage === 0 ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="loadProducts(${currentPage - 1});return false;" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+    </li>`;
+
+        // Первая страница
+        if (startPage > 0) {
+            html += `<li class="page-item">
+            <a class="page-link" href="#" onclick="loadProducts(0);return false;">1</a>
+        </li>`;
+            if (startPage > 1) {
+                html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+        }
+
+        // Основной диапазон страниц
+        for (let i = startPage; i <= endPage; i++) {
+            html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+            <a class="page-link" href="#" onclick="loadProducts(${i});return false;">${i + 1}</a>
+        </li>`;
+        }
+
+        // Последняя страница
+        if (endPage < totalPages - 1) {
+            if (endPage < totalPages - 2) {
+                html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+            html += `<li class="page-item">
+            <a class="page-link" href="#" onclick="loadProducts(${totalPages - 1});return false;">${totalPages}</a>
+        </li>`;
+        }
+
+        // Кнопка "Next"
+        html += `<li class="page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="loadProducts(${currentPage + 1});return false;" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+    </li>`;
+
+        container.innerHTML = html;
     }
 </script>
 </body>

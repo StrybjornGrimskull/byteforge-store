@@ -40,7 +40,7 @@
             <li class="breadcrumb-item"><a href="/">Home</a></li>
             <li class="breadcrumb-item"><a href="#" th:href="@{/}">Catigories</a></li>
             <li class="breadcrumb-item">
-                <a th:href="@{/products/mvc/list(categoryId=${product.categoryId})}"
+                <a th:href="@{/products/list(categoryId=${product.categoryId})}"
                    th:text="${product.categoryName}"></a>
             </li>
             <li class="breadcrumb-item active" aria-current="page" th:text="${product.name}"></li>
