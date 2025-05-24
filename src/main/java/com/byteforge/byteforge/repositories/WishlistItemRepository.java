@@ -18,4 +18,6 @@ public interface WishlistItemRepository extends JpaRepository<WishlistItem, Inte
     @Transactional
     void deleteByProductIdAndCustomerEmail(Integer productId, String email);
 
+    boolean existsByProductIdAndCustomerEmail(Integer productId, String email);
+
 }

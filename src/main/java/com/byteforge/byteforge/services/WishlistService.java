@@ -12,10 +12,11 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,5 +38,26 @@ public class WishlistService {
     public void removeFromWishlist(Integer id, String email) {
         wishlistItemRepository.deleteByProductIdAndCustomerEmail(id, email);
     }
+    @Transactional
+    public void addToWishlist(Integer productId, String customerEmail) {
+        // 1. Находим customer по email
+        Customer customer = customerRepository.findByEmail(customerEmail)
+                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
+        // 2. Находим продукт
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Товар не найден"));
+
+
+        // 4. Сохраняем
+        WishlistItem item = new WishlistItem();
+        item.setProduct(product);
+        item.setCustomer(customer);
+        item.setAddedDate(LocalDateTime.now());
+
+        wishlistItemRepository.save(item);
+    }
+    public boolean isProductInWishlist(Integer productId, String email) {
+        return wishlistItemRepository.existsByProductIdAndCustomerEmail(productId, email);
+    }
 }

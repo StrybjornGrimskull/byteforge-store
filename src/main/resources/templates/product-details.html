@@ -375,5 +375,90 @@
             .replace(/Pcie/i, 'PCIe');
     }
 </script>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const wishlistBtn = document.getElementById('wishlistBtn');
+            const productId = [[${product.id}]];
+
+             // Проверяем, есть ли товар в вишлисте при загрузке страницы
+            checkWishlistStatus();
+
+            wishlistBtn.addEventListener('click', function() {
+                fetch(`/api/wishlist/exists/${productId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                })
+                    .then(response => response.json())
+                    .then(isInWishlist => {
+                        if (isInWishlist) {
+                            // Удаляем из вишлиста
+                            fetch(`/api/wishlist/${productId}`, {
+                                method: 'DELETE',
+                                credentials: 'include'
+                            })
+                                .then(() => {
+                                    updateWishlistButton(false);
+                                });
+                        } else {
+                            fetch(`/api/wishlist?productId=${productId}`, {
+                                method: 'POST',
+                                credentials: 'include' // Для передачи кук (сессии)
+                            })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        return response.text().then(text => { throw new Error(text) });
+                                    }
+                                    updateWishlistButton(true);
+                                })
+                                .catch(error => {
+                                    console.error('Ошибка:', error);
+                                    alert('Не удалось добавить в вишлист: ' + error.message);
+                                });
+                        }
+                    });
+            });
+
+            function checkWishlistStatus() {
+                fetch(`/api/wishlist/exists/${productId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        return false;
+                    })
+                    .then(isInWishlist => {
+                        updateWishlistButton(isInWishlist);
+                    })
+                    .catch(() => {
+                        // Если пользователь не аутентифицирован, оставляем серую кнопку
+                        updateWishlistButton(false);
+                    });
+            }
+
+            function updateWishlistButton(isInWishlist) {
+                const icon = wishlistBtn.querySelector('i');
+                if (isInWishlist) {
+                    wishlistBtn.classList.remove('btn-outline-secondary');
+                    wishlistBtn.classList.add('btn-danger');
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                } else {
+                    wishlistBtn.classList.remove('btn-danger');
+                    wishlistBtn.classList.add('btn-outline-secondary');
+                    icon.classList.remove('bi-heart-fill');
+                    icon.classList.add('bi-heart');
+                }
+            }
+        });
+    </script>
 </body>
 </html>
