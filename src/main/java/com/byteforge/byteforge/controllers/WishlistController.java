@@ -1,6 +1,6 @@
 package com.byteforge.byteforge.controllers;
 
-import com.byteforge.byteforge.dto.response.WishlistItemDto;
+import com.byteforge.byteforge.dto.response.WishlistItemResponseDto;
 import com.byteforge.byteforge.services.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +18,18 @@ public class WishlistController {
     private final WishlistService wishlistService;
 
     @GetMapping
-    public ResponseEntity<List<WishlistItemDto>> getWishlist(Authentication authentication) {
-        String username = authentication.getName();
-        List<WishlistItemDto> wishlist = wishlistService.getWishlistByUsername(username);
+    public ResponseEntity<List<WishlistItemResponseDto>> getWishlist(Authentication authentication) {
+        String email = authentication.getName();
+        List<WishlistItemResponseDto> wishlist = wishlistService.getWishlistByUsername(email);
         return ResponseEntity.ok(wishlist);
+    }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Void> removeFromWishlist(
+            @PathVariable Integer productId,
+            Authentication authentication) {
+        String email = authentication.getName();
+        wishlistService.removeFromWishlist(productId, email);
+        return ResponseEntity.noContent().build();
     }
 }

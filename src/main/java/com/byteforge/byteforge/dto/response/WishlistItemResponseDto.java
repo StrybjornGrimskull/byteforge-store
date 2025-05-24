@@ -1,9 +1,5 @@
 package com.byteforge.byteforge.dto.response;
 
-import com.byteforge.byteforge.dto.ProductDto;
-import com.byteforge.byteforge.dto.ProductResponseDto;
-import com.byteforge.byteforge.entities.Customer;
-import com.byteforge.byteforge.entities.Product;
 import com.byteforge.byteforge.entities.WishlistItem;
 
 import java.time.LocalDateTime;
@@ -11,16 +7,16 @@ import java.time.LocalDateTime;
 /**
  * DTO for {@link WishlistItem}
  */
-public record WishlistItemDto(
-        Integer id,
+public record WishlistItemResponseDto(
         String imageUrl,
+        Integer productId,
         String productName,
         LocalDateTime addedDate
 ) {
-    public static WishlistItemDto fromEntity(WishlistItem item) {
-        return new WishlistItemDto(
-                item.getId(),
+    public static WishlistItemResponseDto fromEntity(WishlistItem item) {
+        return new WishlistItemResponseDto(
                 item.getProduct().getImageUrl(),
+                item.getProduct().getId(),
                 item.getProduct().getName(),
                 item.getAddedDate()
         );
