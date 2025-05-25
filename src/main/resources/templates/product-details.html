@@ -6,7 +6,27 @@
     <title th:text="${product.name} + ' Details'">Product Details</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --dark-color: #2d3436;
+            --light-color: #f5f6fa;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: var(--dark-color);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
         .product-image {
             max-width: 100%;
             height: auto;
@@ -17,7 +37,7 @@
         }
         .nav-tabs .nav-link.active {
             font-weight: 600;
-            border-bottom: 3px solid #0d6efd;
+            border-bottom: 3px solid var(--primary-color);
         }
         .brand-logo {
             height: 40px;
@@ -26,14 +46,45 @@
         }
         .price-badge {
             font-size: 1.5rem;
+            background-color: var(--primary-color) !important;
         }
         .stock-badge {
             font-size: 0.9rem;
         }
+
+        footer {
+            background-color: var(--dark-color);
+            margin-top: 3rem;
+        }
     </style>
 </head>
 <body>
+<!-- Navigation (updated to match wishlist) -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="bi bi-hexagon-fill me-2"></i>ByteForge
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"><i class="bi bi-house-door me-1"></i> Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/wishlist}"><i class="bi bi-heart me-1"></i> Wishlist</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="bi bi-person me-1"></i> Account</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 <div class="container py-4">
+
     <!-- Breadcrumb navigation -->
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
@@ -129,6 +180,22 @@
             </div>
         </div>
     </div>
+</div>
+    <!-- Footer (updated to match wishlist) -->
+    <footer class="py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 text-white-50">&copy; 2023 ByteForge. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="text-white-50 me-3"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-white-50 me-3"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="text-white-50"><i class="bi bi-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script th:inline="javascript">
