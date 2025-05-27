@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Shopping Cart | ByteForge</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --dark-color: #2d3436;
+            --light-color: #f5f6fa;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: var(--dark-color);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .cart-header {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .cart-item {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .cart-item:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-img-container {
+            height: 120px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .product-img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            mix-blend-mode: multiply;
+        }
+
+        .summary-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+        }
+
+        .btn-checkout {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            padding: 12px;
+        }
+
+        .btn-checkout:hover {
+            background-color: #5a4bd1;
+            color: white;
+        }
+
+        .btn-remove {
+            background-color: transparent;
+            color: #6c757d;
+            border: none;
+            font-size: 0.9rem;
+            padding: 0;
+        }
+
+        .btn-remove:hover {
+            color: #ff4757;
+            text-decoration: underline;
+        }
+
+        .empty-state {
+            min-height: 400px;
+        }
+
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+            color: var(--primary-color);
+        }
+
+        footer {
+            background-color: var(--dark-color);
+        }
+
+        .reservation-notice {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .payment-methods img {
+            height: 24px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .delivery-option {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .btn-outline-secondary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="bi bi-hexagon-fill me-2"></i>ByteForge
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"><i class="bi bi-house-door me-1"></i> Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/wishlist}"><i class="bi bi-heart me-1"></i> Wishlist</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/account}"><i class="bi bi-person me-1"></i> Account</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container py-5">
+    <!-- Header -->
+    <div class="cart-header p-4 mb-4">
+        <h1 class="display-5 fw-bold mb-3"><i class="bi bi-cart-fill me-2"></i>MY SHOPPING CART</h1>
+        <p class="reservation-notice mb-0">
+            <i class="bi bi-percent me-1"></i> Get 10% discount on orders over $1500!
+        </p>
+    </div>
+
+    <div class="row">
+        <!-- Cart Items -->
+        <div class="col-lg-8">
+            <div id="cart-items-container">
+                <div class="d-flex justify-content-center py-5">
+                    <div class="spinner-border loading-spinner" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="col-lg-4">
+            <div class="summary-card mb-4">
+                <h5 class="fw-bold mb-4">ORDER SUMMARY</h5>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Sub-total</span>
+                    <span id="subtotal">$0.00</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Delivery</span>
+                    <span id="delivery-cost">$0.00</span>
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between mb-4">
+                    <span class="fw-bold">TOTAL</span>
+                    <span class="fw-bold" id="total">$0.00</span>
+                </div>
+
+                <button class="btn btn-checkout w-100 mb-3" id="checkout-btn">
+                    CHECKOUT
+                </button>
+
+                <div class="text-center mb-3">
+                    <small class="text-muted">WE ACCEPT:</small>
+                    <div class="payment-methods mt-2">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/visa/visa-original.svg" alt="Visa">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mastercard/mastercard-original.svg" alt="Mastercard">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/paypal/paypal-original.svg" alt="PayPal">
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <small class="text-muted">Got a discount code? Add it in the next step.</small>
+                </div>
+            </div>
+
+            <div class="delivery-option">
+                <h6 class="fw-bold">PREMIER DELIVERY UK</h6>
+                <p class="small mb-0">Get next-day delivery for a whole year for only $9.95.</p>
+            </div>
+
+            <div class="delivery-option">
+                <h6 class="fw-bold">FREE* STANDARD DELIVERY</h6>
+                <p class="small mb-0">Faster delivery options available to most countries. More info</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="py-4 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="mb-0 text-white-50">&copy; 2023 ByteForge. All rights reserved.</p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <a href="#" class="text-white-50 me-3"><i class="bi bi-facebook"></i></a>
+                <a href="#" class="text-white-50 me-3"><i class="bi bi-twitter"></i></a>
+                <a href="#" class="text-white-50"><i class="bi bi-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(function () {
+        // Function to format price
+        function formatPrice(price) {
+            if (!price) return '$0.00';
+            return '$' + parseFloat(price).toFixed(2);
+        }
+
+        // Function to format date
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+
+        // Function to show empty cart
+        function showEmptyCart() {
+            $('#cart-items-container').html(`
+                <div class="empty-state text-center py-5">
+                    <div class="mb-4">
+                        <i class="bi bi-cart text-muted" style="font-size: 4rem;"></i>
+                    </div>
+                    <h3 class="h4 text-muted mb-3">Your shopping cart is empty</h3>
+                    <p class="text-muted mb-4">Start adding products to your cart</p>
+                    <a class="btn btn-primary btn-lg px-4" href="/">
+                        <i class="bi bi-arrow-right me-2"></i>Browse Products
+                    </a>
+                </div>
+            `);
+
+            // Update totals to zero
+            updateTotals([]);
+            $('.reservation-notice').html('<i class="bi bi-percent me-1"></i> Get 10% discount on orders over $1500!');
+        }
+
+        // Function to load cart items
+        function loadCartItems() {
+            $.ajax({
+                url: '/api/shopping-cart',
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (!response || response.length === 0) {
+                        showEmptyCart();
+                        return;
+                    }
+
+                    let html = '';
+                    response.forEach(item => {
+                        const currentQuantity = 1;
+                        const maxQuantity = item.quantity;
+                        const minusDisabled = currentQuantity <= 1 ? 'disabled' : '';
+                        const plusDisabled = currentQuantity >= maxQuantity ? 'disabled' : '';
+
+                        html += `
+                            <div class="cart-item p-4" data-id="${item.productId}">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="product-img-container">
+                                            <img src="${'/uploads/'+ item.imageUrl}" alt="${item.productName}" class="product-img">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="mb-2">${item.productName}</h5>
+                                        <p class="text-muted mb-2">Added: ${formatDate(item.addedDate)}</p>
+                                        <button class="btn-remove remove-item-btn" data-id="${item.productId}">
+                                            <i class="bi bi-trash me-1"></i> Remove
+                                        </button>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <h5 class="mb-3 item-price" data-price="${item.price}">${formatPrice(item.price)}</h5>
+                                        <div class="d-flex justify-content-end align-items-center">
+                                            <button class="btn btn-outline-secondary btn-sm me-2 minus-btn" ${minusDisabled}>-</button>
+                                            <span class="quantity mx-2">${currentQuantity}</span>
+                                            <button class="btn btn-outline-secondary btn-sm ms-2 plus-btn" ${plusDisabled}>+</button>
+                                        </div>
+                                        <div class="mt-2">
+                                            <small class="text-muted">Max available: ${maxQuantity}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    $('#cart-items-container').html(html);
+                    updateTotals(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading cart:', status, error);
+                    $('#cart-items-container').html(`
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <strong>Error loading cart items</strong>. Please try again later.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <div class="text-center mt-4">
+                            <a href="javascript:location.reload()" class="btn btn-outline-primary">
+                                <i class="bi bi-arrow-repeat me-1"></i> Reload Page
+                            </a>
+                        </div>
+                    `);
+                }
+            });
+        }
+
+        // Function to update totals with discount calculation
+        function updateTotals(items) {
+            let subtotal = 0;
+
+            if (items && items.length > 0) {
+                $('.cart-item').each(function() {
+                    const quantity = parseInt($(this).find('.quantity').text());
+                    const price = parseFloat($(this).find('.item-price').data('price'));
+                    subtotal += quantity * price;
+                });
+            }
+
+            const deliveryCost = subtotal > 0 ? 2.86 : 0;
+
+            // Calculate discount
+            let discount = 0;
+            if (subtotal > 1500) {
+                discount = subtotal * 0.1;
+                $('.reservation-notice').html(`
+                    <i class="bi bi-check-circle-fill text-success me-1"></i>
+                    <strong>10% discount applied!</strong> (Save ${formatPrice(discount)})
+                `);
+            } else if (subtotal > 0) {
+                const amountNeeded = (1500 - subtotal).toFixed(2);
+                $('.reservation-notice').html(`
+                    <i class="bi bi-percent me-1"></i>
+                    Spend $${amountNeeded} more to get 10% discount!
+                `);
+            } else {
+                $('.reservation-notice').html('<i class="bi bi-percent me-1"></i> Get 10% discount on orders over $1500!');
+            }
+
+            const total = subtotal + deliveryCost - discount;
+
+            // Update summary section
+            $('#subtotal').text(formatPrice(subtotal));
+            $('#delivery-cost').text(formatPrice(deliveryCost));
+
+            // Add/update discount row
+            if (discount > 0) {
+                if ($('#discount-row').length === 0) {
+                    $('<div class="d-flex justify-content-between mb-2" id="discount-row">' +
+                        '<span class="text-success">Discount (10%)</span>' +
+                        '<span class="text-success" id="discount-amount">-'+formatPrice(discount)+'</span>' +
+                        '</div>').insertAfter($('#delivery-cost').parent());
+                } else {
+                    $('#discount-amount').text('-' + formatPrice(discount));
+                }
+            } else {
+                $('#discount-row').remove();
+            }
+
+            $('#total').text(formatPrice(total));
+        }
+
+        // Handler for plus button
+        $(document).on('click', '.plus-btn:not(:disabled)', function() {
+            const $item = $(this).closest('.cart-item');
+            const $quantity = $item.find('.quantity');
+            const $minusBtn = $item.find('.minus-btn');
+            const $plusBtn = $(this);
+            const maxQuantity = parseInt($item.find('small.text-muted').text().replace('Max available: ', ''));
+
+            let quantity = parseInt($quantity.text());
+            quantity += 1;
+
+            $quantity.text(quantity);
+            $minusBtn.prop('disabled', false);
+
+            if (quantity >= maxQuantity) {
+                $plusBtn.prop('disabled', true);
+            }
+
+            updateTotals();
+        });
+
+        // Handler for minus button
+        $(document).on('click', '.minus-btn:not(:disabled)', function() {
+            const $item = $(this).closest('.cart-item');
+            const $quantity = $item.find('.quantity');
+            const $minusBtn = $(this);
+            const $plusBtn = $item.find('.plus-btn');
+
+            let quantity = parseInt($quantity.text());
+            quantity -= 1;
+
+            $quantity.text(quantity);
+            $plusBtn.prop('disabled', false);
+
+            if (quantity <= 1) {
+                $minusBtn.prop('disabled', true);
+            }
+
+            updateTotals();
+        });
+
+        // Handler for removing items
+        $(document).on('click', '.remove-item-btn', function () {
+            const productId = $(this).data('id');
+            const $button = $(this);
+            const $item = $(this).closest('.cart-item');
+
+            $button.prop('disabled', true).html('<i class="bi bi-arrow-repeat"></i> Removing...');
+
+            $.ajax({
+                url: `/api/shopping-cart/${productId}`,
+                method: 'DELETE',
+                success: function() {
+                    $item.fadeOut(300, function() {
+                        $(this).remove();
+                        // Check if cart is empty
+                        if ($('.cart-item').length === 0) {
+                            showEmptyCart();
+                        } else {
+                            updateTotals();
+                        }
+                    });
+                },
+                error: function(xhr) {
+                    $button.prop('disabled', false).html('<i class="bi bi-trash me-1"></i> Remove');
+                    if (xhr.status === 404) {
+                        alert('Product not found in your cart');
+                    } else {
+                        alert('Error removing product from cart');
+                    }
+                }
+            });
+        });
+
+        // Handler for checkout button
+        $('#checkout-btn').click(function() {
+            if ($('#total').text() === '$0.00') {
+                alert('Your cart is empty. Add items before checkout.');
+                return;
+            }
+            alert('Proceeding to checkout...');
+            // window.location.href = '/checkout';
+        });
+
+        // Initialize cart loading
+        loadCartItems();
+    });
+</script>
+</body>
+</html>

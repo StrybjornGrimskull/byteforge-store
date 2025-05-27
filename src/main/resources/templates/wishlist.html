@@ -105,6 +105,25 @@
         footer {
             background-color: var(--dark-color);
         }
+
+
+        .btn-add-to-cart {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .btn-add-to-cart:hover {
+            background-color: #5a4bd1;
+            color: white;
+        }
+
+        .btn-add-to-cart:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -123,7 +142,7 @@
                     <a class="nav-link" th:href="@{/}"><i class="bi bi-house-door me-1"></i> Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="#"><i class="bi bi-heart me-1"></i> Wishlist</a>
+                    <a class="nav-link active" th:href="@{/shopping-cart}"><i class="bi bi-cart me-1"></i> Cart</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#"><i class="bi bi-person me-1"></i> Account</a>
@@ -182,8 +201,9 @@
 
 <script>
     $(function () {
-        // Функция для форматирования даты
+        // Utility functions
         function formatDate(dateString) {
+            if (!dateString) return 'N/A';
             const date = new Date(dateString);
             return date.toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -194,7 +214,10 @@
             });
         }
 
-        // Функция для отображения пустой вишлиста
+        function updateItemCount(count) {
+            $('#item-count').text(count);
+        }
+
         function showEmptyWishlist() {
             $('#wishlist-container').html(`
                 <div class="empty-state text-center py-5">
@@ -203,20 +226,92 @@
                     </div>
                     <h3 class="h4 text-muted mb-3">Your wishlist is empty</h3>
                     <p class="text-muted mb-4">Start adding products to create your perfect wishlist</p>
-                    <a  class="btn btn-primary btn-lg px-4" href="/">
+                    <a class="btn btn-primary btn-lg px-4" href="/">
                         <i class="bi bi-arrow-right me-2"></i>Browse Products
                     </a>
                 </div>
             `);
-            $('#item-count').text(0);
+            updateItemCount(0);
         }
 
-        // Функция для обновления счетчика товаров
-        function updateItemCount(count) {
-            $('#item-count').text(count);
+        function showError(message) {
+            $('#wishlist-container').html(`
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <strong>${message || 'Error loading wishlist'}</strong>. Please try again later.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="javascript:location.reload()" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-repeat me-1"></i> Reload Page
+                    </a>
+                </div>
+            `);
         }
 
-        // Загрузка вишлиста
+        // Проверяем, есть ли товар в корзине
+        function checkCartStatus(productId, callback) {
+            $.ajax({
+                url: `/api/shopping-cart/exists/${productId}`,
+                method: 'GET',
+                success: function(isInCart) {
+                    callback(isInCart);
+                },
+                error: function() {
+                    callback(false);
+                }
+            });
+        }
+
+        // Product card template
+        function createProductCard(item, isInCart) {
+            const isOutOfStock = item.stockQuantity <= 0;
+            const isDisabled = isOutOfStock || isInCart;
+            const stockBadge = isOutOfStock ?
+                '<span class="badge bg-danger mb-2">Out of Stock</span>' :
+                '<span class="badge bg-success mb-2">In Stock</span>';
+
+            let buttonHtml;
+            if (isInCart) {
+                buttonHtml = `
+                    <button class="btn btn-secondary btn-sm cart-btn" disabled>
+                        <i class="bi bi-cart-check me-1"></i> In Cart
+                    </button>`;
+            } else {
+                buttonHtml = `
+                    <button class="btn btn-add-to-cart btn-sm cart-btn"
+                            data-product-id="${item.productId}"
+                            ${isDisabled ? 'disabled' : ''}>
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>`;
+            }
+
+            return `
+                <div class="col" data-id="${item.id}">
+                    <div class="card wishlist-card h-100">
+                        <div class="product-img-container">
+                            <img src="${'/uploads/' + item.imageUrl}" class="product-img" alt="${item.productName}">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">${item.productName}</h5>
+                            <p class="product-id d-none">${item.productId}</p>
+                            <p class="added-date mb-3">
+                                <i class="bi bi-calendar me-1"></i>
+                                ${formatDate(item.addedDate)}
+                            </p>
+                            ${stockBadge}
+                            <div class="d-grid gap-2 mt-3">
+                                ${buttonHtml}
+                                <button class="btn btn-remove btn-sm remove-btn">
+                                    <i class="bi bi-trash me-1"></i> Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        // Load wishlist data
         function loadWishlist() {
             $.ajax({
                 url: '/api/wishlist',
@@ -228,94 +323,108 @@
                         return;
                     }
 
-                    updateItemCount(items.length);
+                    // Сначала загружаем данные о корзине
+                    const productIds = items.map(item => item.productId);
+                    checkCartStatusForProducts(productIds, function(cartStatuses) {
+                        // Теперь создаем карточки с учетом статуса в корзине
+                        let html = `<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">`;
 
-                    let html = `<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">`;
+                        items.forEach(item => {
+                            const isInCart = cartStatuses[item.productId] || false;
+                            html += createProductCard(item, isInCart);
+                        });
 
-                    items.forEach(function (item) {
-                        html += `
-                            <div class="col" data-id="${item.id}">
-                                <div class="card wishlist-card h-100">
-                                    <div class="product-img-container">
-                                        <img src="${'/uploads/' + item.imageUrl}" class="product-img" alt="${item.productName}">
-                                    </div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">${item.productName}</h5>
-                                        <p class="product-id d-none">${item.productId}</p>
-                                        <p class="added-date mb-3">
-                                            <i class="bi bi-calendar me-1"></i>
-                                            ${item.addedDate ? formatDate(item.addedDate) : 'N/A'}
-                                        </p>
-                                        <div class="d-grid mt-4">
-                                            <button class="btn btn-remove btn-sm remove-btn">
-                                                <i class="bi bi-trash me-1"></i> Remove
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>`;
+                        html += `</div>`;
+                        $('#wishlist-container').html(html);
+                        updateItemCount(items.length);
                     });
-
-                    html += `</div>`;
-                    $('#wishlist-container').html(html);
                 },
                 error: function () {
-                    $('#wishlist-container').html(`
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                            <strong>Error loading wishlist</strong>. Please try again later.
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                        <div class="text-center mt-4">
-                            <a href="javascript:location.reload()" class="btn btn-outline-primary">
-                                <i class="bi bi-arrow-repeat me-1"></i> Reload Page
-                            </a>
-                        </div>
-                    `);
+                    showError();
                 }
             });
         }
 
-        // Обработчик удаления
-        $(document).on('click', '.remove-btn', function () {
-            const $card = $(this).closest('.col');
-            const itemId = $card.data('id');
-            const productId = $card.find('.product-id').text();
-            const $button = $(this);
+        // Проверяем статус корзины для нескольких товаров
+        function checkCartStatusForProducts(productIds, callback) {
+            const cartStatuses = {};
+            let completedRequests = 0;
 
-            $button.prop('disabled', true).html('<i class="bi bi-arrow-repeat"></i> Removing...');
+            if (productIds.length === 0) {
+                callback(cartStatuses);
+                return;
+            }
 
+            productIds.forEach(productId => {
+                checkCartStatus(productId, function(isInCart) {
+                    cartStatuses[productId] = isInCart;
+                    completedRequests++;
+
+                    if (completedRequests === productIds.length) {
+                        callback(cartStatuses);
+                    }
+                });
+            });
+        }
+
+        // Remove item from wishlist
+        function removeFromWishlist(productId, $card) {
             $.ajax({
                 url: `/api/wishlist/${productId}`,
                 method: 'DELETE',
                 success: function() {
-                    // Анимация удаления
-                    $card.addClass('animate__animated animate__fadeOut');
-
-                    setTimeout(() => {
-                        $card.remove();
-
-                        // Обновляем счетчик
+                    $card.fadeOut(300, function() {
+                        $(this).remove();
                         const remainingCount = $('.wishlist-card').length;
                         updateItemCount(remainingCount);
-
-                        if (remainingCount === 0) {
-                            showEmptyWishlist();
-                        }
-                    }, 300);
+                        if (remainingCount === 0) showEmptyWishlist();
+                    });
                 },
                 error: function(xhr) {
+                    const $button = $card.find('.remove-btn');
                     $button.prop('disabled', false).html('<i class="bi bi-trash me-1"></i> Remove');
-                    if (xhr.status === 404) {
-                        alert('Product not found in your wishlist');
-                    } else {
-                        alert('Error removing product from wishlist');
-                    }
+                    showError(xhr.status === 404 ? 'Product not found in your wishlist' : 'Error removing product');
                 }
             });
+        }
+
+        // Add item to cart
+        function addToCart(productId, $button) {
+            $button.prop('disabled', true).html('<i class="bi bi-arrow-repeat"></i> Adding...');
+
+            $.ajax({
+                url: `/api/shopping-cart?productId=${productId}`,
+                method: 'POST',
+                success: function() {
+                    // Обновляем кнопку после успешного добавления
+                    $button.removeClass('btn-add-to-cart').addClass('btn-secondary')
+                        .html('<i class="bi bi-cart-check me-1"></i> In Cart')
+                        .prop('disabled', true);
+                },
+                error: function(xhr) {
+                    $button.html('<i class="bi bi-cart-plus me-1"></i> Add to Cart')
+                        .prop('disabled', false);
+                    showError(xhr.status === 401 ? 'Please login to add items to cart' : 'Error adding product to cart');
+                }
+            });
+        }
+
+        // Event handlers
+        $(document).on('click', '.remove-btn', function () {
+            const $card = $(this).closest('.col');
+            const productId = $card.find('.product-id').text();
+            const $button = $(this);
+
+            $button.prop('disabled', true).html('<i class="bi bi-arrow-repeat"></i> Removing...');
+            removeFromWishlist(productId, $card);
         });
 
-        // Инициализация загрузки вишлиста
+        $(document).on('click', '.cart-btn:not(:disabled)', function () {
+            const productId = $(this).data('product-id');
+            addToCart(productId, $(this));
+        });
+
+        // Initialize
         loadWishlist();
     });
 </script>

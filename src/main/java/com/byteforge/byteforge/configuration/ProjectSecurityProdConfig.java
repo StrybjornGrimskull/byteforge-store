@@ -44,6 +44,8 @@ public class ProjectSecurityProdConfig {
                         .requestMatchers("/admin").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/notices").hasRole("USER")
                         .requestMatchers("/api/wishlist/**").authenticated()
+                        .requestMatchers("/api/shopping-cart/**").authenticated()
+                        .requestMatchers("/shopping-cart/**").authenticated()
                         .requestMatchers("/wishlist/**").authenticated()
                         .requestMatchers("/",
                                 "/contact",

@@ -9,4 +9,9 @@ public class PageController {
     public String wishlist() {
         return "wishlist.html";
     }
+
+    @GetMapping("/shopping-cart")
+    public String shopping_cart() {
+        return "shopping-cart.html";
+    }
 }

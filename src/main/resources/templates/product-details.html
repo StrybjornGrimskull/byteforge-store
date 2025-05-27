@@ -77,6 +77,9 @@
                     <a class="nav-link" th:href="@{/wishlist}"><i class="bi bi-heart me-1"></i> Wishlist</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/shopping-cart}"><i class="bi bi-cart me-1"></i> Cart</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="#"><i class="bi bi-person me-1"></i> Account</a>
                 </li>
             </ul>
@@ -125,7 +128,8 @@
             <p class="lead mb-4" th:text="${product.shortDescription}"></p>
 
             <div class="d-flex gap-3 mb-5">
-                <button th:classappend="${product.stockQuantity <= 0} ? 'disabled' : ''"
+                <button id="cartBtn"
+                        th:classappend="${product.stockQuantity <= 0} ? 'disabled' : ''"
                         class="btn btn-primary btn-lg px-4"
                         th:disabled="${product.stockQuantity <= 0}">
                     <i class="bi bi-cart-plus me-2"></i>Add to Cart
@@ -527,5 +531,96 @@
             }
         });
     </script>
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const cartBtn = document.getElementById('cartBtn');
+        const productId = [[${product.id}]];
+        const stockQuantity = [[${product.stockQuantity}]];
+
+        // Проверяем статус корзины при загрузке страницы
+        checkCartStatus();
+
+        cartBtn.addEventListener('click', function() {
+            if (stockQuantity <= 0) return;
+
+            fetch(`/api/shopping-cart/exists/${productId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
+                .then(response => response.json())
+                .then(isInCart => {
+                    if (isInCart) {
+                        // Удаляем из корзины
+                        fetch(`/api/shopping-cart/${productId}`, {
+                            method: 'DELETE',
+                            credentials: 'include'
+                        })
+                            .then(() => {
+                                updateCartButton(false);
+                            });
+                    } else {
+                        // Добавляем в корзину
+                        fetch(`/api/shopping-cart?productId=${productId}`, {
+                            method: 'POST',
+                            credentials: 'include'
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    return response.text().then(text => { throw new Error(text) });
+                                }
+                                updateCartButton(true);
+                            })
+                            .catch(error => {
+                                console.error('Ошибка:', error);
+                                alert('Не удалось добавить в корзину: ' + error.message);
+                            });
+                    }
+                });
+        });
+
+        function checkCartStatus() {
+            fetch(`/api/shopping-cart/exists/${productId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    return false;
+                })
+                .then(isInCart => {
+                    updateCartButton(isInCart);
+                })
+                .catch(() => {
+                    // Если пользователь не аутентифицирован, оставляем кнопку в исходном состоянии
+                    updateCartButton(false);
+                });
+        }
+
+        function updateCartButton(isInCart) {
+            const icon = cartBtn.querySelector('i');
+            if (isInCart || stockQuantity <= 0) {
+                cartBtn.disabled = true;
+                cartBtn.classList.remove('btn-primary');
+                cartBtn.classList.add('btn-secondary');
+                icon.classList.remove('bi-cart-plus');
+                icon.classList.add('bi-cart-check');
+            } else {
+                cartBtn.disabled = false;
+                cartBtn.classList.remove('btn-secondary');
+                cartBtn.classList.add('btn-primary');
+                icon.classList.remove('bi-cart-check');
+                icon.classList.add('bi-cart-plus');
+            }
+        }
+    });
+</script>
 </body>
 </html>

@@ -1,19 +1,18 @@
 package com.byteforge.byteforge.services;
 
-import com.byteforge.byteforge.dto.request.WishlistItemRequestDto;
-import com.byteforge.byteforge.dto.response.WishlistItemResponseDto;
+
+import com.byteforge.byteforge.dto.response.ShoppingCartResponseDto;
 import com.byteforge.byteforge.entities.Customer;
 import com.byteforge.byteforge.entities.Product;
-import com.byteforge.byteforge.entities.WishlistItem;
+
+
+import com.byteforge.byteforge.entities.ShoppingCart;
 import com.byteforge.byteforge.repositories.CustomerRepository;
 import com.byteforge.byteforge.repositories.ProductRepository;
-import com.byteforge.byteforge.repositories.WishlistItemRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.byteforge.byteforge.repositories.ShoppingCartRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,26 +20,25 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class WishlistService {
-
-    private final WishlistItemRepository wishlistItemRepository;
+public class ShoppingCartService {
+    private final ShoppingCartRepository shoppingCartRepository;
     private final ProductRepository productRepository;
     private final CustomerRepository customerRepository;
 
-    public List<WishlistItemResponseDto> getWishlistByUsername(String customerEmail) {
-        return wishlistItemRepository.findAllProductCustomerByEmail(customerEmail)
+    public List<ShoppingCartResponseDto> getShoppingCartByUsername(String customerEmail) {
+        return shoppingCartRepository.findAllProductCustomerByEmail(customerEmail)
                 .stream()
-                .map(WishlistItemResponseDto::fromEntity)
+                .map(ShoppingCartResponseDto::fromEntity)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public void removeFromWishlist(Integer id, String email) {
-        wishlistItemRepository.deleteByProductIdAndCustomerEmail(id, email);
+    public void removeFromShoppingCart(Integer id, String email) {
+        shoppingCartRepository.deleteByProductIdAndCustomerEmail(id, email);
     }
 
     @Transactional
-    public void addToWishlist(Integer productId, String customerEmail) {
+    public void addToShoppingCart(Integer productId, String customerEmail) {
         // 1. Находим customer по email
         Customer customer = customerRepository.findByEmail(customerEmail)
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
@@ -49,15 +47,16 @@ public class WishlistService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Товар не найден"));
 
-        WishlistItem item = new WishlistItem();
+       ShoppingCart item = new ShoppingCart();
         item.setProduct(product);
         item.setCustomer(customer);
         item.setAddedDate(LocalDateTime.now());
 
-        wishlistItemRepository.save(item);
+        shoppingCartRepository.save(item);
     }
 
-    public boolean isProductInWishlist(Integer productId, String email) {
-        return wishlistItemRepository.existsByProductIdAndCustomerEmail(productId, email);
+    public boolean isProductInShoppingCart(Integer productId, String email) {
+        return shoppingCartRepository.existsByProductIdAndCustomerEmail(productId, email);
     }
 }
+
