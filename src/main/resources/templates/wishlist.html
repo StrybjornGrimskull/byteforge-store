@@ -249,45 +249,32 @@
             `);
         }
 
-        // Проверяем, есть ли товар в корзине
-        function checkCartStatus(productId, callback) {
-            $.ajax({
-                url: `/api/shopping-cart/exists/${productId}`,
-                method: 'GET',
-                success: function(isInCart) {
-                    callback(isInCart);
-                },
-                error: function() {
-                    callback(false);
-                }
-            });
-        }
+        // Product card template - UPDATED to use quantity instead of stockQuantity
+        function createProductCard(item) {
+            // Convert quantity to number
+            const quantity = parseInt(item.quantity) || 0;
+            const isOutOfStock = quantity <= 0;
 
-        // Product card template
-        function createProductCard(item, isInCart) {
-            const isOutOfStock = item.stockQuantity <= 0;
-            const isDisabled = isOutOfStock || isInCart;
             const stockBadge = isOutOfStock ?
                 '<span class="badge bg-danger mb-2">Out of Stock</span>' :
-                '<span class="badge bg-success mb-2">In Stock</span>';
+                `<span class="badge bg-success mb-2">In Stock</span>`;
 
             let buttonHtml;
-            if (isInCart) {
+            if (isOutOfStock) {
                 buttonHtml = `
                     <button class="btn btn-secondary btn-sm cart-btn" disabled>
-                        <i class="bi bi-cart-check me-1"></i> In Cart
+                        <i class="bi bi-cart-x me-1"></i> Out of Stock
                     </button>`;
             } else {
                 buttonHtml = `
                     <button class="btn btn-add-to-cart btn-sm cart-btn"
-                            data-product-id="${item.productId}"
-                            ${isDisabled ? 'disabled' : ''}>
+                            data-product-id="${item.productId}">
                         <i class="bi bi-cart-plus me-1"></i> Add to Cart
                     </button>`;
             }
 
             return `
-                <div class="col" data-id="${item.id}">
+                <div class="col" data-id="${item.productId}">
                     <div class="card wishlist-card h-100">
                         <div class="product-img-container">
                             <img src="${'/uploads/' + item.imageUrl}" class="product-img" alt="${item.productName}">
@@ -311,59 +298,39 @@
                 </div>`;
         }
 
-        // Load wishlist data
+        // Load wishlist data - UPDATED
         function loadWishlist() {
             $.ajax({
                 url: '/api/wishlist',
                 method: 'GET',
                 dataType: 'json',
                 success: function (items) {
+                    console.log('API Response:', items); // Debug log
+
                     if (!items || items.length === 0) {
                         showEmptyWishlist();
                         return;
                     }
 
-                    // Сначала загружаем данные о корзине
-                    const productIds = items.map(item => item.productId);
-                    checkCartStatusForProducts(productIds, function(cartStatuses) {
-                        // Теперь создаем карточки с учетом статуса в корзине
-                        let html = `<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">`;
+                    let html = `<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">`;
 
-                        items.forEach(item => {
-                            const isInCart = cartStatuses[item.productId] || false;
-                            html += createProductCard(item, isInCart);
-                        });
-
-                        html += `</div>`;
-                        $('#wishlist-container').html(html);
-                        updateItemCount(items.length);
+                    items.forEach(item => {
+                        // Ensure quantity exists
+                        if (typeof item.quantity === 'undefined') {
+                            console.warn('Missing quantity for item:', item);
+                            item.quantity = 0;
+                        }
+                        html += createProductCard(item);
                     });
+
+                    html += `</div>`;
+                    $('#wishlist-container').html(html);
+                    updateItemCount(items.length);
                 },
-                error: function () {
+                error: function (xhr, status, error) {
+                    console.error('Error loading wishlist:', status, error);
                     showError();
                 }
-            });
-        }
-
-        // Проверяем статус корзины для нескольких товаров
-        function checkCartStatusForProducts(productIds, callback) {
-            const cartStatuses = {};
-            let completedRequests = 0;
-
-            if (productIds.length === 0) {
-                callback(cartStatuses);
-                return;
-            }
-
-            productIds.forEach(productId => {
-                checkCartStatus(productId, function(isInCart) {
-                    cartStatuses[productId] = isInCart;
-                    completedRequests++;
-
-                    if (completedRequests === productIds.length) {
-                        callback(cartStatuses);
-                    }
-                });
             });
         }
 
@@ -396,7 +363,7 @@
                 url: `/api/shopping-cart?productId=${productId}`,
                 method: 'POST',
                 success: function() {
-                    // Обновляем кнопку после успешного добавления
+                    // Update button after successful addition
                     $button.removeClass('btn-add-to-cart').addClass('btn-secondary')
                         .html('<i class="bi bi-cart-check me-1"></i> In Cart')
                         .prop('disabled', true);

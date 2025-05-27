@@ -11,6 +11,7 @@ public record WishlistItemResponseDto(
         String imageUrl,
         Integer productId,
         String productName,
+        Integer quantity,
         LocalDateTime addedDate
 ) {
     public static WishlistItemResponseDto fromEntity(WishlistItem item) {
@@ -18,6 +19,7 @@ public record WishlistItemResponseDto(
                 item.getProduct().getImageUrl(),
                 item.getProduct().getId(),
                 item.getProduct().getName(),
+                item.getProduct().getStockQuantity().getQuantity(),
                 item.getAddedDate()
         );
     }
