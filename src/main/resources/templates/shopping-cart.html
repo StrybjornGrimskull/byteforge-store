@@ -363,16 +363,15 @@
         }
 
         // Function to update totals with discount calculation
-        function updateTotals(items) {
+        function updateTotals() {
             let subtotal = 0;
+            const cartItems = $('.cart-item');
 
-            if (items && items.length > 0) {
-                $('.cart-item').each(function() {
-                    const quantity = parseInt($(this).find('.quantity').text());
-                    const price = parseFloat($(this).find('.item-price').data('price'));
-                    subtotal += quantity * price;
-                });
-            }
+            cartItems.each(function() {
+                const quantity = parseInt($(this).find('.quantity').text());
+                const price = parseFloat($(this).find('.item-price').data('price'));
+                subtotal += quantity * price;
+            });
 
             const deliveryCost = subtotal > 0 ? 2.86 : 0;
 
