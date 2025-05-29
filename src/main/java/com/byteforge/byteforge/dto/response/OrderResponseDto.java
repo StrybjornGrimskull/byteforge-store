@@ -1,6 +1,6 @@
-package com.byteforge.byteforge.entities;
+package com.byteforge.byteforge.dto.response;
 
-import com.byteforge.byteforge.dto.response.OrderProductResponseDto;
+import com.byteforge.byteforge.entities.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;

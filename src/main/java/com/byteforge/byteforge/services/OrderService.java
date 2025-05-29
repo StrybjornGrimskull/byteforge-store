@@ -1,8 +1,8 @@
 package com.byteforge.byteforge.services;
 
 import com.byteforge.byteforge.dto.request.OrderRequestDto;
-import com.byteforge.byteforge.entities.Order;
+import com.byteforge.byteforge.dto.response.OrderResponseDto;
 
 public interface OrderService {
-    Order createOrder(String email, OrderRequestDto orderDto);
+    OrderResponseDto createOrder(String email, OrderRequestDto orderDto);
 }

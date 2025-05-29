@@ -440,35 +440,12 @@
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(orderData),
-                success: function(rawResponse) {
-                    try {
-                        // Пытаемся обработать ответ, даже если он содержит синтаксические ошибки
-                        let response;
-                        try {
-                            response = JSON.parse(rawResponse);
-                        } catch (e) {
-                            // Попробуем исправить распространенные ошибки в JSON
-                            const fixedResponse = rawResponse
-                                .replace(/"totalPrice":"(\d+\.\d+),/g, '"totalPrice":"$1",')
-                                .replace(/orderProducts":\s*\{/g, 'orderProducts": [')
-                                .replace(/\}\}\s*$/g, '}]}');
-
-                            response = JSON.parse(fixedResponse);
-                        }
-
-                        // Извлекаем основной объект заказа
-                        const order = response.id ? response : (response.order || {});
-
-                        if (order && order.id) {
-                            showOrderConfirmation(order, orderData);
-                        } else {
-                            alert('Ошибка: Не удалось получить ID заказа из ответа сервера');
-                            $btn.prop('disabled', false)
-                                .html('Оформить заказ <i class="bi bi-arrow-right ms-1"></i>');
-                        }
-                    } catch (e) {
-                        console.error("Ошибка обработки ответа:", e);
-                        alert("Ошибка обработки ответа сервера. Проверьте консоль для подробностей.");
+                success: function(response) {
+                    // Теперь response - это объект OrderResponseDto
+                    if (response && response.id) {
+                        showOrderConfirmation(response);
+                    } else {
+                        alert('Ошибка: Не удалось получить данные заказа');
                         $btn.prop('disabled', false)
                             .html('Оформить заказ <i class="bi bi-arrow-right ms-1"></i>');
                     }
@@ -491,30 +468,52 @@
         });
 
         // Показ подтверждения заказа
-        function showOrderConfirmation(order, orderData) {
+        function showOrderConfirmation(orderResponse) {
             $('#checkout-form-container').hide();
             $('#order-confirmation').show();
 
-            // Заполняем данные подтверждения
-            $('#confirmation-email').text(order.email || orderData.email);
-            $('#order-number').text('#' + order.id);
-            $('#order-date').text(new Date(order.date || order.createdAt || Date.now()).toLocaleString());
-            $('#payment-method').text(
-                orderData.paymentMethod === 'creditCard' ? 'Credit Card' : 'PayPal'
-            );
+            // Заполняем данные подтверждения из OrderResponseDto
+            $('#confirmation-email').text(orderResponse.email);
+            $('#order-number').text('#' + orderResponse.id);
+            $('#order-date').text(new Date(orderResponse.date).toLocaleString());
+
+            // Определяем метод оплаты
+            const paymentMethod = orderResponse.paymentMethod === 'creditCard' ? 'Credit Card' :
+                orderResponse.paymentMethod === 'paypal' ? 'PayPal' : 'Unknown';
+            $('#payment-method').text(paymentMethod);
 
             $('#shipping-address').html(`
-                ${order.firstName || orderData.firstName} ${order.lastName || orderData.lastName}<br>
-                ${order.address || orderData.address}<br>
-                ${order.city || orderData.city}, ${order.postIndex || orderData.postIndex}
+                ${orderResponse.firstName} ${orderResponse.lastName}<br>
+                ${orderResponse.address}<br>
+                ${orderResponse.city}, ${orderResponse.postIndex}
             `);
 
-            // Копируем товары из Order Summary
-            $('#ordered-items').html($('#order-items').html());
+            // Формируем список товаров из orderProducts
+            if (orderResponse.orderProducts && orderResponse.orderProducts.length > 0) {
+                let itemsHtml = '';
+                orderResponse.orderProducts.forEach(item => {
+                    itemsHtml += `
+                        <div class="d-flex mb-3">
+                            <div class="product-img-container flex-shrink-0 me-3">
+                                <img src="/uploads/${item.imageUrl || 'default-product.png'}" alt="${item.productName}" class="product-img">
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">${item.productName}</h6>
+                                <small class="text-muted">Qty: ${item.quantity || 1}</small>
+                            </div>
+                            <div class="flex-shrink-0 text-end">
+                                <h6 class="mb-1">${formatPrice(item.price)}</h6>
+                            </div>
+                        </div>
+                    `;
+                });
+                $('#ordered-items').html(itemsHtml);
+            } else {
+                $('#ordered-items').html('<div class="alert alert-warning">No items in order</div>');
+            }
 
-            // Используем totalPrice из ответа или рассчитываем на клиенте
-            const totalPrice = order.totalPrice ? formatPrice(order.totalPrice) : $('#total').text();
-            $('#order-total').text(totalPrice);
+            // Устанавливаем общую сумму
+            $('#order-total').text(formatPrice(orderResponse.totalPrice));
         }
 
         // Инициализация
