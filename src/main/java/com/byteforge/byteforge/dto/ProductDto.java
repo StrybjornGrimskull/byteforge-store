@@ -15,10 +15,9 @@ public record ProductDto(
         Integer warrantyMonths,
         Integer releaseYear,
         String shortDescription,
-        String imageUrl,
-        Integer stockQuantity
+        String imageUrl
 ) {
-    public static ProductDto fromEntity(Product product, Integer stockQuantity) {
+    public static ProductDto fromEntity(Product product) {
         return new ProductDto(
                 product.getId(),
                 product.getName(),
@@ -30,8 +29,7 @@ public record ProductDto(
                 product.getWarrantyMonths(),
                 product.getReleaseYear(),
                 product.getShortDescription(),
-                product.getImageUrl(),
-                stockQuantity
+                product.getImageUrl()
         );
     }
 }

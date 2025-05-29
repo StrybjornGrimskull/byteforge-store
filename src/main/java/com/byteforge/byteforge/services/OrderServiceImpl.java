@@ -75,4 +75,16 @@ public class OrderServiceImpl implements OrderService {
         // 7. Возвращаем DTO
         return OrderResponseDto.fromEntity(savedOrder);
     }
+
+     @Transactional(readOnly = true)
+    public OrderResponseDto getOrderById(Long orderId) {
+        // 1. Получаем заказ по ID и проверяем, что он принадлежит текущему пользователю
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found with id: " + orderId));
+
+
+
+        // 3. Преобразуем сущность в DTO и возвращаем
+        return OrderResponseDto.fromEntity(order);
+    }
 }

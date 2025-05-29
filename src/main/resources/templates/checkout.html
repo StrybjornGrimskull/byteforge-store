@@ -43,15 +43,6 @@
             margin-bottom: 20px;
         }
 
-        .order-summary {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            padding: 20px;
-            position: sticky;
-            top: 20px;
-        }
-
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
@@ -97,13 +88,6 @@
             background-color: #f8f9fa;
             opacity: 1;
         }
-
-        @media (max-width: 768px) {
-            .order-summary {
-                position: static;
-                margin-top: 20px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -142,11 +126,11 @@
 
     <div class="row">
         <!-- Checkout Form -->
-        <div class="col-lg-8">
+        <div class="col-12">
             <div id="checkout-form-container">
+                <!-- Форма оформления заказа остаётся без изменений -->
                 <div class="checkout-card">
                     <h4 class="fw-bold mb-4"><i class="bi bi-person-circle me-2"></i>Contact Information</h4>
-
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="firstName" class="form-label">First Name</label>
@@ -169,7 +153,6 @@
 
                 <div class="checkout-card">
                     <h4 class="fw-bold mb-4"><i class="bi bi-truck me-2"></i>Shipping Address</h4>
-
                     <div class="row g-3">
                         <div class="col-12">
                             <label for="address" class="form-label">Address</label>
@@ -188,18 +171,13 @@
 
                 <div class="checkout-card">
                     <h4 class="fw-bold mb-4"><i class="bi bi-credit-card me-2"></i>Payment Method</h4>
-
                     <div class="form-check mb-3">
                         <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" checked>
-                        <label class="form-check-label" for="creditCard">
-                            Credit/Debit Card
-                        </label>
+                        <label class="form-check-label" for="creditCard">Credit/Debit Card</label>
                     </div>
                     <div class="form-check mb-3">
                         <input class="form-check-input" type="radio" name="paymentMethod" id="paypal">
-                        <label class="form-check-label" for="paypal">
-                            PayPal
-                        </label>
+                        <label class="form-check-label" for="paypal">PayPal</label>
                     </div>
                 </div>
 
@@ -213,7 +191,7 @@
                 </div>
             </div>
 
-            <!-- Order Confirmation (hidden by default) -->
+            <!-- Order Confirmation -->
             <div id="order-confirmation" class="confirmation-section">
                 <div class="checkout-card text-center">
                     <div class="mb-4">
@@ -270,46 +248,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Order Summary -->
-        <div class="col-lg-4">
-            <div class="order-summary">
-                <h5 class="fw-bold mb-4">ORDER SUMMARY</h5>
-
-                <div id="order-items">
-                    <!-- Items will be loaded here -->
-                    <div class="d-flex justify-content-center py-3">
-                        <div class="spinner-border loading-spinner" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-
-                <hr>
-
-                <div class="d-flex justify-content-between mb-2">
-                    <span>Sub-total</span>
-                    <span id="subtotal">$0.00</span>
-                </div>
-
-                <div class="d-flex justify-content-between mb-2">
-                    <span>Shipping</span>
-                    <span id="shipping-cost">$0.00</span>
-                </div>
-
-                <div id="discount-row" class="d-flex justify-content-between mb-2 text-success" style="display: none;">
-                    <span>Discount</span>
-                    <span id="discount-amount">-$0.00</span>
-                </div>
-
-                <hr>
-
-                <div class="d-flex justify-content-between mb-4">
-                    <span class="fw-bold">TOTAL</span>
-                    <span class="fw-bold" id="total">$0.00</span>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -362,66 +300,10 @@
             });
         }
 
-        // Загрузка товаров в Order Summary
-        function loadOrderSummary() {
-            $.ajax({
-                url: '/api/shopping-cart',
-                method: 'GET',
-                success: function(response) {
-                    if (!response || response.length === 0) {
-                        $('#order-items').html('<div class="alert alert-warning">Your cart is empty</div>');
-                        return;
-                    }
-
-                    let itemsHtml = '';
-                    let subtotal = 0;
-
-                    response.forEach(item => {
-                        subtotal += parseFloat(item.price);
-
-                        itemsHtml += `
-                            <div class="d-flex mb-3">
-                                <div class="product-img-container flex-shrink-0 me-3">
-                                    <img src="/uploads/${item.imageUrl}" alt="${item.productName}" class="product-img">
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">${item.productName}</h6>
-                                    <small class="text-muted">Qty: 1</small>
-                                </div>
-                                <div class="flex-shrink-0 text-end">
-                                    <h6 class="mb-1">${formatPrice(item.price)}</h6>
-                                </div>
-                            </div>
-                        `;
-                    });
-
-                    const shippingCost = subtotal >= 1500 ? 0 : 2.86;
-                    const discount = subtotal > 1500 ? subtotal * 0.1 : 0;
-                    const total = subtotal + shippingCost - discount;
-
-                    $('#order-items').html(itemsHtml);
-                    $('#subtotal').text(formatPrice(subtotal));
-                    $('#shipping-cost').text(formatPrice(shippingCost));
-
-                    if (discount > 0) {
-                        $('#discount-row').show();
-                        $('#discount-amount').text('-' + formatPrice(discount));
-                    } else {
-                        $('#discount-row').hide();
-                    }
-
-                    $('#total').text(formatPrice(total));
-                },
-                error: function() {
-                    $('#order-items').html('<div class="alert alert-danger">Error loading cart items</div>');
-                }
-            });
-        }
-
         // Обработчик оформления заказа
         $('#place-order-btn').click(function() {
             const $btn = $(this);
-            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span> Оформление...');
+            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span> Processing...');
 
             const orderData = {
                 firstName: $('#firstName').val(),
@@ -441,17 +323,16 @@
                 contentType: 'application/json',
                 data: JSON.stringify(orderData),
                 success: function(response) {
-                    // Теперь response - это объект OrderResponseDto
                     if (response && response.id) {
                         showOrderConfirmation(response);
                     } else {
-                        alert('Ошибка: Не удалось получить данные заказа');
+                        alert('Error: Failed to get order data');
                         $btn.prop('disabled', false)
-                            .html('Оформить заказ <i class="bi bi-arrow-right ms-1"></i>');
+                            .html('Place Order <i class="bi bi-arrow-right ms-1"></i>');
                     }
                 },
                 error: function(xhr) {
-                    let errorMsg = "Ошибка сервера";
+                    let errorMsg = "Server error";
                     if (xhr.responseText) {
                         try {
                             const err = JSON.parse(xhr.responseText);
@@ -460,24 +341,25 @@
                             errorMsg = xhr.responseText;
                         }
                     }
-                    alert("Ошибка: " + errorMsg);
+                    alert("Error: " + errorMsg);
                     $btn.prop('disabled', false)
-                        .html('Оформить заказ <i class="bi bi-arrow-right ms-1"></i>');
+                        .html('Place Order <i class="bi bi-arrow-right ms-1"></i>');
                 }
             });
         });
 
         // Показ подтверждения заказа
         function showOrderConfirmation(orderResponse) {
+            console.log('Order response:', orderResponse);
+
             $('#checkout-form-container').hide();
             $('#order-confirmation').show();
 
-            // Заполняем данные подтверждения из OrderResponseDto
+            // Заполняем основные данные
             $('#confirmation-email').text(orderResponse.email);
             $('#order-number').text('#' + orderResponse.id);
             $('#order-date').text(new Date(orderResponse.date).toLocaleString());
 
-            // Определяем метод оплаты
             const paymentMethod = orderResponse.paymentMethod === 'creditCard' ? 'Credit Card' :
                 orderResponse.paymentMethod === 'paypal' ? 'PayPal' : 'Unknown';
             $('#payment-method').text(paymentMethod);
@@ -488,37 +370,54 @@
                 ${orderResponse.city}, ${orderResponse.postIndex}
             `);
 
-            // Формируем список товаров из orderProducts
+            // Формируем список товаров
             if (orderResponse.orderProducts && orderResponse.orderProducts.length > 0) {
-                let itemsHtml = '';
-                orderResponse.orderProducts.forEach(item => {
-                    itemsHtml += `
-                        <div class="d-flex mb-3">
-                            <div class="product-img-container flex-shrink-0 me-3">
-                                <img src="/uploads/${item.imageUrl || 'default-product.png'}" alt="${item.productName}" class="product-img">
-                            </div>
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1">${item.productName}</h6>
-                                <small class="text-muted">Qty: ${item.quantity || 1}</small>
-                            </div>
-                            <div class="flex-shrink-0 text-end">
-                                <h6 class="mb-1">${formatPrice(item.price)}</h6>
-                            </div>
-                        </div>
-                    `;
-                });
-                $('#ordered-items').html(itemsHtml);
+                displayOrderProducts(orderResponse.orderProducts, orderResponse.totalPrice);
             } else {
-                $('#ordered-items').html('<div class="alert alert-warning">No items in order</div>');
+                $('#ordered-items').html('<div class="alert alert-warning">No items in this order</div>');
+                $('#order-total').text(formatPrice(orderResponse.totalPrice || 0));
             }
+        }
 
-            // Устанавливаем общую сумму
-            $('#order-total').text(formatPrice(orderResponse.totalPrice));
+        function displayOrderProducts(orderProducts, totalPrice) {
+            let itemsHtml = '';
+            let totalItems = 0;
+
+            orderProducts.forEach(orderProduct => {
+                const product = orderProduct.product;
+                const quantity = orderProduct.quantity || 1;
+                totalItems += quantity;
+
+                itemsHtml += `
+                    <div class="d-flex mb-3">
+                        <div class="product-img-container flex-shrink-0 me-3">
+                            <img src="/uploads/${product.imageUrl || 'default-product.png'}"
+                                 alt="${product.name}"
+                                 class="product-img">
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">${product.name}</h6>
+                            <small class="text-muted">${product.brandName} • ${product.categoryName}</small><br>
+                            <small class="text-muted">Qty: ${quantity}</small>
+                        </div>
+                        <div class="flex-shrink-0 text-end">
+                            <h6 class="mb-1">${formatPrice(product.price)}</h6>
+                            ${quantity > 1 ? `<small class="text-muted">${formatPrice(product.price * quantity)} total</small>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            $('#ordered-items').html(`
+                <h6 class="fw-bold mb-3">${totalItems} ${totalItems === 1 ? 'item' : 'items'} in order</h6>
+                ${itemsHtml}
+            `);
+
+            $('#order-total').text(formatPrice(totalPrice));
         }
 
         // Инициализация
         loadProfileData();
-        loadOrderSummary();
     });
 </script>
 </body>
