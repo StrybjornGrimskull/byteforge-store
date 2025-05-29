@@ -14,4 +14,9 @@ public class PageController {
     public String shopping_cart() {
         return "shopping-cart.html";
     }
+
+    @GetMapping("/checkout")
+    public String checkout() {
+        return "checkout.html";
+    }
 }

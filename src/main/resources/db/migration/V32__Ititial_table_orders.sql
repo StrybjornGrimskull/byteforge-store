@@ -1,5 +1,5 @@
 CREATE TABLE orders (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     total_price DOUBLE PRECISION NOT NULL,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     first_name VARCHAR(255) NOT NULL,
@@ -13,9 +13,10 @@ CREATE TABLE orders (
 );
 
 CREATE TABLE order_products (
-    order_id INT NOT NULL,
+    id BIGSERIAL PRIMARY KEY,
+    order_id BIGINT NOT NULL,
     product_id BIGINT NOT NULL,
-    PRIMARY KEY (order_id, product_id),
+    quantity INT NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );

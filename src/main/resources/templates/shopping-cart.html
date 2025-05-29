@@ -305,8 +305,8 @@
 
                     let html = '';
                     response.forEach(item => {
-                        const currentQuantity = 1;
-                        const maxQuantity = item.quantity;
+                        const currentQuantity = item.quantity;
+                        const maxQuantity = item.stockQuantity;
                         const minusDisabled = currentQuantity <= 1 ? 'disabled' : '';
                         const plusDisabled = currentQuantity >= maxQuantity ? 'disabled' : '';
 

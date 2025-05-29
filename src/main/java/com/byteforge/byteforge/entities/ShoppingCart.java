@@ -21,6 +21,8 @@ public class ShoppingCart {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
+    Integer quantity;
+
     @Column(name = "added_date")
     private LocalDateTime addedDate;
 }

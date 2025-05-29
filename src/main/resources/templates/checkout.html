@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checkout | ByteForge</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --dark-color: #2d3436;
+            --light-color: #f5f6fa;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: var(--dark-color);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .checkout-header {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .checkout-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .order-summary {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            position: sticky;
+            top: 20px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #5a4bd1;
+            border-color: #5a4bd1;
+        }
+
+        .product-img-container {
+            height: 80px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .product-img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            mix-blend-mode: multiply;
+        }
+
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+            color: var(--primary-color);
+        }
+
+        footer {
+            background-color: var(--dark-color);
+        }
+
+        .confirmation-section {
+            display: none;
+        }
+
+        .form-control:disabled {
+            background-color: #f8f9fa;
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .order-summary {
+                position: static;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="bi bi-hexagon-fill me-2"></i>ByteForge
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"><i class="bi bi-house-door me-1"></i> Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/wishlist}"><i class="bi bi-heart me-1"></i> Wishlist</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/account}"><i class="bi bi-person me-1"></i> Account</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container py-5">
+    <!-- Header -->
+    <div class="checkout-header p-4 mb-4">
+        <h1 class="display-5 fw-bold mb-3"><i class="bi bi-cart-check me-2"></i>CHECKOUT</h1>
+        <p class="mb-0">Complete your purchase with secure checkout</p>
+    </div>
+
+    <div class="row">
+        <!-- Checkout Form -->
+        <div class="col-lg-8">
+            <div id="checkout-form-container">
+                <div class="checkout-card">
+                    <h4 class="fw-bold mb-4"><i class="bi bi-person-circle me-2"></i>Contact Information</h4>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="firstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="firstName" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="lastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkout-card">
+                    <h4 class="fw-bold mb-4"><i class="bi bi-truck me-2"></i>Shipping Address</h4>
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="address" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="city" class="form-label">City</label>
+                            <input type="text" class="form-control" id="city" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="postIndex" class="form-label">Postal Code</label>
+                            <input type="text" class="form-control" id="postIndex" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkout-card">
+                    <h4 class="fw-bold mb-4"><i class="bi bi-credit-card me-2"></i>Payment Method</h4>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" checked>
+                        <label class="form-check-label" for="creditCard">
+                            Credit/Debit Card
+                        </label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="paymentMethod" id="paypal">
+                        <label class="form-check-label" for="paypal">
+                            PayPal
+                        </label>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="/shopping-cart" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i> Back to Cart
+                    </a>
+                    <button id="place-order-btn" class="btn btn-primary px-4">
+                        Place Order <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Order Confirmation (hidden by default) -->
+            <div id="order-confirmation" class="confirmation-section">
+                <div class="checkout-card text-center">
+                    <div class="mb-4">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h3 class="fw-bold mb-3">Thank you for your order!</h3>
+                    <p class="mb-4">Your order has been placed successfully. We've sent a confirmation email to <span id="confirmation-email" class="fw-bold"></span></p>
+
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Order Summary</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">Order Number</h6>
+                                    <p id="order-number">Loading...</p>
+
+                                    <h6 class="fw-bold">Order Date</h6>
+                                    <p id="order-date">Loading...</p>
+
+                                    <h6 class="fw-bold">Payment Method</h6>
+                                    <p id="payment-method">Loading...</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">Shipping Address</h6>
+                                    <p id="shipping-address">Loading...</p>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <h6 class="fw-bold mb-3">Items Ordered</h6>
+                            <div id="ordered-items"></div>
+
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">Delivery Method</h6>
+                                    <p id="delivery-method">Standard Delivery (3-5 business days)</p>
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <h6 class="fw-bold">Total</h6>
+                                    <h4 id="order-total">$0.00</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="/" class="btn btn-primary">
+                        <i class="bi bi-house-door me-1"></i> Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="col-lg-4">
+            <div class="order-summary">
+                <h5 class="fw-bold mb-4">ORDER SUMMARY</h5>
+
+                <div id="order-items">
+                    <!-- Items will be loaded here -->
+                    <div class="d-flex justify-content-center py-3">
+                        <div class="spinner-border loading-spinner" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Sub-total</span>
+                    <span id="subtotal">$0.00</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Shipping</span>
+                    <span id="shipping-cost">$0.00</span>
+                </div>
+
+                <div id="discount-row" class="d-flex justify-content-between mb-2 text-success" style="display: none;">
+                    <span>Discount</span>
+                    <span id="discount-amount">-$0.00</span>
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between mb-4">
+                    <span class="fw-bold">TOTAL</span>
+                    <span class="fw-bold" id="total">$0.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="py-4 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="mb-0 text-white-50">&copy; 2023 ByteForge. All rights reserved.</p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <a href="#" class="text-white-50 me-3"><i class="bi bi-facebook"></i></a>
+                <a href="#" class="text-white-50 me-3"><i class="bi bi-twitter"></i></a>
+                <a href="#" class="text-white-50"><i class="bi bi-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(function () {
+        // Функция для форматирования цены
+        function formatPrice(price) {
+            return '$' + parseFloat(price).toFixed(2);
+        }
+
+        // Загрузка данных профиля
+        function loadProfileData() {
+            $.ajax({
+                url: '/api/profile',
+                method: 'GET',
+                success: function(profile) {
+                    if (profile) {
+                        $('#firstName').val(profile.firstName || '');
+                        $('#lastName').val(profile.lastName || '');
+                        $('#email').val(profile.email || '');
+                        $('#phone').val(profile.phone || '');
+                        $('#city').val(profile.city || '');
+                        $('#address').val(profile.address || '');
+                        $('#postIndex').val(profile.postIndex || '');
+                    }
+                },
+                error: function() {
+                    console.log("Profile load failed (non-critical)");
+                }
+            });
+        }
+
+        // Загрузка товаров в Order Summary
+        function loadOrderSummary() {
+            $.ajax({
+                url: '/api/shopping-cart',
+                method: 'GET',
+                success: function(response) {
+                    if (!response || response.length === 0) {
+                        $('#order-items').html('<div class="alert alert-warning">Your cart is empty</div>');
+                        return;
+                    }
+
+                    let itemsHtml = '';
+                    let subtotal = 0;
+
+                    response.forEach(item => {
+                        subtotal += parseFloat(item.price);
+
+                        itemsHtml += `
+                            <div class="d-flex mb-3">
+                                <div class="product-img-container flex-shrink-0 me-3">
+                                    <img src="/uploads/${item.imageUrl}" alt="${item.productName}" class="product-img">
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">${item.productName}</h6>
+                                    <small class="text-muted">Qty: 1</small>
+                                </div>
+                                <div class="flex-shrink-0 text-end">
+                                    <h6 class="mb-1">${formatPrice(item.price)}</h6>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    const shippingCost = subtotal >= 1500 ? 0 : 2.86;
+                    const discount = subtotal > 1500 ? subtotal * 0.1 : 0;
+                    const total = subtotal + shippingCost - discount;
+
+                    $('#order-items').html(itemsHtml);
+                    $('#subtotal').text(formatPrice(subtotal));
+                    $('#shipping-cost').text(formatPrice(shippingCost));
+
+                    if (discount > 0) {
+                        $('#discount-row').show();
+                        $('#discount-amount').text('-' + formatPrice(discount));
+                    } else {
+                        $('#discount-row').hide();
+                    }
+
+                    $('#total').text(formatPrice(total));
+                },
+                error: function() {
+                    $('#order-items').html('<div class="alert alert-danger">Error loading cart items</div>');
+                }
+            });
+        }
+
+        // Обработчик оформления заказа
+        $('#place-order-btn').click(function() {
+            const $btn = $(this);
+            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span> Оформление...');
+
+            const orderData = {
+                firstName: $('#firstName').val(),
+                lastName: $('#lastName').val(),
+                email: $('#email').val(),
+                phoneNumber: $('#phone').val(),
+                city: $('#city').val(),
+                address: $('#address').val(),
+                postIndex: $('#postIndex').val(),
+                paymentMethod: $('input[name="paymentMethod"]:checked').attr('id')
+            };
+
+            // Создание заказа
+            $.ajax({
+                url: '/api/orders',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(orderData),
+                success: function(rawResponse) {
+                    try {
+                        // Пытаемся обработать ответ, даже если он содержит синтаксические ошибки
+                        let response;
+                        try {
+                            response = JSON.parse(rawResponse);
+                        } catch (e) {
+                            // Попробуем исправить распространенные ошибки в JSON
+                            const fixedResponse = rawResponse
+                                .replace(/"totalPrice":"(\d+\.\d+),/g, '"totalPrice":"$1",')
+                                .replace(/orderProducts":\s*\{/g, 'orderProducts": [')
+                                .replace(/\}\}\s*$/g, '}]}');
+
+                            response = JSON.parse(fixedResponse);
+                        }
+
+                        // Извлекаем основной объект заказа
+                        const order = response.id ? response : (response.order || {});
+
+                        if (order && order.id) {
+                            showOrderConfirmation(order, orderData);
+                        } else {
+                            alert('Ошибка: Не удалось получить ID заказа из ответа сервера');
+                            $btn.prop('disabled', false)
+                                .html('Оформить заказ <i class="bi bi-arrow-right ms-1"></i>');
+                        }
+                    } catch (e) {
+                        console.error("Ошибка обработки ответа:", e);
+                        alert("Ошибка обработки ответа сервера. Проверьте консоль для подробностей.");
+                        $btn.prop('disabled', false)
+                            .html('Оформить заказ <i class="bi bi-arrow-right ms-1"></i>');
+                    }
+                },
+                error: function(xhr) {
+                    let errorMsg = "Ошибка сервера";
+                    if (xhr.responseText) {
+                        try {
+                            const err = JSON.parse(xhr.responseText);
+                            errorMsg = err.message || xhr.responseText;
+                        } catch (e) {
+                            errorMsg = xhr.responseText;
+                        }
+                    }
+                    alert("Ошибка: " + errorMsg);
+                    $btn.prop('disabled', false)
+                        .html('Оформить заказ <i class="bi bi-arrow-right ms-1"></i>');
+                }
+            });
+        });
+
+        // Показ подтверждения заказа
+        function showOrderConfirmation(order, orderData) {
+            $('#checkout-form-container').hide();
+            $('#order-confirmation').show();
+
+            // Заполняем данные подтверждения
+            $('#confirmation-email').text(order.email || orderData.email);
+            $('#order-number').text('#' + order.id);
+            $('#order-date').text(new Date(order.date || order.createdAt || Date.now()).toLocaleString());
+            $('#payment-method').text(
+                orderData.paymentMethod === 'creditCard' ? 'Credit Card' : 'PayPal'
+            );
+
+            $('#shipping-address').html(`
+                ${order.firstName || orderData.firstName} ${order.lastName || orderData.lastName}<br>
+                ${order.address || orderData.address}<br>
+                ${order.city || orderData.city}, ${order.postIndex || orderData.postIndex}
+            `);
+
+            // Копируем товары из Order Summary
+            $('#ordered-items').html($('#order-items').html());
+
+            // Используем totalPrice из ответа или рассчитываем на клиенте
+            const totalPrice = order.totalPrice ? formatPrice(order.totalPrice) : $('#total').text();
+            $('#order-total').text(totalPrice);
+        }
+
+        // Инициализация
+        loadProfileData();
+        loadOrderSummary();
+    });
+</script>
+</body>
+</html>

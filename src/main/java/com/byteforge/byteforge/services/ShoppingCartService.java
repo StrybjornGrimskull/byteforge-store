@@ -1,11 +1,8 @@
 package com.byteforge.byteforge.services;
 
-
 import com.byteforge.byteforge.dto.response.ShoppingCartResponseDto;
 import com.byteforge.byteforge.entities.Customer;
 import com.byteforge.byteforge.entities.Product;
-
-
 import com.byteforge.byteforge.entities.ShoppingCart;
 import com.byteforge.byteforge.repositories.CustomerRepository;
 import com.byteforge.byteforge.repositories.ProductRepository;
@@ -39,19 +36,25 @@ public class ShoppingCartService {
 
     @Transactional
     public void addToShoppingCart(Integer productId, String customerEmail) {
-        // 1. Находим customer по email
+        // 1. Проверяем, есть ли уже такой товар в корзине
+        if (shoppingCartRepository.existsByProductIdAndCustomerEmail(productId, customerEmail)) {
+            throw new RuntimeException("Товар уже находится в корзине");
+        }
+
+        // 2. Находим customer по email
         Customer customer = customerRepository.findByEmail(customerEmail)
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
-        // 2. Находим продукт
+        // 3. Находим продукт
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Товар не найден"));
 
-       ShoppingCart item = new ShoppingCart();
+        // 4. Создаем новую запись в корзине
+        ShoppingCart item = new ShoppingCart();
         item.setProduct(product);
         item.setCustomer(customer);
+        item.setQuantity(1); // Устанавливаем начальное количество
         item.setAddedDate(LocalDateTime.now());
-
         shoppingCartRepository.save(item);
     }
 
@@ -59,4 +62,3 @@ public class ShoppingCartService {
         return shoppingCartRepository.existsByProductIdAndCustomerEmail(productId, email);
     }
 }
-

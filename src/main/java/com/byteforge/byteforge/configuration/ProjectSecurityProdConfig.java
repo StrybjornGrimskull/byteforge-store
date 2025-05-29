@@ -47,6 +47,9 @@ public class ProjectSecurityProdConfig {
                         .requestMatchers("/api/shopping-cart/**").authenticated()
                         .requestMatchers("/shopping-cart/**").authenticated()
                         .requestMatchers("/wishlist/**").authenticated()
+                        .requestMatchers("/api/profile/**").authenticated()
+                        .requestMatchers("/api/orders/**").authenticated()
+                        .requestMatchers("/checkout/**").authenticated()
                         .requestMatchers("/",
                                 "/contact",
                                 "/products/**",
