@@ -19,4 +19,6 @@ public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Inte
     void deleteByProductIdAndCustomerEmail(Integer productId, String email);
 
     boolean existsByProductIdAndCustomerEmail(Integer productId, String email);
+
+    Optional<ShoppingCart> findByProductIdAndCustomerEmail(Integer productId, String email);
 }

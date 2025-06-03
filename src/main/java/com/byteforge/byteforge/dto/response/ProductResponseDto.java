@@ -1,4 +1,4 @@
-package com.byteforge.byteforge.dto;
+package com.byteforge.byteforge.dto.response;
 
 import com.byteforge.byteforge.dto.specifications.*;
 import com.byteforge.byteforge.entities.Product;

@@ -1,6 +1,6 @@
 package com.byteforge.byteforge.services;
 
-import com.byteforge.byteforge.dto.ProductResponseDto;
+import com.byteforge.byteforge.dto.response.ProductResponseDto;
 import com.byteforge.byteforge.entities.Product;
 import com.byteforge.byteforge.repositories.ProductRepository;
 import com.byteforge.byteforge.specifications.ProductSpecifications;

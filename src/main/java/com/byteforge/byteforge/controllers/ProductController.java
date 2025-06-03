@@ -1,6 +1,6 @@
 package com.byteforge.byteforge.controllers;
 
-import com.byteforge.byteforge.dto.ProductResponseDto;
+import com.byteforge.byteforge.dto.response.ProductResponseDto;
 import com.byteforge.byteforge.services.BrandService;
 import com.byteforge.byteforge.services.CategoryService;
 import com.byteforge.byteforge.services.ProductService;

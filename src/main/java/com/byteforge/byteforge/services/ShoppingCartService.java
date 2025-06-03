@@ -61,4 +61,24 @@ public class ShoppingCartService {
     public boolean isProductInShoppingCart(Integer productId, String email) {
         return shoppingCartRepository.existsByProductIdAndCustomerEmail(productId, email);
     }
+
+    @Transactional
+    public void updateQuantity(Integer productId, String customerEmail, Integer quantity) {
+        // Находим товар в корзине
+        ShoppingCart cartItem = shoppingCartRepository.findByProductIdAndCustomerEmail(productId, customerEmail)
+                .orElseThrow(() -> new RuntimeException("Товар не найден в корзине"));
+
+        // Проверяем доступное количество на складе
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Товар не найден"));
+
+        // Проверяем, что новое количество допустимо
+        if (quantity < 1 || quantity > product.getStockQuantity().getQuantity()) {
+            throw new RuntimeException("Недопустимое количество");
+        }
+
+        // Обновляем количество
+        cartItem.setQuantity(quantity);
+        shoppingCartRepository.save(cartItem);
+    }
 }

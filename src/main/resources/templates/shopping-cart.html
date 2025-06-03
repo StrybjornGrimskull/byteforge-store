@@ -205,9 +205,9 @@
                     <span class="fw-bold" id="total">$0.00</span>
                 </div>
 
-                <button class="btn btn-checkout w-100 mb-3" id="checkout-btn">
+                <a href="/checkout" class="btn btn-checkout w-100 mb-3" id="checkout-btn">
                     CHECKOUT
-                </button>
+                </a>
 
                 <div class="text-center mb-3">
                     <small class="text-muted">WE ACCEPT:</small>
@@ -258,20 +258,20 @@
 
 <script>
     $(function () {
-        // Function to format price
+        // Price formatting function
         function formatPrice(price) {
             if (!price) return '$0.00';
             return '$' + parseFloat(price).toFixed(2);
         }
 
-        // Function to format date
+        // Date formatting function
         function formatDate(dateString) {
             if (!dateString) return 'N/A';
             const date = new Date(dateString);
             return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
         }
 
-        // Function to show empty cart
+        // Show empty cart state
         function showEmptyCart() {
             $('#cart-items-container').html(`
                 <div class="empty-state text-center py-5">
@@ -286,12 +286,31 @@
                 </div>
             `);
 
-            // Update totals to zero
+            // Reset totals and disable checkout button
             updateTotals();
+            disableCheckoutButton();
             $('.reservation-notice').html('<i class="bi bi-percent me-1"></i> Get 10% discount and FREE delivery on orders over $1500!');
         }
 
-        // Function to load cart items
+        // Disable checkout button
+        function disableCheckoutButton() {
+            $('#checkout-btn')
+                .addClass('disabled')
+                .attr('aria-disabled', 'true')
+                .css('pointer-events', 'none')
+                .css('opacity', '0.65');
+        }
+
+        // Enable checkout button
+        function enableCheckoutButton() {
+            $('#checkout-btn')
+                .removeClass('disabled')
+                .attr('aria-disabled', 'false')
+                .css('pointer-events', 'auto')
+                .css('opacity', '1');
+        }
+
+        // Load cart items
         function loadCartItems() {
             $.ajax({
                 url: '/api/shopping-cart',
@@ -307,8 +326,12 @@
                     response.forEach(item => {
                         const currentQuantity = item.quantity;
                         const maxQuantity = item.stockQuantity;
-                        const minusDisabled = currentQuantity <= 1 ? 'disabled' : '';
-                        const plusDisabled = currentQuantity >= maxQuantity ? 'disabled' : '';
+
+                        // Generate select options
+                        let options = '';
+                        for (let i = 1; i <= maxQuantity; i++) {
+                            options += `<option value="${i}" ${currentQuantity === i ? 'selected' : ''}>${i}</option>`;
+                        }
 
                         html += `
                             <div class="cart-item p-4" data-id="${item.productId}">
@@ -328,12 +351,12 @@
                                     <div class="col-md-4 text-end">
                                         <h5 class="mb-3 item-price" data-price="${item.price}">${formatPrice(item.price)}</h5>
                                         <div class="d-flex justify-content-end align-items-center">
-                                            <button class="btn btn-outline-secondary btn-sm me-2 minus-btn" ${minusDisabled}>-</button>
-                                            <span class="quantity mx-2">${currentQuantity}</span>
-                                            <button class="btn btn-outline-secondary btn-sm ms-2 plus-btn" ${plusDisabled}>+</button>
+                                            <select class="form-select quantity-select" style="width: 80px;">
+                                                ${options}
+                                            </select>
                                         </div>
                                         <div class="mt-2">
-                                            <small class="text-muted">Max available: ${maxQuantity}</small>
+                                            <small class="text-muted">Available: ${maxQuantity}</small>
                                         </div>
                                     </div>
                                 </div>
@@ -358,18 +381,19 @@
                             </a>
                         </div>
                     `);
+                    disableCheckoutButton();
                 }
             });
         }
 
-        // Function to update totals with discount and free shipping calculation
+        // Update totals with discount and shipping calculation
         function updateTotals() {
             let subtotal = 0;
             const cartItems = $('.cart-item');
 
             // Calculate subtotal
             cartItems.each(function() {
-                const quantity = parseInt($(this).find('.quantity').text());
+                const quantity = parseInt($(this).find('.quantity-select').val());
                 const price = parseFloat($(this).find('.item-price').data('price'));
                 subtotal += quantity * price;
             });
@@ -417,47 +441,33 @@
             }
 
             $('#total').text(formatPrice(total));
+
+            // Update checkout button state
+            if (subtotal > 0) {
+                enableCheckoutButton();
+            } else {
+                disableCheckoutButton();
+            }
         }
 
-        // Handler for plus button
-        $(document).on('click', '.plus-btn:not(:disabled)', function() {
+        // Handler for quantity select change
+        $(document).on('change', '.quantity-select', function() {
             const $item = $(this).closest('.cart-item');
-            const $quantity = $item.find('.quantity');
-            const $minusBtn = $item.find('.minus-btn');
-            const $plusBtn = $(this);
-            const maxQuantity = parseInt($item.find('small.text-muted').text().replace('Max available: ', ''));
+            const productId = $item.data('id');
+            const newQuantity = parseInt($(this).val());
 
-            let quantity = parseInt($quantity.text());
-            quantity += 1;
-
-            $quantity.text(quantity);
-            $minusBtn.prop('disabled', false);
-
-            if (quantity >= maxQuantity) {
-                $plusBtn.prop('disabled', true);
-            }
-
-            updateTotals();
-        });
-
-        // Handler for minus button
-        $(document).on('click', '.minus-btn:not(:disabled)', function() {
-            const $item = $(this).closest('.cart-item');
-            const $quantity = $item.find('.quantity');
-            const $minusBtn = $(this);
-            const $plusBtn = $item.find('.plus-btn');
-
-            let quantity = parseInt($quantity.text());
-            quantity -= 1;
-
-            $quantity.text(quantity);
-            $plusBtn.prop('disabled', false);
-
-            if (quantity <= 1) {
-                $minusBtn.prop('disabled', true);
-            }
-
-            updateTotals();
+            $.ajax({
+                url: `/api/shopping-cart/${productId}/quantity?quantity=${newQuantity}`,
+                method: 'PUT',
+                success: function() {
+                    updateTotals();
+                },
+                error: function(xhr) {
+                    console.error('Error updating quantity:', xhr.status, xhr.responseText);
+                    alert('Error updating quantity. Please try again.');
+                    loadCartItems(); // Reload to get correct values
+                }
+            });
         });
 
         // Handler for removing items
@@ -491,16 +501,6 @@
                     }
                 }
             });
-        });
-
-        // Handler for checkout button
-        $('#checkout-btn').click(function() {
-            if ($('#total').text() === '$0.00') {
-                alert('Your cart is empty. Add items before checkout.');
-                return;
-            }
-            alert('Proceeding to checkout...');
-            // window.location.href = '/checkout';
         });
 
         // Initialize cart loading

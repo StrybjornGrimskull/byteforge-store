@@ -1,6 +1,6 @@
 package com.byteforge.byteforge.utils;
 
-import com.byteforge.byteforge.dto.ProductResponseDto;
+import com.byteforge.byteforge.dto.response.ProductResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;

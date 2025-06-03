@@ -59,4 +59,14 @@ public class ShoppingCartController {
         boolean exists = shoppingCartService.isProductInShoppingCart(productId, email);
         return ResponseEntity.ok(exists);
     }
+
+    @PutMapping("/{productId}/quantity")
+    public ResponseEntity<Void> updateQuantity(
+            @PathVariable Integer productId,
+            @RequestParam Integer quantity,
+            Authentication authentication) {
+        String email = authentication.getName();
+        shoppingCartService.updateQuantity(productId, email, quantity);
+        return ResponseEntity.noContent().build();
+    }
 }
