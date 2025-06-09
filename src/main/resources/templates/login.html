@@ -1,262 +1,138 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Auth Page</title>
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <title>Login / Signup</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <style>
     body {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
+      background-color: #f8f9fa;
     }
     .auth-container {
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 30px;
       background: white;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
     .auth-header {
-      padding: 30px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
       text-align: center;
-    }
-    .auth-body {
-      padding: 30px;
-    }
-    .form-control:focus {
-      border-color: #764ba2;
-      box-shadow: 0 0 0 0.25rem rgba(118, 75, 162, 0.25);
-    }
-    .btn-auth {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border: none;
-      width: 100%;
-      padding: 12px;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
-    .btn-auth:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
     }
     .auth-tabs {
       display: flex;
+      margin-bottom: 20px;
       border-bottom: 1px solid #dee2e6;
     }
     .auth-tab {
-      flex: 1;
-      text-align: center;
-      padding: 15px;
+      padding: 10px 20px;
       cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s;
+      border: none;
+      background: none;
+      font-weight: 500;
     }
     .auth-tab.active {
-      color: #764ba2;
-      border-bottom: 3px solid #764ba2;
+      color: #0d6efd;
+      border-bottom: 2px solid #0d6efd;
     }
-    .auth-tab:not(.active):hover {
-      background-color: #f8f9fa;
-    }
-    .auth-content {
+    .tab-content {
       display: none;
     }
-    .auth-content.active {
+    .tab-content.active {
       display: block;
     }
-    .social-auth {
-      margin-top: 20px;
+    .form-group {
+      margin-bottom: 20px;
     }
-    .social-btn {
-      display: block;
+    .btn-auth {
+      width: 100%;
       padding: 10px;
-      margin-bottom: 10px;
-      text-align: center;
-      border-radius: 5px;
-      font-weight: 500;
-      transition: all 0.3s;
+      margin-top: 10px;
     }
-    .social-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-    }
-    .social-btn i {
-      margin-right: 10px;
-    }
-    .btn-google {
-      background-color: #DB4437;
-      color: white;
-    }
-    .btn-facebook {
-      background-color: #4267B2;
-      color: white;
-    }
-    .auth-footer {
-      text-align: center;
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid #dee2e6;
-    }
-    .error-message {
+    .error {
       color: #dc3545;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
+      text-align: center;
     }
-    .success-message {
-      color: #28a745;
-      margin-bottom: 15px;
+    .success {
+      color: #198754;
+      margin-bottom: 20px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
 <div class="container">
-  <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-      <div class="auth-container">
-        <div class="auth-header">
-          <h2><i class="fas fa-user-shield"></i> Welcome Back!</h2>
-          <p class="mb-0">Please login to your account or create a new one</p>
+  <div class="auth-container">
+    <div class="auth-header">
+      <h2><i class="fas fa-user-circle me-2"></i>Account Access</h2>
+    </div>
+
+    <div th:if="${error}" class="error alert alert-danger" th:text="${error}"></div>
+    <div th:if="${param.success}" class="success alert alert-success">Registration successful! Please login.</div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="showTab('signin')">Sign In</button>
+      <button class="auth-tab" onclick="showTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- Sign In Form -->
+    <div id="signin" class="tab-content active">
+      <form th:action="@{/login}" method="post">
+        <div class="form-group">
+          <label for="login-email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="login-email" name="username" required>
         </div>
-
-        <div class="auth-tabs">
-          <div class="auth-tab active" onclick="switchTab('signin')">Sign In</div>
-          <div class="auth-tab" onclick="switchTab('signup')">Sign Up</div>
+        <div class="form-group">
+          <label for="login-password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="login-password" name="password" required>
         </div>
+        <button type="submit" class="btn btn-primary btn-auth">Sign In</button>
+      </form>
+    </div>
 
-        <div class="auth-body">
-          <!-- Sign In Form -->
-          <form id="signin-form" class="auth-content active" method="post" action="/login">
-            <div th:if="${param.error}" class="alert alert-danger" role="alert">
-              <i class="fas fa-exclamation-circle"></i> Invalid email or password. Please try again.
-            </div>
-            <div class="mb-3">
-              <label for="login-email" class="form-label">Email address</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                <input type="email" class="form-control" id="login-email" name="username" placeholder="Enter your email" required>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="login-password" class="form-label">Password</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                <input type="password" class="form-control" id="login-password" name="password" placeholder="Enter your password" required>
-                <button class="btn btn-outline-secondary" type="button" id="toggleLoginPassword">
-                  <i class="fas fa-eye"></i>
-                </button>
-              </div>
-            </div>
-            <div class="mb-3 form-check">
-              <input type="checkbox" class="form-check-input" id="remember-me">
-              <label class="form-check-label" for="remember-me">Remember me</label>
-              <a href="#" class="float-end">Forgot password?</a>
-            </div>
-            <button type="submit" class="btn btn-auth mb-3">Sign In</button>
-          </form>
-
-          <!-- Sign Up Form -->
-          <form id="signup-form" class="auth-content" method="post" action="/register">
-            <div class="mb-3">
-              <label for="register-name" class="form-label">Full Name</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                <input type="text" class="form-control" id="register-name" name="name" placeholder="Enter your full name" required>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="register-email" class="form-label">Email address</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                <input type="email" class="form-control" id="register-email" name="email" placeholder="Enter your email" required>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="register-password" class="form-label">Password</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                <input type="password" class="form-control" id="register-password" name="password" placeholder="Create a password" required>
-                <button class="btn btn-outline-secondary" type="button" id="toggleRegisterPassword">
-                  <i class="fas fa-eye"></i>
-                </button>
-              </div>
-              <div class="form-text">Must be 8+ characters with numbers and symbols</div>
-            </div>
-            <div class="mb-3">
-              <label for="register-confirm-password" class="form-label">Confirm Password</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                <input type="password" class="form-control" id="register-confirm-password" placeholder="Confirm your password" required>
-              </div>
-            </div>
-            <div class="mb-3 form-check">
-              <input type="checkbox" class="form-check-input" id="terms" required>
-              <label class="form-check-label" for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
-            </div>
-            <button type="submit" class="btn btn-auth">Create Account</button>
-
-            <div class="auth-footer">
-              <p>Already have an account? <a href="#" onclick="switchTab('signin')">Sign In</a></p>
-            </div>
-          </form>
+    <!-- Sign Up Form -->
+    <div id="signup" class="tab-content">
+      <form th:action="@{/auth/signup}" method="post">
+        <div class="form-group">
+          <label for="signup-email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="signup-email" name="email" required>
         </div>
-      </div>
+        <div class="form-group">
+          <label for="signup-password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="signup-password" name="password" required>
+        </div>
+        <div class="form-group">
+          <label for="signup-confirm-password" class="form-label">Confirm Password</label>
+          <input type="password" class="form-control" id="signup-confirm-password" name="confirmPassword" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-auth">Sign Up</button>
+      </form>
     </div>
   </div>
 </div>
 
-<!-- Bootstrap 5 JS Bundle with Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  function switchTab(tabId) {
-    // Hide all auth contents
-    document.querySelectorAll('.auth-content').forEach(content => {
-      content.classList.remove('active');
+  function showTab(tabId) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(tab => {
+      tab.classList.remove('active');
     });
 
-    // Remove active class from all tabs
+    // Deactivate all tabs
     document.querySelectorAll('.auth-tab').forEach(tab => {
       tab.classList.remove('active');
     });
 
-    // Show selected content and mark tab as active
-    document.getElementById(tabId + '-form').classList.add('active');
-    document.querySelector(`.auth-tab:nth-child(${tabId === 'signin' ? 1 : 2})`).classList.add('active');
+    // Show selected tab content
+    document.getElementById(tabId).classList.add('active');
+
+    // Activate clicked tab
+    event.target.classList.add('active');
   }
-
-  // Toggle password visibility
-  document.getElementById('toggleLoginPassword').addEventListener('click', function() {
-    const passwordInput = document.getElementById('login-password');
-    const icon = this.querySelector('i');
-    if (passwordInput.type === 'password') {
-      passwordInput.type = 'text';
-      icon.classList.remove('fa-eye');
-      icon.classList.add('fa-eye-slash');
-    } else {
-      passwordInput.type = 'password';
-      icon.classList.remove('fa-eye-slash');
-      icon.classList.add('fa-eye');
-    }
-  });
-
-  document.getElementById('toggleRegisterPassword').addEventListener('click', function() {
-    const passwordInput = document.getElementById('register-password');
-    const icon = this.querySelector('i');
-    if (passwordInput.type === 'password') {
-      passwordInput.type = 'text';
-      icon.classList.remove('fa-eye');
-      icon.classList.add('fa-eye-slash');
-    } else {
-      passwordInput.type = 'password';
-      icon.classList.remove('fa-eye-slash');
-      icon.classList.add('fa-eye');
-    }
-  });
 </script>
 </body>
 </html>

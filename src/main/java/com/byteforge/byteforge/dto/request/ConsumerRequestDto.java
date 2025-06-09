@@ -3,7 +3,10 @@ package com.byteforge.byteforge.dto.request;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.NoArgsConstructor;
+
 import java.util.Set;
+
 
 public record ConsumerRequestDto(
         @NotBlank(message = "Email is required")
@@ -15,6 +18,6 @@ public record ConsumerRequestDto(
         @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters")
         String password,
 
-        @Size(max = 10, message = "User can have up to 10 roles")
-        Set<String> roleNames
+        @NotBlank(message = "Password confirmation is required")
+        String confirmPassword
 ) {}

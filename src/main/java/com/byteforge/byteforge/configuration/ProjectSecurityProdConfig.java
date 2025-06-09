@@ -51,7 +51,6 @@ public class ProjectSecurityProdConfig {
                         .requestMatchers("/api/orders/**").authenticated()
                         .requestMatchers("/checkout/**").authenticated()
                         .requestMatchers(
-                                "/login",
                                 "/",
                                 "/contact",
                                 "/products/**",
@@ -59,15 +58,16 @@ public class ProjectSecurityProdConfig {
                                 "/uploads/logo/**",
                                 "/brands",
                                 "/error",
-                                "/apiLogin").permitAll()
+                                "/auth/**"
+                                ).permitAll()
                 )
                 .formLogin(form -> form
-                .loginPage("/login") // Указывает кастомную страницу входа
-                .loginProcessingUrl("/login") // URL для обработки формы входа
-                .defaultSuccessUrl("/", false) // Перенаправление после успешного входа
-                .failureUrl("/login?error=true")
-                .permitAll()
-        );
+                        .loginPage("/auth/login") // Указывает кастомную страницу входа
+                        .loginProcessingUrl("/login") // URL для обработки формы входа
+                        .defaultSuccessUrl("/", false) // Перенаправление после успешного входа
+                        .failureUrl("/auth/login?error=true")
+                        .permitAll()
+                );
         return http.build();
     }
 
@@ -76,6 +76,7 @@ public class ProjectSecurityProdConfig {
         return () -> SecurityContextHolder.setStrategyName(
                 SecurityContextHolder.MODE_GLOBAL);
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -88,12 +89,12 @@ public class ProjectSecurityProdConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder) {
+                                                       PasswordEncoder passwordEncoder) {
         ByteForgeProdUsernamePwdAuthenticationProvider authenticationProvider =
                 new ByteForgeProdUsernamePwdAuthenticationProvider(userDetailsService, passwordEncoder);
         ProviderManager providerManager = new ProviderManager(authenticationProvider);
         providerManager.setEraseCredentialsAfterAuthentication(false);
-        return  providerManager;
+        return providerManager;
     }
 
 }

@@ -1,0 +1,51 @@
+package com.byteforge.byteforge.services;
+
+import com.byteforge.byteforge.dto.request.ConsumerRequestDto;
+import com.byteforge.byteforge.entities.Authority;
+import com.byteforge.byteforge.entities.Customer;
+import com.byteforge.byteforge.repositories.AuthorityRepository;
+import com.byteforge.byteforge.repositories.CustomerRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class CustomerService {
+
+    private final CustomerRepository customerRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthorityRepository authorityRepository;
+
+    @Transactional
+    public void registerNewUser(ConsumerRequestDto registrationDto) {
+        validateRegistration(registrationDto);
+
+        Customer customer = new Customer();
+        customer.setEmail(registrationDto.email());
+        customer.setPassword(passwordEncoder.encode(registrationDto.password()));
+
+        Customer savedCustomer = customerRepository.save(customer);
+
+        Authority authority = new Authority("ROLE_USER", savedCustomer);
+        authorityRepository.save(authority);
+
+        savedCustomer.setAuthorities(Set.of(authority));
+    }
+
+    private void validateRegistration(ConsumerRequestDto registrationDto) {
+        // Проверка совпадения паролей
+        if (!registrationDto.password().equals(registrationDto.confirmPassword())) {
+            throw new RuntimeException("Passwords do not match");
+        }
+
+        // Проверка существования email
+        if (customerRepository.findByEmail(registrationDto.email()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+    }
+}
