@@ -50,7 +50,9 @@ public class ProjectSecurityProdConfig {
                         .requestMatchers("/api/profile/**").authenticated()
                         .requestMatchers("/api/orders/**").authenticated()
                         .requestMatchers("/checkout/**").authenticated()
-                        .requestMatchers("/",
+                        .requestMatchers(
+                                "/login",
+                                "/",
                                 "/contact",
                                 "/products/**",
                                 "/uploads/**",
@@ -58,8 +60,14 @@ public class ProjectSecurityProdConfig {
                                 "/brands",
                                 "/error",
                                 "/apiLogin").permitAll()
-                );
-        http.formLogin(withDefaults());
+                )
+                .formLogin(form -> form
+                .loginPage("/login") // Указывает кастомную страницу входа
+                .loginProcessingUrl("/login") // URL для обработки формы входа
+                .defaultSuccessUrl("/", false) // Перенаправление после успешного входа
+                .failureUrl("/login?error=true")
+                .permitAll()
+        );
         return http.build();
     }
 

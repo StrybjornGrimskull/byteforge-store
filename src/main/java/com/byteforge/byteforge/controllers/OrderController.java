@@ -5,6 +5,7 @@ import com.byteforge.byteforge.dto.response.OrderResponseDto;
 import com.byteforge.byteforge.services.OrderServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,6 @@ public class OrderController {
             Authentication authentication) {
         String email = authentication.getName();
         OrderResponseDto response = orderServiceImpl.createOrder(email, orderDto);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

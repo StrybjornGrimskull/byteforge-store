@@ -4,19 +4,17 @@ import com.byteforge.byteforge.dto.request.ProfileRequestDto;
 import com.byteforge.byteforge.dto.response.ProfileResponseDto;
 import com.byteforge.byteforge.services.ProfileService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/profile")
 public class ProfileController {
 
     private final ProfileService profileService;
-
-    public ProfileController(ProfileService profileService) {
-        this.profileService = profileService;
-    }
 
     @GetMapping
     public ResponseEntity<ProfileResponseDto> getProfile(Authentication authentication) {
