@@ -21,6 +21,11 @@ public class AuthController {
         return "login";
     }
 
+    @GetMapping("/signup")
+    public String showSignUpPage() {
+        return "signup";
+    }
+
     @PostMapping("/signup")
     public String registerUser(ConsumerRequestDto registrationDto, Model model) {
         try {
@@ -28,7 +33,7 @@ public class AuthController {
             return "redirect:/auth/login?success";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
-            return "login";
+            return "signup";
         }
     }
 }

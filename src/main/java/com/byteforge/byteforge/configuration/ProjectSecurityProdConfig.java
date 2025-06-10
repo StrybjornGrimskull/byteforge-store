@@ -63,7 +63,7 @@ public class ProjectSecurityProdConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/auth/login") // Указывает кастомную страницу входа
-                        .loginProcessingUrl("/login") // URL для обработки формы входа
+                        .loginProcessingUrl("/auth/login") // URL для обработки формы входа
                         .defaultSuccessUrl("/", false) // Перенаправление после успешного входа
                         .failureUrl("/auth/login?error=true")
                         .permitAll()
