@@ -3,6 +3,7 @@ package com.byteforge.byteforge.configuration;
 import com.byteforge.byteforge.entities.Customer;
 import com.byteforge.byteforge.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -24,6 +25,12 @@ public class ByteForgeUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Customer customer = customerRepository.findByEmail(username).orElseThrow(() -> new
                 UsernameNotFoundException("User details not found for the user: " + username));
+
+        // Проверяем подтверждение email
+        if (!customer.isEmailVerified()) {
+            throw new DisabledException("Email not verified");
+        }
+
         List<GrantedAuthority> authorities = customer.getAuthorities().stream().map(authority -> new
                         SimpleGrantedAuthority(authority.getName())).collect(Collectors.toList());
         return new User(customer.getEmail(), customer.getPassword(), authorities);

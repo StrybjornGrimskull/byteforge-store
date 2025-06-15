@@ -20,6 +20,12 @@ public class Customer {
     @Column(nullable = false)
     private String password;
 
+    @Column(name="email_verified", nullable = false)
+    private boolean emailVerified = false;
+
+    @Column (name ="email_verification_token")
+    private String emailVerificationToken;
+
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
     private Profile profile;
 

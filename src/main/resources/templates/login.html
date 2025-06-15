@@ -120,6 +120,9 @@
           <i class="fas fa-sign-in-alt me-2"></i>Sign In
         </button>
       </form>
+      <div th:if="${param.signupSuccess}" class="alert alert-success">
+        Registration successful! Please check your email to verify your account.
+      </div>
 
       <hr class="my-4">
 

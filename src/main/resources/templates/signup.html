@@ -66,6 +66,13 @@
       <button type="submit" class="btn btn-primary btn-auth">Sign Up</button>
     </form>
 
+    <div th:if="${param.success}" class="alert alert-success">
+      Registration successful! Please check your email for verification link.
+    </div>
+
+    <div th:if="${signupSuccess}" class="alert alert-success" th:text="${signupSuccess}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
     <div class="switch-auth">
       <p>Already have an account? <a th:href="@{/login}">Sign in</a></p>
     </div>

@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/auth")
@@ -27,13 +29,19 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public String registerUser(ConsumerRequestDto registrationDto, Model model) {
+    public String registerUser(ConsumerRequestDto registrationDto) {
+        customerService.registerNewUser(registrationDto);
+        return "redirect:/auth/login";
+    }
+
+    @GetMapping("/verify")
+    public String verifyEmail(@RequestParam String token, Model model) {
         try {
-            customerService.registerNewUser(registrationDto);
-            return "redirect:/auth/login?success";
+            customerService.verifyEmail(token);
+            return "redirect:/auth/login?verified";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
-            return "signup";
+            return "verification-error";
         }
     }
 }

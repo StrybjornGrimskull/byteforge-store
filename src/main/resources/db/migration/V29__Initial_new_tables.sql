@@ -3,7 +3,9 @@ CREATE TABLE customers (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    email_verified BOOLEAN DEFAULT FALSE,
+    email_verification_token VARCHAR(255)
 );
 
 -- Создаем таблицу authorities
