@@ -1,6 +1,9 @@
 package com.byteforge.byteforge.configuration;
 
 import com.byteforge.byteforge.filter.*;
+import com.byteforge.byteforge.security.handlers.CustomAuthenticationFailureHandler;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,9 +29,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @Profile("prod")
+@RequiredArgsConstructor
 public class ProjectSecurityProdConfig {
 
-    @Bean
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+
+     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
 //                .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -60,15 +66,20 @@ public class ProjectSecurityProdConfig {
                                 "/error",
                                 "/auth/**"
                                 ).permitAll()
-                )
-                .formLogin(form -> form
-                        .loginPage("/auth/login") // Указывает кастомную страницу входа
-                        .loginProcessingUrl("/auth/login") // URL для обработки формы входа
-                        .defaultSuccessUrl("/", false) // Перенаправление после успешного входа
-                        .failureUrl("/auth/login?error=true")
-                        .permitAll()
                 );
-        return http.build();
+         http
+                 .exceptionHandling()
+                 .accessDeniedPage("/auth/login?error=forbidden")
+                 .and()
+                 .formLogin(form -> form
+                         .loginPage("/auth/login")
+                         .loginProcessingUrl("/auth/login")
+                         .defaultSuccessUrl("/", false)
+                         .failureHandler(customAuthenticationFailureHandler)
+                         .permitAll()
+                 );
+
+         return http.build();
     }
 
     @Bean

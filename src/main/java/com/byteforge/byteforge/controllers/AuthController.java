@@ -19,7 +19,12 @@ public class AuthController {
     private final CustomerService customerService;
 
     @GetMapping("/login")
-    public String showLoginPage() {
+    public String showLoginPage(@RequestParam(required = false) String error, Model model) {
+        if ("emailNotVerified".equals(error)) {
+            model.addAttribute("showEmailNotVerified", true);
+        } else if ("true".equals(error)) {
+            model.addAttribute("showAuthError", true);
+        }
         return "login";
     }
 
