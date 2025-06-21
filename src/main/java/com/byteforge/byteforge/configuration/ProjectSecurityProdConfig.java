@@ -45,7 +45,7 @@ public class ProjectSecurityProdConfig {
                 .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
-                .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()) // Только HTTP, для продакшена лучше requiresSecure()
+                .requiresChannel(rcc -> rcc.anyRequest().requiresSecure()) //HTTPS
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/admin").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/notices").hasRole("USER")
