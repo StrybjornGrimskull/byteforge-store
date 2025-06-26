@@ -1,6 +1,6 @@
 package com.byteforge.byteforge.dto.specifications;
 
-import com.byteforge.byteforge.entities.CaseSpec;
+import com.byteforge.byteforge.entities.specifications.CaseSpec;
 
 public record CaseSpecDTO(
         String formFactor,

@@ -1,6 +1,6 @@
 package com.byteforge.byteforge.dto.specifications;
 
-import com.byteforge.byteforge.entities.WiredMouseSpec;
+import com.byteforge.byteforge.entities.specifications.WiredMouseSpec;
 
 public record WiredMouseSpecDTO(
         String sensorType,

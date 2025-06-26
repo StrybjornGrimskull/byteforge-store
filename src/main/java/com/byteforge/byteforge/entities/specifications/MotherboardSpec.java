@@ -1,5 +1,6 @@
-package com.byteforge.byteforge.entities;
+package com.byteforge.byteforge.entities.specifications;
 
+import com.byteforge.byteforge.entities.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

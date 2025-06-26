@@ -23,7 +23,7 @@ public class ProductService {
             Integer brandId,
             Double minPrice,
             Double maxPrice,
-            String name, // новый параметр
+            String name,
             int page,
             int size) {
 

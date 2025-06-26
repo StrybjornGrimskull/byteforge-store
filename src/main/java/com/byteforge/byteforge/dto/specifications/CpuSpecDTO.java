@@ -1,6 +1,6 @@
 package com.byteforge.byteforge.dto.specifications;
 
-import com.byteforge.byteforge.entities.CpuSpec;
+import com.byteforge.byteforge.entities.specifications.CpuSpec;
 import java.math.BigDecimal;
 
 public record CpuSpecDTO(

@@ -1,6 +1,6 @@
 package com.byteforge.byteforge.dto.specifications;
 
-import com.byteforge.byteforge.entities.WiredKeyboardSpec;
+import com.byteforge.byteforge.entities.specifications.WiredKeyboardSpec;
 import java.math.BigDecimal;
 
 public record WiredKeyboardSpecDTO(

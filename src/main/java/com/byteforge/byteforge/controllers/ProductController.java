@@ -4,7 +4,6 @@ import com.byteforge.byteforge.dto.response.ProductResponseDto;
 import com.byteforge.byteforge.services.BrandService;
 import com.byteforge.byteforge.services.CategoryService;
 import com.byteforge.byteforge.services.ProductService;
-import com.byteforge.byteforge.utils.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -19,7 +18,6 @@ public class ProductController {
     private final ProductService productService;
     private final CategoryService categoryService;
     private final BrandService brandService;
-    private final ProductMapper productMapper;
 
     @GetMapping("/list/json")
     @ResponseBody
@@ -54,11 +52,17 @@ public class ProductController {
 
         return "product-list";
     }
+
+    @GetMapping("/details/json/{id}")
+    @ResponseBody
+    public ProductResponseDto getProductDetailsJson(@PathVariable Integer id) {
+        return productService.getProductById(id);
+    }
+
     @GetMapping("/details/{id}")
     public String showProductDetails(@PathVariable Integer id, Model model) {
         ProductResponseDto product = productService.getProductById(id);
         model.addAttribute("product", product);
-        model.addAttribute("specJson", productMapper.convertSpecToJson(product));
         return "product-details";
     }
 }

@@ -1,6 +1,6 @@
 package com.byteforge.byteforge.repositories;
 
-import com.byteforge.byteforge.entities.WirelessKeyboardSpec;
+import com.byteforge.byteforge.entities.specifications.WirelessKeyboardSpec;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

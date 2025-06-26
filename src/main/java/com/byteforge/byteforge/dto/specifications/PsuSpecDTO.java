@@ -1,6 +1,6 @@
 package com.byteforge.byteforge.dto.specifications;
 
-import com.byteforge.byteforge.entities.PsuSpec;
+import com.byteforge.byteforge.entities.specifications.PsuSpec;
 
 public record PsuSpecDTO(
         Integer wattage,

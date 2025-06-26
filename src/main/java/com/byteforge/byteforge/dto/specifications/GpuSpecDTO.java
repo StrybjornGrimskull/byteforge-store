@@ -1,6 +1,6 @@
 package com.byteforge.byteforge.dto.specifications;
 
-import com.byteforge.byteforge.entities.GpuSpec;
+import com.byteforge.byteforge.entities.specifications.GpuSpec;
 
 public record GpuSpecDTO(
         Integer memorySize,

@@ -1,6 +1,6 @@
 package com.byteforge.byteforge.dto.specifications;
 
-import com.byteforge.byteforge.entities.MonitorSpec;
+import com.byteforge.byteforge.entities.specifications.MonitorSpec;
 import java.math.BigDecimal;
 
 public record MonitorSpecDTO(

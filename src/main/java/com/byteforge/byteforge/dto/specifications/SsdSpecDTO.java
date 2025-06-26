@@ -1,6 +1,6 @@
 package com.byteforge.byteforge.dto.specifications;
 
-import com.byteforge.byteforge.entities.SsdSpec;
+import com.byteforge.byteforge.entities.specifications.SsdSpec;
 import java.math.BigDecimal;
 
 public record SsdSpecDTO(

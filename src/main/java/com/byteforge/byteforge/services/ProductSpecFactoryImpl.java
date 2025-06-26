@@ -2,10 +2,10 @@ package com.byteforge.byteforge.services;
 
 import com.byteforge.byteforge.dto.specifications.*;
 import com.byteforge.byteforge.entities.*;
+import com.byteforge.byteforge.entities.specifications.*;
 import com.byteforge.byteforge.repositories.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

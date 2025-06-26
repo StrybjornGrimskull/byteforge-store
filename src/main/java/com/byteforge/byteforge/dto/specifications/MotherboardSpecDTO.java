@@ -1,6 +1,6 @@
 package com.byteforge.byteforge.dto.specifications;
 
-import com.byteforge.byteforge.entities.MotherboardSpec;
+import com.byteforge.byteforge.entities.specifications.MotherboardSpec;
 
 public record MotherboardSpecDTO(
         String socket,
