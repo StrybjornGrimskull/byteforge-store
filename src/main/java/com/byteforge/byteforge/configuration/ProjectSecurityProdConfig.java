@@ -75,10 +75,14 @@ public class ProjectSecurityProdConfig {
                          .loginPage("/auth/login")
                          .loginProcessingUrl("/auth/login")
                          .defaultSuccessUrl("/", false)
-                         .failureHandler(customAuthenticationFailureHandler)
-                         .permitAll()
+                         .failureHandler(customAuthenticationFailureHandler))
+                 .logout(logout -> logout
+                         .logoutUrl("/auth/logout")
+                         .logoutSuccessUrl("/?logout=true")
+                         .invalidateHttpSession(true)
+                         .deleteCookies("JSESSIONID")
+                         .clearAuthentication(true)
                  );
-
          return http.build();
     }
 

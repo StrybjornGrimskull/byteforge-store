@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email | ByteForge</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --error: #dc2626;
+            --success: #10b981;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 1rem;
+            line-height: 1.5;
+        }
+
+        .verify-container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .verify-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .alert-success {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .resend-link {
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<main class="verify-container">
+    <div class="verify-card">
+        <div class="logo">
+            <i class="fas fa-envelope"></i>
+        </div>
+
+        <div th:if="${verified}" class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <div>Email successfully verified!</div>
+        </div>
+
+        <h1 th:unless="${verified}">Verify your email address</h1>
+        <p th:unless="${verified}">
+            We've sent a verification link to <strong th:text="${email}">your email</strong>.
+            Please check your inbox and click the link to verify your account.
+        </p>
+
+        <div th:if="${resent}" class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <div>Verification email has been resent!</div>
+        </div>
+
+        <a th:if="${verified}" href="/auth/login" class="btn btn-primary">Sign In</a>
+
+        <div th:unless="${verified}">
+            <p>Didn't receive the email?</p>
+            <a th:href="@{/auth/resend-verification(email=${email})}" class="resend-link">Resend verification email</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

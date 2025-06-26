@@ -1,6 +1,7 @@
 package com.byteforge.byteforge.controllers;
 
 import com.byteforge.byteforge.dto.request.ConsumerRequestDto;
+import com.byteforge.byteforge.entities.Customer;
 import com.byteforge.byteforge.services.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -19,11 +20,12 @@ public class AuthController {
     private final CustomerService customerService;
 
     @GetMapping("/login")
-    public String showLoginPage(@RequestParam(required = false) String error, Model model) {
-        if ("emailNotVerified".equals(error)) {
-            model.addAttribute("showEmailNotVerified", true);
-        } else if ("true".equals(error)) {
-            model.addAttribute("showAuthError", true);
+    public String showLoginPage(
+            @RequestParam(required = false) String error,
+            Model model) {
+
+        if (error != null) {
+            model.addAttribute("loginError", "Invalid email or password");
         }
         return "login";
     }
@@ -34,19 +36,37 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public String registerUser(ConsumerRequestDto registrationDto) {
+    public String registerUser(ConsumerRequestDto registrationDto, RedirectAttributes redirectAttributes) {
         customerService.registerNewUser(registrationDto);
-        return "redirect:/auth/login";
+        redirectAttributes.addAttribute("email", registrationDto.email());
+        return "redirect:/auth/verify-email";
+    }
+
+    @GetMapping("/verify-email")
+    public String showVerifyEmailPage(@RequestParam String email, Model model) {
+        model.addAttribute("email", email);
+        return "verify-email";
+    }
+
+    @GetMapping("/resend-verification")
+    public String resendVerificationEmail(@RequestParam String email, Model model) {
+        customerService.resendVerificationEmail(email);
+        model.addAttribute("email", email);
+        model.addAttribute("resent", true);
+        return "verify-email";
     }
 
     @GetMapping("/verify")
     public String verifyEmail(@RequestParam String token, Model model) {
         try {
-            customerService.verifyEmail(token);
-            return "redirect:/auth/login?verified";
+            Customer customer = customerService.verifyEmail(token); // Возвращаем Customer
+            model.addAttribute("email", customer.getEmail());
+            model.addAttribute("verified", true);
+            return "verify-email";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
             return "verification-error";
         }
     }
+
 }

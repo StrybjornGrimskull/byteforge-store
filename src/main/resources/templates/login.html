@@ -237,19 +237,12 @@
       <h1>Welcome back</h1>
       <p class="subtitle">Sign in to your account</p>
 
-      <!-- Заменяем текущие алерты на: -->
-      <div th:if="${showEmailNotVerified}" class="alert alert-warning">
+      <!-- Блок для отображения ошибок -->
+      <div th:if="${loginError}" class="alert alert-danger">
         <i class="fas fa-exclamation-circle"></i>
-        <div>Please verify your email address to continue</div>
+        <span th:text="${loginError}"></span>
       </div>
-      <div th:if="${showAuthError}" class="alert alert-error">
-        <i class="fas fa-times-circle"></i>
-        <div>Invalid email or password</div>
-      </div>
-      <div th:if="${param.signupSuccess}" class="alert alert-success">
-        <i class="fas fa-check-circle"></i>
-        <div>Registration successful! Check your email to verify your account.</div>
-      </div>
+
     </div>
 
     <div class="login-body">

@@ -22,11 +22,11 @@ public class CustomerService {
     private final PasswordEncoder passwordEncoder;
     private final AuthorityRepository authorityRepository;
     private final EmailService emailService;
-    private final String appUrl = "http://localhost:8080";
+    private final String appUrl = "https://localhost:8443";
 
-    @Transactional
+     @Transactional
     public void registerNewUser(ConsumerRequestDto registrationDto) {
-//        validateRegistration(registrationDto);
+        validateRegistration(registrationDto);
 
         Customer customer = new Customer();
         customer.setEmail(registrationDto.email());
@@ -49,14 +49,31 @@ public class CustomerService {
         );
     }
 
-    public void verifyEmail(String token) {
+    @Transactional
+    public Customer verifyEmail(String token) {
         Customer customer = customerRepository.findByEmailVerificationToken(token)
-                .orElseThrow(() -> new RuntimeException("Invalid verification token"));
+                .orElseThrow(() -> new RuntimeException("Неверный токен подтверждения"));
 
         customer.setEmailVerified(true);
-        customer.setEmailVerificationToken(null);
-        customerRepository.save(customer);
+        customer.setEmailVerificationToken(null); // Токен обнуляется
+        return customerRepository.save(customer); // Возвращаем обновлённого пользователя
     }
+
+    public void resendVerificationEmail(String email) {
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Email не найден"));
+
+        if (customer.isEmailVerified()) {
+            throw new RuntimeException("Email уже подтвержден");
+        }
+
+        String newToken = UUID.randomUUID().toString();
+        customer.setEmailVerificationToken(newToken);
+        customerRepository.save(customer);
+
+        emailService.sendVerificationEmail(email, newToken, appUrl);
+    }
+
 
     private void validateRegistration(ConsumerRequestDto registrationDto) {
         // Проверка совпадения паролей
