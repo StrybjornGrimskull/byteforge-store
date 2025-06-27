@@ -125,7 +125,7 @@
                     <a class="nav-link" th:href="@{/wishlist}"><i class="bi bi-heart me-1"></i> Wishlist</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/account}"><i class="bi bi-person me-1"></i> Account</a>
+                    <a class="nav-link" href="#" id="user-firstname"><i class="bi bi-person me-1"></i> Account</a>
                 </li>
             </ul>
         </div>
@@ -149,19 +149,19 @@
 
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label for="firstName" class="form-label">First Name</label>
+                            <label for="firstName" class="form-label"><span class="text-danger">*</span> First Name</label>
                             <input type="text" class="form-control" id="firstName" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="lastName" class="form-label">Last Name</label>
+                            <label for="lastName" class="form-label"><span class="text-danger">*</span> Last Name</label>
                             <input type="text" class="form-control" id="lastName" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" required>
+                            <label for="email-display" class="form-label">Email</label>
+                            <div class="form-control-plaintext" id="email-display"></div>
                         </div>
                         <div class="col-md-6">
-                            <label for="phone" class="form-label">Phone Number</label>
+                            <label for="phone" class="form-label"><span class="text-danger">*</span> Phone Number</label>
                             <input type="tel" class="form-control" id="phone" required>
                         </div>
                     </div>
@@ -172,34 +172,17 @@
 
                     <div class="row g-3">
                         <div class="col-12">
-                            <label for="address" class="form-label">Address</label>
+                            <label for="address" class="form-label"><span class="text-danger">*</span> Address</label>
                             <input type="text" class="form-control" id="address" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="city" class="form-label">City</label>
+                            <label for="city" class="form-label"><span class="text-danger">*</span> City</label>
                             <input type="text" class="form-control" id="city" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="postIndex" class="form-label">Postal Code</label>
+                            <label for="postIndex" class="form-label"><span class="text-danger">*</span> Postal Code</label>
                             <input type="text" class="form-control" id="postIndex" required>
                         </div>
-                    </div>
-                </div>
-
-                <div class="checkout-card">
-                    <h4 class="fw-bold mb-4"><i class="bi bi-credit-card me-2"></i>Payment Method</h4>
-
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" checked>
-                        <label class="form-check-label" for="creditCard">
-                            Credit/Debit Card
-                        </label>
-                    </div>
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="radio" name="paymentMethod" id="paypal">
-                        <label class="form-check-label" for="paypal">
-                            PayPal
-                        </label>
                     </div>
                 </div>
 
@@ -349,11 +332,14 @@
                     if (profile) {
                         $('#firstName').val(profile.firstName || '');
                         $('#lastName').val(profile.lastName || '');
-                        $('#email').val(profile.email || '');
+                        $('#email-display').text(profile.email || '');
                         $('#phone').val(profile.phone || '');
                         $('#city').val(profile.city || '');
                         $('#address').val(profile.address || '');
                         $('#postIndex').val(profile.postIndex || '');
+                        if (profile && profile.firstName) {
+                            $('#user-firstname').html('<i class="bi bi-person me-1"></i> ' + profile.firstName);
+                        }
                     }
                 },
                 error: function() {
@@ -386,7 +372,7 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1">${item.productName}</h6>
-                                    <small class="text-muted">Qty: 1</small>
+                                    <small class="text-muted">Qty: ${item.quantity}</small>
                                 </div>
                                 <div class="flex-shrink-0 text-end">
                                     <h6 class="mb-1">${formatPrice(item.price)}</h6>
@@ -419,21 +405,34 @@
         }
 
         // Обработчик оформления заказа
-        // Обработчик оформления заказа
-        // Обработчик оформления заказа
         $('#place-order-btn').click(function() {
             const $btn = $(this);
-            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span> Оформление...');
+
+            // Проверка на заполненность всех полей
+            const requiredFields = [
+                $('#firstName').val(),
+                $('#lastName').val(),
+                $('#email-display').text(),
+                $('#phone').val(),
+                $('#city').val(),
+                $('#address').val(),
+                $('#postIndex').val()
+            ];
+            if (requiredFields.some(f => !f || f.trim() === '')) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span> Placing...');
 
             const orderData = {
                 firstName: $('#firstName').val(),
                 lastName: $('#lastName').val(),
-                email: $('#email').val(),
+                email: $('#email-display').text(),
                 phoneNumber: $('#phone').val(),
                 city: $('#city').val(),
                 address: $('#address').val(),
-                postIndex: $('#postIndex').val(),
-                paymentMethod: $('input[name="paymentMethod"]:checked').attr('id')
+                postIndex: $('#postIndex').val()
             };
 
             // 1. Пытаемся создать заказ
@@ -461,7 +460,7 @@
                     }
                 },
                 error: function(xhr) {
-                    let errorMsg = "Ошибка сервера";
+                    let errorMsg = "Server error";
                     if (xhr.responseText) {
                         try {
                             const err = JSON.parse(xhr.responseText);
@@ -470,8 +469,8 @@
                             errorMsg = xhr.responseText;
                         }
                     }
-                    alert("Ошибка: " + errorMsg);
-                    $btn.prop('disabled', false).html('Оформить заказ');
+                    alert("Error: " + errorMsg);
+                    $btn.prop('disabled', false).html('Place Order');
                 }
             });
         });
@@ -488,22 +487,13 @@
                     if (order && order.id) {
                         showOrderConfirmation(order, orderData);
                     } else {
-                        showFallbackConfirmation(orderData);
+                        alert('Error: Could not get order number. Please try again later.');
                     }
                 },
                 error: function() {
-                    showFallbackConfirmation(orderData);
+                    alert('Error: Could not get order number. Please try again later.');
                 }
             });
-        }
-
-        // Показ подтверждения с временным номером
-        function showFallbackConfirmation(orderData) {
-            const tempOrder = {
-                id: 'TEMP-' + Date.now(),
-                createdAt: new Date().toISOString()
-            };
-            showOrderConfirmation(tempOrder, orderData);
         }
 
         // Показ подтверждения заказа (без изменений)
@@ -512,10 +502,6 @@
             $('#order-confirmation').show();
             $('#order-number').text('#' + order.id); // Реальный ID или TEMP
             $('#order-date').text(new Date(order.createdAt || Date.now()).toLocaleString());
-            $('#payment-method').text(
-                orderData.paymentMethod === 'creditCard' ? 'Credit Card' : 'PayPal'
-            );
-
             $('#shipping-address').html(`
                 ${orderData.firstName} ${orderData.lastName}<br>
                 ${orderData.address}<br>

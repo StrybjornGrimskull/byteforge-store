@@ -29,7 +29,4 @@ public class OrderRequestDto {
 
     @NotNull(message = "Post index is required")
     private Integer postIndex;
-
-    @NotBlank(message = "Payment method is required")
-    private String paymentMethod;
 }

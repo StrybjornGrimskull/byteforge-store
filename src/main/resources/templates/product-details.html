@@ -80,7 +80,7 @@
                     <a class="nav-link active" th:href="@{/shopping-cart}"><i class="bi bi-cart me-1"></i> Cart</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="bi bi-person me-1"></i> Account</a>
+                    <a class="nav-link" href="/auth/login" id="user-account-link"><i class="bi bi-person me-1"></i> Sign In</a>
                 </li>
             </ul>
         </div>
@@ -185,21 +185,21 @@
         </div>
     </div>
 </div>
-    <!-- Footer (updated to match wishlist) -->
-    <footer class="py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 text-center text-md-start">
-                    <p class="mb-0 text-white-50">&copy; 2023 ByteForge. All rights reserved.</p>
-                </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <a href="#" class="text-white-50 me-3"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="text-white-50 me-3"><i class="bi bi-twitter"></i></a>
-                    <a href="#" class="text-white-50"><i class="bi bi-instagram"></i></a>
-                </div>
+<!-- Footer (updated to match wishlist) -->
+<footer class="py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="mb-0 text-white-50">&copy; 2023 ByteForge. All rights reserved.</p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <a href="#" class="text-white-50 me-3"><i class="bi bi-facebook"></i></a>
+                <a href="#" class="text-white-50 me-3"><i class="bi bi-twitter"></i></a>
+                <a href="#" class="text-white-50"><i class="bi bi-instagram"></i></a>
             </div>
         </div>
-    </footer>
+    </div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!--<script th:inline="javascript">-->
@@ -479,91 +479,91 @@
             .replace(/Pcie/i, 'PCIe');
     }
 </script>
-    <script th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', function() {
-            const wishlistBtn = document.getElementById('wishlistBtn');
-            const productId = [[${product.id}]];
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const wishlistBtn = document.getElementById('wishlistBtn');
+        const productId = [[${product.id}]];
 
-             // Проверяем, есть ли товар в вишлисте при загрузке страницы
-            checkWishlistStatus();
+        // Проверяем, есть ли товар в вишлисте при загрузке страницы
+        checkWishlistStatus();
 
-            wishlistBtn.addEventListener('click', function() {
-                fetch(`/api/wishlist/exists/${productId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include'
-                })
-                    .then(response => response.json())
-                    .then(isInWishlist => {
-                        if (isInWishlist) {
-                            // Удаляем из вишлиста
-                            fetch(`/api/wishlist/${productId}`, {
-                                method: 'DELETE',
-                                credentials: 'include'
+        wishlistBtn.addEventListener('click', function() {
+            fetch(`/api/wishlist/exists/${productId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
+                .then(response => response.json())
+                .then(isInWishlist => {
+                    if (isInWishlist) {
+                        // Удаляем из вишлиста
+                        fetch(`/api/wishlist/${productId}`, {
+                            method: 'DELETE',
+                            credentials: 'include'
+                        })
+                            .then(() => {
+                                updateWishlistButton(false);
+                            });
+                    } else {
+                        fetch(`/api/wishlist?productId=${productId}`, {
+                            method: 'POST',
+                            credentials: 'include' // Для передачи кук (сессии)
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    return response.text().then(text => { throw new Error(text) });
+                                }
+                                updateWishlistButton(true);
                             })
-                                .then(() => {
-                                    updateWishlistButton(false);
-                                });
-                        } else {
-                            fetch(`/api/wishlist?productId=${productId}`, {
-                                method: 'POST',
-                                credentials: 'include' // Для передачи кук (сессии)
-                            })
-                                .then(response => {
-                                    if (!response.ok) {
-                                        return response.text().then(text => { throw new Error(text) });
-                                    }
-                                    updateWishlistButton(true);
-                                })
-                                .catch(error => {
-                                    console.error('Ошибка:', error);
-                                    alert('Не удалось добавить в вишлист: ' + error.message);
-                                });
-                        }
-                    });
-            });
-
-            function checkWishlistStatus() {
-                fetch(`/api/wishlist/exists/${productId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include'
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            return response.json();
-                        }
-                        return false;
-                    })
-                    .then(isInWishlist => {
-                        updateWishlistButton(isInWishlist);
-                    })
-                    .catch(() => {
-                        // Если пользователь не аутентифицирован, оставляем серую кнопку
-                        updateWishlistButton(false);
-                    });
-            }
-
-            function updateWishlistButton(isInWishlist) {
-                const icon = wishlistBtn.querySelector('i');
-                if (isInWishlist) {
-                    wishlistBtn.classList.remove('btn-outline-secondary');
-                    wishlistBtn.classList.add('btn-danger');
-                    icon.classList.remove('bi-heart');
-                    icon.classList.add('bi-heart-fill');
-                } else {
-                    wishlistBtn.classList.remove('btn-danger');
-                    wishlistBtn.classList.add('btn-outline-secondary');
-                    icon.classList.remove('bi-heart-fill');
-                    icon.classList.add('bi-heart');
-                }
-            }
+                            .catch(error => {
+                                console.error('Ошибка:', error);
+                                alert('Не удалось добавить в вишлист: ' + error.message);
+                            });
+                    }
+                });
         });
-    </script>
+
+        function checkWishlistStatus() {
+            fetch(`/api/wishlist/exists/${productId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    return false;
+                })
+                .then(isInWishlist => {
+                    updateWishlistButton(isInWishlist);
+                })
+                .catch(() => {
+                    // Если пользователь не аутентифицирован, оставляем серую кнопку
+                    updateWishlistButton(false);
+                });
+        }
+
+        function updateWishlistButton(isInWishlist) {
+            const icon = wishlistBtn.querySelector('i');
+            if (isInWishlist) {
+                wishlistBtn.classList.remove('btn-outline-secondary');
+                wishlistBtn.classList.add('btn-danger');
+                icon.classList.remove('bi-heart');
+                icon.classList.add('bi-heart-fill');
+            } else {
+                wishlistBtn.classList.remove('btn-danger');
+                wishlistBtn.classList.add('btn-outline-secondary');
+                icon.classList.remove('bi-heart-fill');
+                icon.classList.add('bi-heart');
+            }
+        }
+    });
+</script>
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
         const cartBtn = document.getElementById('cartBtn');
@@ -653,6 +653,26 @@
                 icon.classList.add('bi-cart-plus');
             }
         }
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Меняем пункт меню Account/Sign In в зависимости от авторизации
+        fetch('/api/profile', { credentials: 'include' })
+            .then(response => response.ok ? response.json() : null)
+            .then(profile => {
+                if (profile && profile.firstName) {
+                    const link = document.getElementById('user-account-link');
+                    link.setAttribute('href', '#');
+                    link.innerHTML = '<i class="bi bi-person me-1"></i> ' + profile.firstName;
+                }
+            })
+            .catch(() => {
+                // Если не авторизован — оставить Sign In
+                const link = document.getElementById('user-account-link');
+                link.setAttribute('href', '/auth/login');
+                link.innerHTML = '<i class="bi bi-person me-1"></i> Sign In';
+            });
     });
 </script>
 </body>

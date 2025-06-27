@@ -13,7 +13,8 @@ public record ProfileResponseDto(
         String address,
         Integer postIndex,
         LocalDate birthDate,
-        String phoneNumber
+        String phoneNumber,
+        String email
 ) {
     public static ProfileResponseDto fromEntity(Profile profile) {
         return new ProfileResponseDto(
@@ -25,7 +26,8 @@ public record ProfileResponseDto(
                 profile.getAddress(),
                 profile.getPostIndex(),
                 profile.getBirthDate(),
-                profile.getPhone()
+                profile.getPhone(),
+                profile.getCustomer().getEmail()
         );
     }
 }

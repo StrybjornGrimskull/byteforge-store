@@ -3,6 +3,7 @@ package com.byteforge.byteforge.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
 
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 @Table(name = "profiles")
 @Getter
 @Setter
+@DynamicUpdate
 public class Profile {
 
     @Id

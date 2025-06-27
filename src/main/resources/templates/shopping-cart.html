@@ -147,8 +147,8 @@
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/wishlist}"><i class="bi bi-heart me-1"></i> Wishlist</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/account}"><i class="bi bi-person me-1"></i> Account</a>
+                <li class="nav-item d-none" id="user-account-nav">
+                    <a class="nav-link" href="#" id="user-account-link"><i class="bi bi-person me-1"></i> </a>
                 </li>
             </ul>
         </div>
@@ -499,6 +499,19 @@
 
         // Initialize cart loading
         loadCartItems();
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/api/profile', { credentials: 'include' })
+            .then(response => response.ok ? response.json() : null)
+            .then(profile => {
+                if (profile && profile.firstName) {
+                    const navItem = document.getElementById('user-account-nav');
+                    const link = document.getElementById('user-account-link');
+                    link.innerHTML = '<i class="bi bi-person me-1"></i> ' + profile.firstName;
+                    navItem.classList.remove('d-none');
+                }
+            });
     });
 </script>
 </body>
