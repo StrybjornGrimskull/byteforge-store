@@ -3,6 +3,7 @@ package com.byteforge.byteforge.services;
 import com.byteforge.byteforge.dto.request.ConsumerRequestDto;
 import com.byteforge.byteforge.entities.Authority;
 import com.byteforge.byteforge.entities.Customer;
+import com.byteforge.byteforge.entities.Profile;
 import com.byteforge.byteforge.repositories.AuthorityRepository;
 import com.byteforge.byteforge.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,13 @@ public class CustomerService {
         customer.setPassword(passwordEncoder.encode(registrationDto.password()));
         customer.setEmailVerified(false);
         customer.setEmailVerificationToken(UUID.randomUUID().toString());
+
+        // Создаем профиль пользователя
+         Profile profile = new Profile();
+         profile.setFirstName(registrationDto.firstName());
+         profile.setLastName(registrationDto.lastName());
+         profile.setCustomer(customer);
+         customer.setProfile(profile);
 
         Customer savedCustomer = customerRepository.save(customer);
 

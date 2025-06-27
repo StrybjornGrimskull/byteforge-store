@@ -11,6 +11,13 @@ import java.util.Set;
 public record ConsumerRequestDto(
         @NotBlank(message = "Email is required")
         @Email(message = "Email must be valid")
+
+        @NotBlank
+        String firstName,
+
+        @NotBlank
+        String lastName,
+
         @Size(max = 255, message = "Email must not exceed 255 characters")
         String email,
 
