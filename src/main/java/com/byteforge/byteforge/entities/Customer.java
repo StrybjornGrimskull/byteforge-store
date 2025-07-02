@@ -26,10 +26,10 @@ public class Customer {
     @Column (name ="email_verification_token")
     private String emailVerificationToken;
 
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "customer")
     private Profile profile;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
     @JsonIgnore
     private Set<Authority> authorities;
 }

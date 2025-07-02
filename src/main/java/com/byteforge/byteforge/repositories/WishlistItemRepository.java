@@ -1,9 +1,7 @@
-
 package com.byteforge.byteforge.repositories;
 
-
-
 import com.byteforge.byteforge.entities.WishlistItem;
+import com.byteforge.byteforge.dto.response.WishlistItemResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -14,11 +12,18 @@ import java.util.List;
 @Repository
 public interface WishlistItemRepository extends JpaRepository<WishlistItem, Integer> {
 
-    @Query ("SELECT wi FROM WishlistItem wi JOIN wi.product p JOIN wi.customer c WHERE c.email = :customerEmail")
-    List<WishlistItem> findAllProductCustomerByEmail(String customerEmail);
 
     @Transactional
     void deleteByProductIdAndCustomerEmail(Integer productId, String email);
 
     boolean existsByProductIdAndCustomerEmail(Integer productId, String email);
+
+    @Query("SELECT new com.byteforge.byteforge.dto.response.WishlistItemResponseDto(" +
+           "p.imageUrl, p.id, p.name, sq.quantity, wi.addedDate) " +
+           "FROM WishlistItem wi " +
+           "JOIN wi.product p " +
+           "JOIN p.stockQuantity sq " +
+           "JOIN wi.customer c " +
+           "WHERE c.email = :email")
+    List<WishlistItemResponseDto> findWishlistItemsWithProductInfo(String email);
 }

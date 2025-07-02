@@ -75,7 +75,7 @@ public class ProjectSecurityProdConfig {
                  .formLogin(form -> form
                          .loginPage("/auth/login")
                          .loginProcessingUrl("/auth/login")
-                         .defaultSuccessUrl("/", true)
+//                         .defaultSuccessUrl("/", true)
                          .failureHandler(customAuthenticationFailureHandler))
                  .logout(logout -> logout
                          .logoutUrl("/auth/logout")

@@ -2,12 +2,15 @@ package com.byteforge.byteforge.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "wishlist_items")
-@Data
 public class WishlistItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

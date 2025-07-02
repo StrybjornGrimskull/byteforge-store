@@ -28,10 +28,7 @@ public class WishlistService {
     private final CustomerRepository customerRepository;
 
     public List<WishlistItemResponseDto> getWishlistByUsername(String customerEmail) {
-        return wishlistItemRepository.findAllProductCustomerByEmail(customerEmail)
-                .stream()
-                .map(WishlistItemResponseDto::fromEntity)
-                .collect(Collectors.toList());
+        return wishlistItemRepository.findWishlistItemsWithProductInfo(customerEmail);
     }
 
     @Transactional
