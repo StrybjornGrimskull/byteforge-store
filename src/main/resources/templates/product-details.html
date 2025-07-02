@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -9,24 +9,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #6c5ce7;
-            --secondary-color: #a29bfe;
-            --dark-color: #2d3436;
-            --light-color: #f5f6fa;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            color: var(--dark-color);
-        }
-
-        .navbar-brand {
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
+        /* Удалены стили навигации и футера, оставлены только уникальные для product-details */
         .product-image {
             max-width: 100%;
             height: auto;
@@ -50,11 +33,6 @@
         }
         .stock-badge {
             font-size: 0.9rem;
-        }
-
-        footer {
-            background-color: var(--dark-color);
-            margin-top: 3rem;
         }
     </style>
 </head>
@@ -104,12 +82,14 @@
 
             <div class="d-flex gap-3 mb-5">
                 <button id="cartBtn"
-                        th:classappend="${product.stockQuantity <= 0} ? 'disabled' : ''"
+                        th:attr="data-product-id=${product.id}, data-stock-quantity=${product.stockQuantity}"
                         class="btn btn-primary btn-lg px-4"
                         th:disabled="${product.stockQuantity <= 0}">
                     <i class="bi bi-cart-plus me-2"></i>Add to Cart
                 </button>
-                <button id="wishlistBtn" class="btn btn-outline-secondary btn-lg px-4">
+                <button id="wishlistBtn"
+                        th:attr="data-product-id=${product.id}"
+                        class="btn btn-outline-secondary btn-lg px-4">
                     <i class="bi bi-heart me-2"></i>Wishlist
                 </button>
             </div>
@@ -444,7 +424,7 @@
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
         const wishlistBtn = document.getElementById('wishlistBtn');
-        const productId = [[${product.id}]];
+        const productId = wishlistBtn.dataset.productId;
 
         // Проверяем, есть ли товар в вишлисте при загрузке страницы
         checkWishlistStatus();
@@ -529,8 +509,9 @@
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
         const cartBtn = document.getElementById('cartBtn');
-        const productId = [[${product.id}]];
-        const stockQuantity = [[${product.stockQuantity}]];
+        const wishlistBtn = document.getElementById('wishlistBtn');
+        const productId = cartBtn.dataset.productId;
+        const stockQuantity = cartBtn.dataset.stockQuantity;
 
         // Проверяем статус корзины при загрузке страницы
         checkCartStatus();

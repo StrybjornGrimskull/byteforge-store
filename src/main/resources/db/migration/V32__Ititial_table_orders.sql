@@ -9,7 +9,8 @@ CREATE TABLE orders (
     email VARCHAR(255) NOT NULL,
     phone_number VARCHAR(255) NOT NULL,
     post_index INTEGER NOT NULL,
-    customer_id INT
+    customer_id INT,
+    active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE order_products (

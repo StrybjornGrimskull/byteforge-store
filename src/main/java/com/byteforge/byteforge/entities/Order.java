@@ -42,6 +42,9 @@ public class Order {
     @Column(name = "post_index", nullable = false)
     private Integer postIndex;
 
+    @Column(name = "active", nullable = false)
+    private Boolean active = true;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderProduct> orderProducts;
 

@@ -56,6 +56,7 @@ public class ProjectSecurityProdConfig {
                         .requestMatchers("/api/profile/**").authenticated()
                         .requestMatchers("/api/orders/**").authenticated()
                         .requestMatchers("/checkout/**").authenticated()
+                        .requestMatchers("/profile").authenticated()
                         .requestMatchers(
                                 "/",
                                 "/contact",
