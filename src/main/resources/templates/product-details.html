@@ -11,8 +11,12 @@
     <style>
         /* Удалены стили навигации и футера, оставлены только уникальные для product-details */
         .product-image {
-            max-width: 100%;
+            max-width: 350px;
+            max-height: 350px;
+            width: auto;
             height: auto;
+            display: block;
+            margin: 0 auto;
         }
         .specs-card {
             border-radius: 8px;
@@ -56,11 +60,16 @@
 
     <!-- Main product information -->
     <div class="row mb-5">
-        <div class="col-lg-6 mb-4 d-flex align-items-center justify-content-center">
+        <div class="col-lg-6 mb-4 d-flex align-items-center justify-content-center position-relative">
             <img th:src="@{'/uploads/' + ${product.imageUrl}}"
                  th:alt="${product.name}"
                  class="product-image img-fluid">
-
+            <button id="wishlistBtn"
+                    th:attr="data-product-id=${product.id}"
+                    class="btn btn-light position-absolute p-0 border-0"
+                    style="right: 16px; bottom: 16px; z-index: 2; border-radius: 50%; width: 48px; height: 48px; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+                <i class="bi bi-heart" style="font-size: 1.7rem; color: #dc3545;"></i>
+            </button>
         </div>
         <div class="col-lg-6">
             <h1 class="mb-3" th:text="${product.name}"></h1>
@@ -86,11 +95,6 @@
                         class="btn btn-primary btn-lg px-4"
                         th:disabled="${product.stockQuantity <= 0}">
                     <i class="bi bi-cart-plus me-2"></i>Add to Cart
-                </button>
-                <button id="wishlistBtn"
-                        th:attr="data-product-id=${product.id}"
-                        class="btn btn-outline-secondary btn-lg px-4">
-                    <i class="bi bi-heart me-2"></i>Wishlist
                 </button>
             </div>
         </div>
