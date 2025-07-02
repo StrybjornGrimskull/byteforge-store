@@ -9,7 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    Optional<Order> findByIdAndCustomerEmail(Long orderId, String email);
 
-    Optional<Order> findByDateAndCustomerEmail(LocalDateTime date, String customerEmail);
 }

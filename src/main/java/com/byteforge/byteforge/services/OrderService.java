@@ -21,6 +21,7 @@ public class OrderService{
     private final CustomerRepository customerRepository;
     private final ShoppingCartRepository shoppingCartRepository;
     private final ProductRepository productRepository;
+    private final EmailService emailService;
 
     @Transactional
     public OrderResponseDto createOrder(String email, OrderRequestDto orderDto) {
@@ -70,6 +71,18 @@ public class OrderService{
         // 6. Сохраняем заказ и очищаем корзину
         Order savedOrder = orderRepository.save(order);
         shoppingCartRepository.deleteAll(cartItems);
+
+        // Отправка письма с подтверждением заказа
+        List<String> productNames = orderProducts.stream()
+                .map(op -> op.getProduct().getName())
+                .collect(Collectors.toList());
+        emailService.sendOrderConfirmationEmail(
+                order.getEmail(),
+                order.getFirstName(),
+                savedOrder.getId(),
+                productNames,
+                totalPrice
+        );
 
         // 7. Возвращаем DTO
         return OrderResponseDto.fromEntity(savedOrder);
