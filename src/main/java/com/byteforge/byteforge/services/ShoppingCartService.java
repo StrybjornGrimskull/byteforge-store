@@ -23,10 +23,7 @@ public class ShoppingCartService {
     private final CustomerRepository customerRepository;
 
     public List<ShoppingCartResponseDto> getShoppingCartByUsername(String customerEmail) {
-        return shoppingCartRepository.findAllProductCustomerByEmail(customerEmail)
-                .stream()
-                .map(ShoppingCartResponseDto::fromEntity)
-                .collect(Collectors.toList());
+        return shoppingCartRepository.findCartItemsWithProductInfo(customerEmail);
     }
 
     @Transactional

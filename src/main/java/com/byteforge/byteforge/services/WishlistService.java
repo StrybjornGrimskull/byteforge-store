@@ -27,6 +27,7 @@ public class WishlistService {
     private final ProductRepository productRepository;
     private final CustomerRepository customerRepository;
 
+    @Transactional
     public List<WishlistItemResponseDto> getWishlistByUsername(String customerEmail) {
         return wishlistItemRepository.findWishlistItemsWithProductInfo(customerEmail);
     }

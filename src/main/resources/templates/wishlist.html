@@ -192,39 +192,20 @@
             `);
         }
 
-        // Проверяем, есть ли товар в корзине
-        function checkCartStatus(productId, callback) {
+        // Получаем все товары в корзине
+        function getCartProductIds(callback) {
             $.ajax({
-                url: `/api/shopping-cart/exists/${productId}`,
+                url: '/api/shopping-cart',
                 method: 'GET',
-                success: function(isInCart) {
-                    callback(isInCart);
+                dataType: 'json',
+                success: function(cartItems) {
+                    // Собираем productId из корзины
+                    const cartProductIds = cartItems.map(item => item.productId);
+                    callback(cartProductIds);
                 },
                 error: function() {
-                    callback(false);
+                    callback([]);
                 }
-            });
-        }
-
-        // Проверяем статус корзины для нескольких товаров
-        function checkCartStatusForProducts(productIds, callback) {
-            const cartStatuses = {};
-            let completedRequests = 0;
-
-            if (productIds.length === 0) {
-                callback(cartStatuses);
-                return;
-            }
-
-            productIds.forEach(productId => {
-                checkCartStatus(productId, function(isInCart) {
-                    cartStatuses[productId] = isInCart;
-                    completedRequests++;
-
-                    if (completedRequests === productIds.length) {
-                        callback(cartStatuses);
-                    }
-                });
             });
         }
 
@@ -283,45 +264,20 @@
                 </div>`;
         }
 
-        // Load wishlist data
+        // Основная функция загрузки wishlist
         function loadWishlist() {
-            $.ajax({
-                url: '/api/wishlist',
-                method: 'GET',
-                dataType: 'json',
-                success: function (items) {
-                    console.log('API Response:', items);
-
-                    if (!items || items.length === 0) {
-                        showEmptyWishlist();
-                        return;
-                    }
-
-                    // Сначала загружаем данные о корзине
-                    const productIds = items.map(item => item.productId);
-                    checkCartStatusForProducts(productIds, function(cartStatuses) {
-                        // Теперь создаем карточки с учетом статуса в корзине
-                        let html = `<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">`;
-
-                        items.forEach(item => {
-                            // Ensure quantity exists
-                            if (typeof item.quantity === 'undefined') {
-                                console.warn('Missing quantity for item:', item);
-                                item.quantity = 0;
-                            }
-                            const isInCart = cartStatuses[item.productId] || false;
-                            html += createProductCard(item, isInCart);
-                        });
-
-                        html += `</div>`;
-                        $('#wishlist-container').html(html);
-                        updateItemCount(items.length);
+            $.get('/api/wishlist', function(wishlist) {
+                getCartProductIds(function(cartProductIds) {
+                    let cards = '';
+                    wishlist.forEach(item => {
+                        const isInCart = cartProductIds.includes(item.productId);
+                        cards += createProductCard(item, isInCart);
                     });
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error loading wishlist:', status, error);
-                    showError();
-                }
+                    // Оборачиваем карточки в row для горизонтального вывода
+                    let html = `<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">${cards}</div>`;
+                    $('#wishlist-container').html(html);
+                    updateItemCount(wishlist.length);
+                });
             });
         }
 
@@ -382,8 +338,10 @@
             addToCart(productId, $(this));
         });
 
-        // Initialize
-        loadWishlist();
+        // Инициализация
+        $(document).ready(function() {
+            loadWishlist();
+        });
     });
 </script>
 
