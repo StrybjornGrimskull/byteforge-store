@@ -204,7 +204,7 @@
         params.set('page', page);
         params.set('size', 9);
 
-        fetch('/products/list/json?' + params)
+        fetch('/api/products?' + params)
             .then(response => response.json())
             .then(data => {
                 renderProducts(data.content || data);
@@ -217,9 +217,13 @@
         // Обновляем скрытое поле при изменении категории
         document.getElementById('categoryIdHidden').value = categoryId;
 
-        fetch('/brands?categoryId=' + categoryId)
-            .then(response => response.json())
+        fetch('/api/brands?categoryId=' + categoryId)
+            .then(response => {
+                if (!response.ok) throw new Error('Network error');
+                return response.json();
+            })
             .then(brands => {
+                if (!Array.isArray(brands)) throw new Error('Brands is not an array');
                 const brandSelect = document.getElementById('brandId');
                 brandSelect.innerHTML = '<option value="">All Brands</option>';
                 brands.forEach(brand => {
@@ -228,6 +232,9 @@
                     option.textContent = brand.name;
                     brandSelect.appendChild(option);
                 });
+            })
+            .catch(err => {
+                alert('Ошибка загрузки брендов: ' + err.message);
             });
     }
 

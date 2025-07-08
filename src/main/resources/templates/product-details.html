@@ -162,7 +162,7 @@
         const productId = window.location.pathname.split('/').pop();
 
         // Загружаем данные продукта через API
-        fetch(`/products/details/json/${productId}`)
+        fetch(`/api/products/${productId}`)
             .then(response => response.json())
             .then(product => {
                 if (product.spec) {

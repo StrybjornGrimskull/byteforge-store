@@ -44,8 +44,8 @@
 
 <!-- User Account Script Fragment -->
 <script th:fragment="user-account-script">
-    document.addEventListener('DOMContentLoaded', function() {
-        fetch('/api/profile', { credentials: 'include' })
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/api/profile', {credentials: 'include'})
             .then(response => response.ok ? response.json() : null)
             .then(profile => {
                 const link = document.getElementById('user-account-link');

@@ -1,12 +1,10 @@
-package com.byteforge.byteforge.controllers;
+package com.byteforge.byteforge.web.api;
 
-import com.byteforge.byteforge.dto.request.WishlistItemRequestDto;
 import com.byteforge.byteforge.dto.response.WishlistItemResponseDto;
-import com.byteforge.byteforge.entities.Product;
 import com.byteforge.byteforge.services.WishlistService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -24,36 +22,25 @@ public class WishlistController {
     public ResponseEntity<List<WishlistItemResponseDto>> getWishlist(Authentication authentication) {
         String email = authentication.getName();
         List<WishlistItemResponseDto> wishlist = wishlistService.getWishlistByUsername(email);
-        return ResponseEntity.ok(wishlist);
+        return ResponseEntity.status(HttpStatus.OK).body(wishlist);
     }
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<Void> removeFromWishlist(
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeFromWishlist(
             @PathVariable Integer productId,
             Authentication authentication) {
         String email = authentication.getName();
         wishlistService.removeFromWishlist(productId, email);
-        return ResponseEntity.noContent().build();
     }
 
-
     @PostMapping
-    public ResponseEntity<String> addItem(
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addItem(
             @RequestParam("productId") Integer productId,
             Authentication authentication) {
-
-        try {
-            // Получаем email из аутентификации
-            String email = authentication.getName();
-
-            // Передаём в сервис
-            wishlistService.addToWishlist(productId, email);
-            return ResponseEntity.ok("Товар добавлен в вишлист");
-
-        } catch (Exception e) {
-            System.out.println("Ошибка: " + e.getMessage());
-            return ResponseEntity.badRequest().body("Ошибка: " + e.getMessage());
-        }
+        String email = authentication.getName();
+        wishlistService.addToWishlist(productId, email);
     }
 
     @GetMapping("/exists/{productId}")
@@ -62,6 +49,6 @@ public class WishlistController {
             Authentication authentication) {
         String email = authentication.getName();
         boolean exists = wishlistService.isProductInWishlist(productId, email);
-        return ResponseEntity.ok(exists);
+        return ResponseEntity.status(HttpStatus.OK).body(exists);
     }
 }

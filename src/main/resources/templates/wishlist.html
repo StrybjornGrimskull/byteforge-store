@@ -267,13 +267,16 @@
         // Основная функция загрузки wishlist
         function loadWishlist() {
             $.get('/api/wishlist', function(wishlist) {
+                if (!wishlist || wishlist.length === 0) {
+                    showEmptyWishlist();
+                    return;
+                }
                 getCartProductIds(function(cartProductIds) {
                     let cards = '';
                     wishlist.forEach(item => {
                         const isInCart = cartProductIds.includes(item.productId);
                         cards += createProductCard(item, isInCart);
                     });
-                    // Оборачиваем карточки в row для горизонтального вывода
                     let html = `<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">${cards}</div>`;
                     $('#wishlist-container').html(html);
                     updateItemCount(wishlist.length);

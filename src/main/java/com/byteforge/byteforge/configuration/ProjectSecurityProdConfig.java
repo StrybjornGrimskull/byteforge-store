@@ -2,7 +2,6 @@ package com.byteforge.byteforge.configuration;
 
 import com.byteforge.byteforge.filter.*;
 import com.byteforge.byteforge.security.handlers.CustomAuthenticationFailureHandler;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +12,6 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -21,11 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-
-import static org.hibernate.dialect.temptable.TemporaryTableKind.GLOBAL;
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @Profile("prod")
@@ -49,6 +42,8 @@ public class ProjectSecurityProdConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/admin").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/notices").hasRole("USER")
+                        .requestMatchers("/api/brands/**").permitAll()
+                        .requestMatchers("/api/products/**").permitAll()
                         .requestMatchers("/api/wishlist/**").authenticated()
                         .requestMatchers("/api/shopping-cart/**").authenticated()
                         .requestMatchers("/shopping-cart/**").authenticated()
@@ -76,7 +71,7 @@ public class ProjectSecurityProdConfig {
                  .formLogin(form -> form
                          .loginPage("/auth/login")
                          .loginProcessingUrl("/auth/login")
-//                         .defaultSuccessUrl("/", true)
+                         .defaultSuccessUrl("/", true)
                          .failureHandler(customAuthenticationFailureHandler))
                  .logout(logout -> logout
                          .logoutUrl("/auth/logout")
