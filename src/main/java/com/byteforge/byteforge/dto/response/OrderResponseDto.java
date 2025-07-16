@@ -2,6 +2,7 @@ package com.byteforge.byteforge.dto.response;
 
 import com.byteforge.byteforge.entities.Order;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
  */
 public record OrderResponseDto(
         Long id,
-        Double totalPrice,
+        BigDecimal totalPrice,
         LocalDateTime date,
         String firstName,
         String lastName,

@@ -58,6 +58,10 @@
                     <h3 class="mb-0"><i class="bi bi-person-badge"></i> Personal Information</h3>
                 </div>
 
+                <div id="active-orders-block" class="mb-4">
+                    <div class="text-center text-muted">Loading active orders...</div>
+                </div>
+
                 <div class="card-body px-0 pt-0">
                     <div class="row">
                         <div class="col-md-6">
@@ -106,6 +110,31 @@
 
 <div th:replace="fragments/footer :: footer"></div>
 <script th:replace="fragments/navigation :: user-account-script"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/orders/active')
+        .then(res => res.json())
+        .then(orders => {
+            const block = document.getElementById('active-orders-block');
+            if (!orders || orders.length === 0) {
+                block.innerHTML = '<div class="alert alert-info">No active orders</div>';
+            } else {
+                block.innerHTML = '<div class="fw-bold mb-2">Active Orders:</div>' + orders.map(order => `
+                    <div class="alert alert-info mb-2">
+                        <b>Order #${order.id}</b><br>
+                        Total: ${order.totalPrice} $<br>
+                        Date: ${new Date(order.date).toLocaleString()}
+                    </div>
+                `).join('');
+            }
+        })
+        .catch(() => {
+            document.getElementById('active-orders-block').innerHTML =
+                '<div class="alert alert-danger">Failed to load active orders</div>';
+        });
+});
+</script>
 
 <script th:src="@{/static/js/bootstrap.bundle.min.js}"></script>
 </body>

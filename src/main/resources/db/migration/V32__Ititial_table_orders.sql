@@ -1,6 +1,6 @@
 CREATE TABLE orders (
     id BIGSERIAL PRIMARY KEY,
-    total_price DOUBLE PRECISION NOT NULL,
+    total_price NUMERIC(12,2) NOT NULL,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,

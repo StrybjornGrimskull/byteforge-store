@@ -1,9 +1,16 @@
 package com.byteforge.byteforge.services;
 
 import com.byteforge.byteforge.dto.request.OrderRequestDto;
+import com.byteforge.byteforge.dto.response.ActiveOrderDto;
 import com.byteforge.byteforge.dto.response.OrderResponseDto;
-import com.byteforge.byteforge.entities.*;
-import com.byteforge.byteforge.repositories.*;
+import com.byteforge.byteforge.entities.Customer;
+import com.byteforge.byteforge.entities.Order;
+import com.byteforge.byteforge.entities.OrderProduct;
+import com.byteforge.byteforge.entities.ShoppingCart;
+import com.byteforge.byteforge.repositories.CustomerRepository;
+import com.byteforge.byteforge.repositories.OrderRepository;
+import com.byteforge.byteforge.repositories.ProductRepository;
+import com.byteforge.byteforge.repositories.ShoppingCartRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,13 +66,9 @@ public class OrderService{
         order.setOrderProducts(orderProducts);
 
         // 5. Рассчитываем общую стоимость
-        double totalPrice = cartItems.stream()
-                .mapToDouble(item -> {
-                    BigDecimal productPrice = item.getProduct().getPrice();
-                    int quantity = item.getQuantity();
-                    return productPrice.multiply(BigDecimal.valueOf(quantity)).doubleValue();
-                })
-                .sum();
+        BigDecimal totalPrice = cartItems.stream()
+                .map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
         order.setTotalPrice(totalPrice);
 
         // 6. Сохраняем заказ и очищаем корзину
@@ -81,10 +84,18 @@ public class OrderService{
                 order.getFirstName(),
                 savedOrder.getId(),
                 productNames,
-                totalPrice
+                totalPrice.doubleValue()
         );
 
         // 7. Возвращаем DTO
         return OrderResponseDto.fromEntity(savedOrder);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ActiveOrderDto> getActiveOrdersForUser(String email) {
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+        List<Order> orders = orderRepository.findByCustomerIdAndActiveTrue(customer.getId());
+        return orders.stream().map(ActiveOrderDto::fromEntity).toList();
     }
 }

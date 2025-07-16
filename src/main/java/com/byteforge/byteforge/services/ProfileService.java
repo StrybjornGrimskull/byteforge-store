@@ -3,8 +3,10 @@ package com.byteforge.byteforge.services;
 import com.byteforge.byteforge.dto.request.ProfileRequestDto;
 import com.byteforge.byteforge.dto.response.ProfileResponseDto;
 import com.byteforge.byteforge.entities.Customer;
+import com.byteforge.byteforge.entities.Order;
 import com.byteforge.byteforge.entities.Profile;
 import com.byteforge.byteforge.repositories.CustomerRepository;
+import com.byteforge.byteforge.repositories.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProfileService {
 
     private final CustomerRepository customerRepository;
+    private final OrderRepository orderRepository;
 
     @Transactional(readOnly = true)
     public ProfileResponseDto getProfileByEmail(String email) {
@@ -24,7 +27,7 @@ public class ProfileService {
         if (profile == null) {
             throw new RuntimeException("Profile not found");
         }
-
+        Order activeOrder = orderRepository.findFirstByCustomerIdAndActiveTrueOrderByDateDesc(customer.getId()).orElse(null);
         return ProfileResponseDto.fromEntity(profile);
     }
 

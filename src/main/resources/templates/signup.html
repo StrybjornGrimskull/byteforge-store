@@ -79,7 +79,8 @@
                 <input type="password" class="form-control" id="signup-confirm-password" name="confirmPassword"
                        required>
             </div>
-            <button type="submit" class="btn btn-primary btn-auth">Sign Up</button>
+            <div id="password-message" style="color: red; margin-top: 5px;"></div>
+            <button id="signup-btn" type="submit" class="btn btn-primary btn-auth">Sign Up</button>
         </form>
 
         <div th:if="${param.success}" class="alert alert-success">
@@ -94,5 +95,33 @@
         </div>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const password = document.getElementById('signup-password');
+    const confirmPassword = document.getElementById('signup-confirm-password');
+    const message = document.getElementById('password-message');
+    const signupBtn = document.getElementById('signup-btn');
+
+    function validatePasswords() {
+        if (password.value && confirmPassword.value) {
+            if (password.value !== confirmPassword.value) {
+                message.textContent = 'Пароли не совпадают!';
+                message.style.color = 'red';
+                signupBtn.disabled = true;
+            } else {
+                message.textContent = 'Пароли совпадают!';
+                message.style.color = 'green';
+                signupBtn.disabled = false;
+            }
+        } else {
+            message.textContent = '';
+            signupBtn.disabled = false;
+        }
+    }
+
+    password.addEventListener('input', validatePasswords);
+    confirmPassword.addEventListener('input', validatePasswords);
+});
+</script>
 </body>
 </html>
