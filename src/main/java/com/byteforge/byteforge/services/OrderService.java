@@ -3,14 +3,8 @@ package com.byteforge.byteforge.services;
 import com.byteforge.byteforge.dto.request.OrderRequestDto;
 import com.byteforge.byteforge.dto.response.ActiveOrderDto;
 import com.byteforge.byteforge.dto.response.OrderResponseDto;
-import com.byteforge.byteforge.entities.Customer;
-import com.byteforge.byteforge.entities.Order;
-import com.byteforge.byteforge.entities.OrderProduct;
-import com.byteforge.byteforge.entities.ShoppingCart;
-import com.byteforge.byteforge.repositories.CustomerRepository;
-import com.byteforge.byteforge.repositories.OrderRepository;
-import com.byteforge.byteforge.repositories.ProductRepository;
-import com.byteforge.byteforge.repositories.ShoppingCartRepository;
+import com.byteforge.byteforge.entities.*;
+import com.byteforge.byteforge.repositories.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +22,7 @@ public class OrderService{
     private final CustomerRepository customerRepository;
     private final ShoppingCartRepository shoppingCartRepository;
     private final ProductRepository productRepository;
+    private final StockQuantityRepository stockQuantityRepository;
     private final EmailService emailService;
 
     @Transactional
@@ -73,6 +68,15 @@ public class OrderService{
 
         // 6. Сохраняем заказ и очищаем корзину
         Order savedOrder = orderRepository.save(order);
+        
+        // Уменьшаем количество на складе для каждого продукта
+        for (OrderProduct op : savedOrder.getOrderProducts()) {
+            Product product = op.getProduct();
+            StockQuantity stock = product.getStockQuantity();
+            int newQty = stock.getQuantity() - op.getQuantity();
+            stock.setQuantity(newQty);
+            stockQuantityRepository.save(stock);
+        }
         shoppingCartRepository.deleteAll(cartItems);
 
         // Отправка письма с подтверждением заказа

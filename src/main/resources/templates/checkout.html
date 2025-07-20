@@ -243,10 +243,7 @@
                     <span id="shipping-cost">$0.00</span>
                 </div>
 
-                <div id="discount-row" class="d-flex justify-content-between mb-2 text-success" style="display: none;">
-                    <span>Discount</span>
-                    <span id="discount-amount">-$0.00</span>
-                </div>
+                <div id="discount-row" class="d-flex justify-content-between mb-2 text-success" style="display: none;"></div>
 
                 <hr>
 
@@ -313,7 +310,7 @@
                     let subtotal = 0;
 
                     response.forEach(item => {
-                        subtotal += parseFloat(item.price);
+                        subtotal += parseFloat(item.price) * item.quantity;
 
                         itemsHtml += `
                             <div class="d-flex mb-3">
@@ -332,20 +329,20 @@
                     });
 
                     const shippingCost = subtotal >= 1500 ? 0 : 2.86;
-                    const discount = subtotal > 1500 ? subtotal * 0.1 : 0;
-                    const total = subtotal + shippingCost - discount;
+                    // Удаляем расчёт скидки и скрываем discount-row
+                    // const discount = subtotal > 1500 ? subtotal * 0.1 : 0;
+                    // if (discount > 0) {
+                    //     $('#discount-row').show();
+                    //     $('#discount-amount').text('-' + formatPrice(discount));
+                    // } else {
+                    //     $('#discount-row').hide();
+                    // }
 
                     $('#order-items').html(itemsHtml);
                     $('#subtotal').text(formatPrice(subtotal));
                     $('#shipping-cost').text(formatPrice(shippingCost));
 
-                    if (discount > 0) {
-                        $('#discount-row').show();
-                        $('#discount-amount').text('-' + formatPrice(discount));
-                    } else {
-                        $('#discount-row').hide();
-                    }
-
+                    const total = subtotal + shippingCost;
                     $('#total').text(formatPrice(total));
                 },
                 error: function() {

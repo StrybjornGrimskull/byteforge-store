@@ -135,7 +135,7 @@
     <div class="cart-header p-4 mb-4">
         <h1 class="display-5 fw-bold mb-3"><i class="bi bi-cart-fill me-2"></i>MY SHOPPING CART</h1>
         <p class="reservation-notice mb-0">
-            <i class="bi bi-percent me-1"></i> Get 10% discount on orders over $1500!
+            <!-- <i class="bi bi-percent me-1"></i> Get 10% discount on orders over $1500! -->
         </p>
     </div>
 
@@ -353,47 +353,14 @@
                 subtotal += quantity * price;
             });
 
-            // Free shipping if subtotal >= 1500
-            const deliveryCost = subtotal >= 1500 ? 0 : 2.86;
 
-            // 10% discount if subtotal > 1500
-            let discount = 0;
-            if (subtotal > 1500) {
-                discount = subtotal * 0.1;
-                $('.reservation-notice').html(`
-                    <i class="bi bi-check-circle-fill text-success me-1"></i>
-                    <strong>10% discount applied!</strong> (Save ${formatPrice(discount)})
-                    ${deliveryCost === 0 ? ' + FREE delivery!' : ''}
-                `);
-            } else if (subtotal > 0) {
-                const amountNeeded = (1500 - subtotal).toFixed(2);
-                $('.reservation-notice').html(`
-                    <i class="bi bi-percent me-1"></i>
-                    Spend $${amountNeeded} more to get 10% discount and FREE delivery!
-                `);
-            } else {
-                $('.reservation-notice').html('<i class="bi bi-percent me-1"></i> Get 10% discount and FREE delivery on orders over $1500!');
-            }
-
-            const total = subtotal + deliveryCost - discount;
+            const total = subtotal;
 
             // Update summary section
             $('#subtotal').text(formatPrice(subtotal));
-            $('#delivery-cost').text(formatPrice(deliveryCost));
 
             // Add/update discount row if applicable
-            if (discount > 0) {
-                if ($('#discount-row').length === 0) {
-                    $('<div class="d-flex justify-content-between mb-2" id="discount-row">' +
-                        '<span class="text-success">Discount (10%)</span>' +
-                        '<span class="text-success" id="discount-amount">-'+formatPrice(discount)+'</span>' +
-                        '</div>').insertAfter($('#delivery-cost').parent());
-                } else {
-                    $('#discount-amount').text('-' + formatPrice(discount));
-                }
-            } else {
-                $('#discount-row').remove();
-            }
+            $('#discount-row').remove();
 
             $('#total').text(formatPrice(total));
 
