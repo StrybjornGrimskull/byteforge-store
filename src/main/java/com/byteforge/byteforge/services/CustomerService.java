@@ -11,9 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -82,6 +82,33 @@ public class CustomerService {
         emailService.sendVerificationEmail(email, newToken, appUrl);
     }
 
+    @Transactional
+    public void generatePasswordResetToken(String email) {
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User with this email not found"));
+
+        String token = UUID.randomUUID().toString();
+        customer.setPasswordResetToken(token);
+        customer.setPasswordResetTokenExpiry(LocalDateTime.now().plusHours(1)); // Token valid for 1 hour
+        customerRepository.save(customer);
+
+        emailService.sendPasswordResetEmail(customer.getEmail(), token, appUrl);
+    }
+
+    @Transactional
+    public void resetPassword(String token, String newPassword) {
+        Customer customer = customerRepository.findByPasswordResetToken(token)
+                .orElseThrow(() -> new RuntimeException("Invalid password reset token"));
+
+        if (customer.getPasswordResetTokenExpiry().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Password reset token has expired");
+        }
+
+        customer.setPassword(passwordEncoder.encode(newPassword));
+        customer.setPasswordResetToken(null);
+        customer.setPasswordResetTokenExpiry(null);
+        customerRepository.save(customer);
+    }
 
     private void validateRegistration(ConsumerRequestDto registrationDto) {
         // Проверка совпадения паролей

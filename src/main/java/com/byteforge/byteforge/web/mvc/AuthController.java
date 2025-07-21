@@ -69,4 +69,44 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/forgot-password")
+    public String showForgotPasswordPage() {
+        return "forgot-password";
+    }
+
+    @PostMapping("/forgot-password")
+    public String processForgotPassword(@RequestParam String email, RedirectAttributes redirectAttributes) {
+        try {
+            customerService.generatePasswordResetToken(email);
+            redirectAttributes.addFlashAttribute("message", "A password reset link has been sent to your email.");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/auth/forgot-password";
+    }
+
+    @GetMapping("/reset-password")
+    public String showResetPasswordPage(@RequestParam String token, Model model) {
+        model.addAttribute("token", token);
+        return "reset-password";
+    }
+
+    @PostMapping("/reset-password")
+    public String processResetPassword(@RequestParam String token,
+                                       @RequestParam String password,
+                                       @RequestParam String confirmPassword,
+                                       RedirectAttributes redirectAttributes) {
+        if (!password.equals(confirmPassword)) {
+            redirectAttributes.addFlashAttribute("error", "Passwords do not match.");
+            return "redirect:/auth/reset-password?token=" + token;
+        }
+        try {
+            customerService.resetPassword(token, password);
+            redirectAttributes.addFlashAttribute("message", "Your password has been reset successfully.");
+            return "redirect:/auth/login";
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/auth/reset-password?token=" + token;
+        }
+    }
 }

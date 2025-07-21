@@ -5,7 +5,9 @@ CREATE TABLE customers (
     password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     email_verified BOOLEAN DEFAULT FALSE,
-    email_verification_token VARCHAR(255)
+    email_verification_token VARCHAR(255),
+    password_reset_token VARCHAR(255),
+    password_reset_token_expiry TIMESTAMP
 );
 
 -- Создаем таблицу authorities

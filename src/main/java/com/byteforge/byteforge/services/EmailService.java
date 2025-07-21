@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
-
 import java.util.List;
 
 @Service
@@ -54,5 +53,15 @@ public class EmailService {
         } catch (MessagingException e) {
             throw new RuntimeException("Failed to send order confirmation email", e);
         }
+    }
+
+    public void sendPasswordResetEmail(String to, String token, String appUrl) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("thungar@mail.ru");
+        message.setTo(to);
+        message.setSubject("Password Reset Request");
+        message.setText("To reset your password, click the link below:\n"
+                + appUrl + "/auth/reset-password?token=" + token);
+        mailSender.send(message);
     }
 }

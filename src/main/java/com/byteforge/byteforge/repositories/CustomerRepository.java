@@ -14,4 +14,5 @@ public interface CustomerRepository extends CrudRepository<Customer,Integer> {
 
     Optional<Customer> findByEmailVerificationToken(String token);
 
+    Optional<Customer> findByPasswordResetToken(String token);
 }
