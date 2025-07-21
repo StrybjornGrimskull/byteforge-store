@@ -98,14 +98,14 @@
 <!-- Main Content -->
 <div class="container py-5">
     <!-- Header -->
-    <div class="checkout-header p-4 mb-4">
+    <div class="checkout-header p-4 mb-4 text-center mx-auto" style="max-width: 600px;">
         <h1 class="display-5 fw-bold mb-3"><i class="bi bi-cart-check me-2"></i>CHECKOUT</h1>
         <p class="mb-0">Complete your purchase with secure checkout</p>
     </div>
 
-    <div class="row">
+    <div class="row justify-content-center">
         <!-- Checkout Form -->
-        <div class="col-lg-8">
+        <div class="col-lg-8 mx-auto">
             <div id="checkout-form-container">
                 <div class="checkout-card">
                     <h4 class="fw-bold mb-4"><i class="bi bi-person-circle me-2"></i>Contact Information</h4>
@@ -161,7 +161,7 @@
 
             <!-- Order Confirmation (hidden by default) -->
             <div id="order-confirmation" class="confirmation-section">
-                <div class="checkout-card text-center">
+                <div class="checkout-card text-center mx-auto" style="max-width: 600px;">
                     <div class="mb-4">
                         <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
                     </div>
@@ -218,41 +218,7 @@
         </div>
 
         <!-- Order Summary -->
-        <div class="col-lg-4">
-            <div class="order-summary">
-                <h5 class="fw-bold mb-4">ORDER SUMMARY</h5>
-
-                <div id="order-items">
-                    <!-- Items will be loaded here -->
-                    <div class="d-flex justify-content-center py-3">
-                        <div class="spinner-border loading-spinner" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-
-                <hr>
-
-                <div class="d-flex justify-content-between mb-2">
-                    <span>Sub-total</span>
-                    <span id="subtotal">$0.00</span>
-                </div>
-
-                <div class="d-flex justify-content-between mb-2">
-                    <span>Shipping</span>
-                    <span id="shipping-cost">$0.00</span>
-                </div>
-
-                <div id="discount-row" class="d-flex justify-content-between mb-2 text-success" style="display: none;"></div>
-
-                <hr>
-
-                <div class="d-flex justify-content-between mb-4">
-                    <span class="fw-bold">TOTAL</span>
-                    <span class="fw-bold" id="total">$0.00</span>
-                </div>
-            </div>
-        </div>
+        <!-- УДАЛЕНО: <div class="col-lg-4"> ... </div> -->
     </div>
 </div>
 
@@ -329,14 +295,7 @@
                     });
 
                     const shippingCost = subtotal >= 1500 ? 0 : 2.86;
-                    // Удаляем расчёт скидки и скрываем discount-row
-                    // const discount = subtotal > 1500 ? subtotal * 0.1 : 0;
-                    // if (discount > 0) {
-                    //     $('#discount-row').show();
-                    //     $('#discount-amount').text('-' + formatPrice(discount));
-                    // } else {
-                    //     $('#discount-row').hide();
-                    // }
+
 
                     $('#order-items').html(itemsHtml);
                     $('#subtotal').text(formatPrice(subtotal));
@@ -443,23 +402,48 @@
             });
         }
 
-        // Показ подтверждения заказа (без изменений)
+        // Показ подтверждения заказа (теперь из объекта order)
         function showOrderConfirmation(order, orderData) {
             $('#checkout-form-container').hide();
             $('#order-confirmation').show();
             $('#order-number').text('#' + order.id); // Реальный ID или TEMP
-            $('#order-date').text(new Date(order.createdAt || Date.now()).toLocaleString());
+            $('#order-date').text(new Date(order.createdAt || order.date || Date.now()).toLocaleString());
             $('#shipping-address').html(`
                 ${orderData.firstName} ${orderData.lastName}<br>
                 ${orderData.address}<br>
                 ${orderData.city}, ${orderData.postIndex}
             `);
 
-            // Копируем товары из Order Summary
-            $('#ordered-items').html($('#order-items').html());
-
-            // Копируем итоговую сумму
-            $('#order-total').text($('#total').text());
+            // Формируем список товаров и сумму из объекта order
+            if (order.orderProducts && order.orderProducts.length > 0) {
+                let itemsHtml = '';
+                order.orderProducts.forEach(item => {
+                    const product = item.product;
+                    itemsHtml += `
+                        <div class="d-flex mb-3">
+                            <div class="product-img-container flex-shrink-0 me-3">
+                                <img src="/uploads/${product.imageUrl}" alt="${product.name}" class="product-img">
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">${product.name}</h6>
+                                <small class="text-muted">Qty: ${item.quantity}</small>
+                            </div>
+                            <div class="flex-shrink-0 text-end">
+                                <h6 class="mb-1">$${parseFloat(product.price).toFixed(2)}</h6>
+                            </div>
+                        </div>
+                    `;
+                });
+                $('#ordered-items').html(itemsHtml);
+            } else {
+                $('#ordered-items').html('<div class="alert alert-warning">No items found</div>');
+            }
+            // Итоговая сумма
+            if (order.totalPrice) {
+                $('#order-total').text('$' + parseFloat(order.totalPrice).toFixed(2));
+            } else {
+                $('#order-total').text('$0.00');
+            }
         }
 
         // Инициализация
