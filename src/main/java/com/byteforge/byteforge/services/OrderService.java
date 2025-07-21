@@ -69,7 +69,7 @@ public class OrderService{
         // 6. Сохраняем заказ и очищаем корзину
         Order savedOrder = orderRepository.save(order);
         
-        // Уменьшаем количество на складе для каждого продукта
+        // 7. Уменьшаем количество на складе для каждого продукта
         for (OrderProduct op : savedOrder.getOrderProducts()) {
             Product product = op.getProduct();
             StockQuantity stock = product.getStockQuantity();
@@ -79,7 +79,7 @@ public class OrderService{
         }
         shoppingCartRepository.deleteAll(cartItems);
 
-        // Отправка письма с подтверждением заказа
+        // 8. Отправка письма с подтверждением заказа
         List<String> productNames = orderProducts.stream()
                 .map(op -> op.getProduct().getName())
                 .collect(Collectors.toList());
@@ -91,7 +91,7 @@ public class OrderService{
                 totalPrice.doubleValue()
         );
 
-        // 7. Возвращаем DTO
+        // 9. Возвращаем DTO
         return OrderResponseDto.fromEntity(savedOrder);
     }
 
@@ -101,5 +101,15 @@ public class OrderService{
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
         List<Order> orders = orderRepository.findByCustomerIdAndActiveTrue(customer.getId());
         return orders.stream().map(ActiveOrderDto::fromEntity).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderResponseDto> getCompletedOrdersForUser(String email) {
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+        List<Order> orders = orderRepository.findByCustomerIdAndActiveFalse(customer.getId());
+        // "Прогреваем" ленивые коллекции
+        orders.forEach(order -> order.getOrderProducts().size());
+        return orders.stream().map(OrderResponseDto::fromEntity).toList();
     }
 }
