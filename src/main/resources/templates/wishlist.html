@@ -266,7 +266,11 @@
 
         // Основная функция загрузки wishlist
         function loadWishlist() {
-            $.get('/api/wishlist', function(wishlist) {
+            $.ajax({
+                url: '/api/wishlist',
+                method: 'GET',
+                dataType: 'json'
+            }).done(function(wishlist) {
                 if (!wishlist || wishlist.length === 0) {
                     showEmptyWishlist();
                     return;
@@ -281,6 +285,9 @@
                     $('#wishlist-container').html(html);
                     updateItemCount(wishlist.length);
                 });
+            }).fail(function(jqXHR) {
+                const message = jqXHR.status === 401 ? 'Please log in to see your wishlist' : 'Failed to load wishlist data.';
+                showError(message);
             });
         }
 

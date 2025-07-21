@@ -105,11 +105,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function validatePasswords() {
         if (password.value && confirmPassword.value) {
             if (password.value !== confirmPassword.value) {
-                message.textContent = 'Пароли не совпадают!';
+                message.textContent = 'Passwords do not match!';
                 message.style.color = 'red';
                 signupBtn.disabled = true;
             } else {
-                message.textContent = 'Пароли совпадают!';
+                message.textContent = 'Passwords match!';
                 message.style.color = 'green';
                 signupBtn.disabled = false;
             }
