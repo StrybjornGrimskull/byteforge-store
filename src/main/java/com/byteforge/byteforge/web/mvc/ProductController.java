@@ -4,6 +4,7 @@ import com.byteforge.byteforge.dto.response.ProductResponseDto;
 import com.byteforge.byteforge.services.BrandService;
 import com.byteforge.byteforge.services.CategoryService;
 import com.byteforge.byteforge.services.ProductService;
+import com.byteforge.byteforge.services.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ public class ProductController {
     private final ProductService productService;
     private final CategoryService categoryService;
     private final BrandService brandService;
+    private final ReviewService reviewService;
 
     @GetMapping("/list")
     public String listProductsPage(
@@ -44,7 +46,11 @@ public class ProductController {
     @GetMapping("/details/{id}")
     public String showProductDetails(@PathVariable Integer id, Model model) {
         ProductResponseDto product = productService.getProductById(id);
+        Double averageRating = reviewService.getAverageRatingByProductId(product.id());
+        long reviewCount = reviewService.getActiveReviewCountByProductId(product.id());
         model.addAttribute("product", product);
+        model.addAttribute("averageRating", averageRating);
+        model.addAttribute("reviewCount", reviewCount);
         return "product-details";
     }
 }

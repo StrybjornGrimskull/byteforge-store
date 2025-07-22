@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @NamedEntityGraphs({
         @NamedEntityGraph(
@@ -105,4 +106,7 @@ public class Product {
 
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
     private WirelessMouseSpec wirelessMouseSpec;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews;
 }

@@ -55,6 +55,4 @@ public class ProductService {
                 .map(ProductResponseDto::fromEntity)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
     }
-
-
 }

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Отзывы о продукте</title>
+    <link rel="stylesheet" th:href="@{/static/css/style.css}"/>
+</head>
+<body>
+ПРОВЕРКА: страница открылась!
+<div th:text="'product: ' + ${product}"></div>
+<div th:text="'review: ' + ${review}"></div>
+<div th:replace="fragments/navigation :: navigation"></div>
+<h2>Отзывы о <span th:text="${product.name}"></span></h2>
+
+<div th:if="${#lists.isEmpty(reviews)}">
+    <p>Пока нет отзывов для этого продукта.</p>
+</div>
+<div th:if="${!#lists.isEmpty(reviews)}">
+    <table>
+        <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Оценка</th>
+            <th>Текст</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="review : ${reviews}">
+            <td th:text="${review.userFirstName}"></td>
+            <td th:text="${review.rating}"></td>
+            <td th:text="${review.text}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<a th:href="@{/}">На главную</a>
+</body>
+</html> 

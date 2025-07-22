@@ -73,7 +73,6 @@
         </div>
         <div class="col-lg-6">
             <h1 class="mb-3" th:text="${product.name}"></h1>
-
             <div class="d-flex align-items-center mb-3">
                 <img th:src="@{'/uploads/' + ${product.brandLogo}}"
                      class="brand-logo me-3">
@@ -88,6 +87,16 @@
             </div>
 
             <p class="lead mb-4" th:text="${product.shortDescription}"></p>
+            <div class="mb-3">
+                <span th:if="${averageRating != null}" class="fs-5 text-warning">
+                    <i class="bi bi-star-fill"></i>
+                    <span th:text="${#numbers.formatDecimal(averageRating, 1, 1)}"></span>
+                    <span th:if="${reviewCount > 0}" class="text-secondary ms-2" style="font-size:1rem;">
+                        (<span th:text="${reviewCount}"></span> reviews)
+                    </span>
+                </span>
+                <span th:if="${averageRating == null}" class="text-muted">No ratings yet</span>
+            </div>
 
             <div class="d-flex gap-3 mb-5">
                 <button id="cartBtn"
