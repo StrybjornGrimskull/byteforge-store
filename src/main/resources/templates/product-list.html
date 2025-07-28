@@ -36,13 +36,16 @@
             flex-direction: column;
             align-items: center;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s, box-shadow 0.2s;
+            /* transition: transform 0.2s, box-shadow 0.2s; */
         }
 
+        /* Удаляем эффекты наведения */
+        /*
         .product-item:hover {
             transform: translateY(-4px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
+        */
 
         .product-item img {
             display: block;
@@ -84,11 +87,11 @@
     <h1 class="mb-4">Product Catalog</h1>
 
     <!-- Форма поиска и фильтров -->
-    <form id="filterForm" class="row g-3 mb-4 align-items-end" onsubmit="event.preventDefault(); loadProducts(0);">
+    <form id="filterForm" class="row g-3 mb-4 align-items-end" onsubmit="event.preventDefault(); loadProducts();">
         <input type="hidden" name="categoryId" id="categoryIdHidden" th:value="${categoryId}">
         <div class="col-md-3">
             <label for="categoryId" class="form-label">Category</label>
-            <select name="categoryId" id="categoryId" class="form-select" onchange="updateBrands()">
+            <select name="categoryId" id="categoryId" class="form-select" onchange="updateBrands();">
                 <option value="">All Categories</option>
                 <option th:each="category : ${categories}"
                         th:value="${category.id}"
@@ -126,10 +129,15 @@
         <div class="col-12 text-center">Loading products...</div>
     </div>
 
-    <!-- Пагинация -->
-    <nav id="pagination" class="mt-4 d-flex justify-content-center">
-        <ul class="pagination pagination-sm flex-wrap justify-content-center"></ul>
-    </nav>
+    <!-- Кнопка "Load More" -->
+    <div id="loadMoreContainer" class="text-center mt-4" style="display: none;">
+        <button id="loadMoreBtn" class="btn btn-primary">Show next 12 products</button>
+    </div>
+
+    <!-- Кнопка "Back to top" -->
+    <div id="backToTopContainer" class="text-center mt-4" style="display: none;">
+        <button id="backToTopBtn" class="btn btn-outline-secondary" onclick="scrollToTop()">Back to top</button>
+    </div>
 </div>
 
 <!-- Footer Fragment -->
@@ -140,6 +148,10 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+    let lastId = null;
+    let loading = false;
+    const limit = 12;
+
     document.addEventListener("DOMContentLoaded", function () {
         // Получаем ID категории из URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -152,17 +164,20 @@
         }
 
         // Загружаем продукты с учетом категории из URL
-        loadProducts(0, urlCategoryId);
+        loadProducts();
+
+        // Добавляем обработчик для кнопки "Load More"
+        document.getElementById('loadMoreBtn').addEventListener('click', function() {
+            loadMoreProducts();
+        });
     });
 
-    function getFilterParams(page) {
+    function getFilterParams() {
         const params = new URLSearchParams();
 
-        // Берем категорию из select, а не из скрытого поля
         const categoryId = document.getElementById('categoryId').value;
         if (categoryId) params.set('categoryId', categoryId);
 
-        // Добавляем остальные параметры
         const name = document.getElementById('name').value;
         if (name) params.set('name', name);
 
@@ -175,41 +190,79 @@
         const maxPrice = document.getElementById('maxPrice').value;
         if (maxPrice) params.set('maxPrice', maxPrice);
 
-        params.set('page', page);
-        params.set('size', 9);
+        params.set('limit', limit);
+        if (lastId !== null) {
+            params.set('lastId', lastId);
+        }
 
         return params;
     }
 
-    function loadProducts(page, forceCategoryId = null) {
-        const params = new URLSearchParams();
+    function loadProducts() {
+        if (loading) return;
+        loading = true;
 
-        // Используем принудительно переданный categoryId или берем из select
-        const categoryId = forceCategoryId || document.getElementById('categoryId').value;
-        if (categoryId) params.set('categoryId', categoryId);
+        // Сбрасываем lastId при новой загрузке
+        lastId = null;
+        
+        const params = getFilterParams();
 
-        // Добавляем остальные параметры
-        const name = document.getElementById('name').value;
-        if (name) params.set('name', name);
-
-        const brandId = document.getElementById('brandId').value;
-        if (brandId) params.set('brandId', brandId);
-
-        const minPrice = document.getElementById('minPrice').value;
-        if (minPrice) params.set('minPrice', minPrice);
-
-        const maxPrice = document.getElementById('maxPrice').value;
-        if (maxPrice) params.set('maxPrice', maxPrice);
-
-        params.set('page', page);
-        params.set('size', 9);
-
-        fetch('/api/products?' + params)
+        fetch('/api/products/lazy?' + params)
             .then(response => response.json())
-            .then(data => {
-                renderProducts(data.content || data);
-                renderPagination(data.totalPages || 1, data.number || 0);
+            .then(products => {
+                renderProducts(products);
+                updateLoadMoreButton(products.length);
+                if (products.length > 0) {
+                    lastId = products[products.length - 1].id;
+                }
+                loading = false;
+            })
+            .catch(error => {
+                console.error('Error loading products:', error);
+                loading = false;
             });
+    }
+
+    function loadMoreProducts() {
+        if (loading) return;
+        loading = true;
+
+        const params = getFilterParams();
+
+        fetch('/api/products/lazy?' + params)
+            .then(response => response.json())
+            .then(products => {
+                appendProducts(products);
+                updateLoadMoreButton(products.length);
+                if (products.length > 0) {
+                    lastId = products[products.length - 1].id;
+                }
+                loading = false;
+            })
+            .catch(error => {
+                console.error('Error loading more products:', error);
+                loading = false;
+            });
+    }
+
+    function updateLoadMoreButton(productsCount) {
+        const loadMoreContainer = document.getElementById('loadMoreContainer');
+        const backToTopContainer = document.getElementById('backToTopContainer');
+        
+        if (productsCount < limit) {
+            loadMoreContainer.style.display = 'none';
+            backToTopContainer.style.display = 'block';
+        } else {
+            loadMoreContainer.style.display = 'block';
+            backToTopContainer.style.display = 'none';
+        }
+    }
+
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'auto'
+        });
     }
 
     function updateBrands() {
@@ -238,13 +291,8 @@
             });
     }
 
-    function renderProducts(products) {
-        const container = document.getElementById('productList');
-        if (!products || products.length === 0) {
-            container.innerHTML = '<div class="col-12 text-center"><p class="text-muted">No products found.</p></div>';
-            return;
-        }
-        container.innerHTML = products.map(product => `
+    function createProductHtml(product) {
+        return `
             <div class="product-item">
                 ${product.imageUrl
             ? `<img src="/uploads/${product.imageUrl}" alt="${product.name}">`
@@ -258,68 +306,38 @@
                 </div>
                 <a href="/products/details/${product.id}" class="btn btn-outline-primary w-100 mt-auto">Details</a>
             </div>
-        `).join('');
+        `;
     }
 
-    function renderPagination(totalPages, currentPage) {
-        const container = document.getElementById('pagination').querySelector('ul');
-        if (totalPages <= 1) {
-            container.innerHTML = '';
+    function renderProducts(products) {
+        const container = document.getElementById('productList');
+        if (!products || products.length === 0) {
+            container.innerHTML = '<div class="col-12 text-center"><p class="text-muted">No products found.</p></div>';
             return;
         }
+        container.innerHTML = products.map(createProductHtml).join('');
+    }
 
-        // Определяем диапазон отображаемых страниц
-        const maxVisiblePages = 5;
-        let startPage = Math.max(0, currentPage - Math.floor(maxVisiblePages / 2));
-        let endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 1);
-
-        // Корректируем startPage, если endPage достиг максимума
-        startPage = Math.max(0, endPage - maxVisiblePages + 1);
-
-        let html = '';
-
-        // Кнопка "Previous"
-        html += `<li class="page-item ${currentPage === 0 ? 'disabled' : ''}">
-        <a class="page-link" href="#" onclick="loadProducts(${currentPage - 1});return false;" aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
-        </a>
-    </li>`;
-
-        // Первая страница
-        if (startPage > 0) {
-            html += `<li class="page-item">
-            <a class="page-link" href="#" onclick="loadProducts(0);return false;">1</a>
-        </li>`;
-            if (startPage > 1) {
-                html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
-            }
+    function appendProducts(products) {
+        const container = document.getElementById('productList');
+        if (!products || products.length === 0) {
+            return;
         }
+        container.innerHTML += products.map(createProductHtml).join('');
+    }
 
-        // Основной диапазон страниц
-        for (let i = startPage; i <= endPage; i++) {
-            html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
-            <a class="page-link" href="#" onclick="loadProducts(${i});return false;">${i + 1}</a>
-        </li>`;
-        }
-
-        // Последняя страница
-        if (endPage < totalPages - 1) {
-            if (endPage < totalPages - 2) {
-                html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
-            }
-            html += `<li class="page-item">
-            <a class="page-link" href="#" onclick="loadProducts(${totalPages - 1});return false;">${totalPages}</a>
-        </li>`;
-        }
-
-        // Кнопка "Next"
-        html += `<li class="page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}">
-        <a class="page-link" href="#" onclick="loadProducts(${currentPage + 1});return false;" aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
-        </a>
-    </li>`;
-
-        container.innerHTML = html;
+    function resetFilters() {
+        document.getElementById('categoryId').value = '';
+        document.getElementById('name').value = '';
+        document.getElementById('brandId').value = '';
+        document.getElementById('minPrice').value = '';
+        document.getElementById('maxPrice').value = '';
+        
+        // Обновляем бренды для пустой категории
+        updateBrands();
+        
+        // Загружаем все продукты
+        loadProducts();
     }
 </script>
 

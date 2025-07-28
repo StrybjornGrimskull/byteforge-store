@@ -24,4 +24,8 @@ public class ProductSpecifications {
         return (root, query, cb) ->
                 name == null || name.isEmpty() ? null : cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%");
     }
+
+    public static Specification<Product> hasIdGreaterThan(Integer id) {
+        return (root, query, cb) -> id == null ? null : cb.greaterThan(root.get("id"), id);
+    }
 }
