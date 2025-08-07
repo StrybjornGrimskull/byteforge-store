@@ -15,7 +15,7 @@ public record WiredMouseSpecDTO(
         Boolean rgbLighting,
         Boolean onboardMemory,
         Integer warrantyMonths
-) implements ProductSpecDTO {
+) {
 
     public static WiredMouseSpecDTO fromEntity(WiredMouseSpec spec) {
         return new WiredMouseSpecDTO(

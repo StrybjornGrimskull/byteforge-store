@@ -2,20 +2,18 @@ package com.byteforge.byteforge.entities.specifications;
 
 import com.byteforge.byteforge.entities.Product;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-@Data
+@Entity
+@Table(name = "cpu_specs")
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "cpu_specs")
 public class CpuSpec {
+
     @Id
     private Integer productId;
 

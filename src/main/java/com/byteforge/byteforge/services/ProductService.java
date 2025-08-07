@@ -15,9 +15,7 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public ProductResponseDto getProductById(Integer id) {
-        return productRepository.findById(id)
-                .map(ProductResponseDto::fromEntity)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+        return productRepository.findProductResponseDtoById(id);
     }
 
     public List<ProductListDto> getProductsLazy(

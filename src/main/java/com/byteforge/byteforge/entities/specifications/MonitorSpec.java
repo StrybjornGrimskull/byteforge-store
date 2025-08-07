@@ -2,21 +2,18 @@ package com.byteforge.byteforge.entities.specifications;
 
 import com.byteforge.byteforge.entities.Product;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-
-@Data
+@Entity
+@Table(name = "monitor_specs")
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "monitor_specs")
 public class MonitorSpec {
+
     @Id
     private Integer productId;
 
@@ -40,3 +37,5 @@ public class MonitorSpec {
     @Column(nullable = false)
     private Integer responseTime;
 }
+
+

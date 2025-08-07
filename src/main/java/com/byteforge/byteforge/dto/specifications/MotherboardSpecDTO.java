@@ -11,7 +11,7 @@ public record MotherboardSpecDTO(
         String memoryType,
         Integer m2Slots,
         Integer sataPorts
-) implements ProductSpecDTO {
+) {
 
     public static MotherboardSpecDTO fromEntity(MotherboardSpec spec) {
         return new MotherboardSpecDTO(

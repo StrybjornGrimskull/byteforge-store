@@ -1,25 +1,50 @@
 <!-- Footer Fragment -->
-<footer th:fragment="footer" class="py-4 mt-5">
+<footer th:fragment="footer" class="py-3 mt-5" style="background-color: #2d3436; color: white; border-top: 1px solid rgba(255,255,255,0.1); min-height: 50px; width: 100%;">
     <div class="container">
         <div class="row">
             <div class="col-md-6 text-center text-md-start">
                 <p class="mb-0 text-white-50">&copy; 2025 ByteForge. All rights reserved.</p>
             </div>
             <div class="col-md-6 text-center text-md-end">
-                <a href="#" class="text-white-50 me-3"><i class="bi bi-facebook"></i></a>
-                <a href="#" class="text-white-50 me-3"><i class="bi bi-twitter"></i></a>
-                <a href="#" class="text-white-50"><i class="bi bi-instagram"></i></a>
+                <a href="#" class="text-white-50 me-3" style="text-decoration: none; transition: color 0.3s ease;"><i class="bi bi-facebook" style="font-size: 1.1rem;"></i></a>
+                <a href="#" class="text-white-50 me-3" style="text-decoration: none; transition: color 0.3s ease;"><i class="bi bi-twitter" style="font-size: 1.1rem;"></i></a>
+                <a href="#" class="text-white-50" style="text-decoration: none; transition: color 0.3s ease;"><i class="bi bi-instagram" style="font-size: 1.1rem;"></i></a>
             </div>
         </div>
     </div>
 </footer>
 
 <style>
+    :root {
+        --dark-color: #2d3436;
+    }
+    
     footer {
         background-color: var(--dark-color);
+        color: white;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        display: block;
+        width: 100%;
+        font-size: 0.9rem;
+        min-height: 50px;
+        position: relative;
+        z-index: 1000;
     }
+    
     .text-white-50 {
         color: rgba(255,255,255,.5)!important;
     }
-    /* Можно добавить стили для иконок соцсетей, если нужно */
+    
+    footer a {
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    footer a:hover {
+        color: rgba(255,255,255,.8)!important;
+    }
+    
+    footer i {
+        font-size: 1.1rem;
+    }
 </style> 

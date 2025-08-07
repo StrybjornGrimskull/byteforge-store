@@ -1,6 +1,7 @@
 package com.byteforge.byteforge.dto.specifications;
 
 import com.byteforge.byteforge.entities.specifications.WiredKeyboardSpec;
+
 import java.math.BigDecimal;
 
 public record WiredKeyboardSpecDTO(
@@ -16,7 +17,7 @@ public record WiredKeyboardSpecDTO(
         BigDecimal cableLength,
         Boolean usbPassthrough,
         Boolean detachableCable
-) implements ProductSpecDTO {
+) {
 
     public static WiredKeyboardSpecDTO fromEntity(WiredKeyboardSpec spec) {
         return new WiredKeyboardSpecDTO(

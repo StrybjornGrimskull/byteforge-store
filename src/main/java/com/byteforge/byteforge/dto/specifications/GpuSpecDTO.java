@@ -11,7 +11,7 @@ public record GpuSpecDTO(
         Integer tdp,
         Integer length,
         String displayOutputs
-) implements ProductSpecDTO {
+) {
 
     public static GpuSpecDTO fromEntity(GpuSpec spec) {
         return new GpuSpecDTO(

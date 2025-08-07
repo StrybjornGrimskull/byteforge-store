@@ -9,7 +9,7 @@ public record PsuSpecDTO(
         String modularity,
         Integer pcie8pinConnectors,
         Integer sataConnectors
-) implements ProductSpecDTO {
+) {
 
     public static PsuSpecDTO fromEntity(PsuSpec spec) {
         return new PsuSpecDTO(

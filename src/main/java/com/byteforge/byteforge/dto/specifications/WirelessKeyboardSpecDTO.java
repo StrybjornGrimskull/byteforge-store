@@ -1,6 +1,7 @@
 package com.byteforge.byteforge.dto.specifications;
 
 import com.byteforge.byteforge.entities.specifications.WirelessKeyboardSpec;
+
 import java.math.BigDecimal;
 
 public record WirelessKeyboardSpecDTO(
@@ -17,7 +18,7 @@ public record WirelessKeyboardSpecDTO(
         Integer batteryLife,
         String chargingType,
         Boolean multiDevicePairing
-) implements ProductSpecDTO {
+) {
 
     public static WirelessKeyboardSpecDTO fromEntity(WirelessKeyboardSpec spec) {
         return new WirelessKeyboardSpecDTO(

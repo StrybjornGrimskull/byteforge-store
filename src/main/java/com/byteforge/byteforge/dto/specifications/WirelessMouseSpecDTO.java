@@ -17,7 +17,7 @@ public record WirelessMouseSpecDTO(
         Integer chargingTime,
         Boolean onboardMemory,
         Integer warrantyMonths
-) implements ProductSpecDTO {
+) {
 
     public static WirelessMouseSpecDTO fromEntity(WirelessMouseSpec spec) {
         return new WirelessMouseSpecDTO(

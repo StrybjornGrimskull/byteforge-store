@@ -2,18 +2,16 @@ package com.byteforge.byteforge.entities.specifications;
 
 import com.byteforge.byteforge.entities.Product;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Entity
+@Table(name = "psu_specs")
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "psu_specs")
 public class PsuSpec {
+
     @Id
     private Integer productId;
 

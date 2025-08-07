@@ -2,18 +2,16 @@ package com.byteforge.byteforge.entities.specifications;
 
 import com.byteforge.byteforge.entities.Product;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Entity
+@Table(name = "case_specs")
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "case_specs")
 public class CaseSpec {
+
     @Id
     private Integer productId;
 
@@ -25,7 +23,7 @@ public class CaseSpec {
     @Column(nullable = false, length = 50)
     private String formFactor;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String motherboardSupport;
 
     @Column(nullable = false)
@@ -37,6 +35,6 @@ public class CaseSpec {
     @Column(nullable = false)
     private Integer fansIncluded;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String radiatorSupport;
 }

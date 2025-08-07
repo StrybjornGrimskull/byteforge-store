@@ -1,6 +1,7 @@
 package com.byteforge.byteforge.dto.specifications;
 
 import com.byteforge.byteforge.entities.specifications.SsdSpec;
+
 import java.math.BigDecimal;
 
 public record SsdSpecDTO(
@@ -14,7 +15,7 @@ public record SsdSpecDTO(
         Boolean dramCache,
         String encryption,
         BigDecimal thickness
-) implements ProductSpecDTO {
+) {
 
     public static SsdSpecDTO fromEntity(SsdSpec spec) {
         return new SsdSpecDTO(

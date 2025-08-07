@@ -1,7 +1,6 @@
 package com.byteforge.byteforge.entities.specifications;
 
 import com.byteforge.byteforge.entities.Product;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,12 +11,12 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class GpuSpec {
+
     @Id
     private Integer productId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
-    @JsonIgnore
     @JoinColumn(name = "product_id")
     private Product product;
 

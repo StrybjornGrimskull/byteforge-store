@@ -10,6 +10,7 @@ public record ProductListDto(
         String imageUrl,
         BigDecimal price,
         String brandName,
+        Integer categoryId,
         Integer stockQuantity
 ) {
     public static ProductListDto fromEntity(Product product) {
@@ -19,6 +20,7 @@ public record ProductListDto(
                 product.getImageUrl(),
                 product.getPrice(),
                 product.getBrand().getName(),
+                product.getCategory().getId(),
                 product.getStockQuantity() != null ? product.getStockQuantity().getQuantity() : 0
         );
     }

@@ -2,17 +2,14 @@ package com.byteforge.byteforge.entities.specifications;
 
 import com.byteforge.byteforge.entities.Product;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Entity
+@Table(name = "wired_mice_specs")
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "wired_mice_specs")
 public class WiredMouseSpec {
     @Id
     private Integer productId;

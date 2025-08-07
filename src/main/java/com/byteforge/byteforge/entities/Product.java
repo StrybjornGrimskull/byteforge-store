@@ -2,42 +2,17 @@ package com.byteforge.byteforge.entities;
 
 import com.byteforge.byteforge.entities.specifications.*;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-@NamedEntityGraphs({
-        @NamedEntityGraph(
-                name = "Product.full",
-                attributeNodes = {
-                        @NamedAttributeNode("brand"),
-                        @NamedAttributeNode("category"),
-                        @NamedAttributeNode("stockQuantity"),
-                        @NamedAttributeNode("caseSpec"),
-                        @NamedAttributeNode("cpuSpec"),
-                        @NamedAttributeNode("gpuSpec"),
-                        @NamedAttributeNode("monitorSpec"),
-                        @NamedAttributeNode("motherboardSpec"),
-                        @NamedAttributeNode("psuSpec"),
-                        @NamedAttributeNode("ramSpec"),
-                        @NamedAttributeNode("ssdSpec"),
-                        @NamedAttributeNode("wiredKeyboardSpec"),
-                        @NamedAttributeNode("wiredMouseSpec"),
-                        @NamedAttributeNode("wirelessKeyboardSpec"),
-                        @NamedAttributeNode("wirelessMouseSpec")
-                }
-        )
-})
-@Data
+@Entity
+@Table(name = "products")
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "products")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

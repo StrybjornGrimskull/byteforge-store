@@ -2,19 +2,16 @@ package com.byteforge.byteforge.entities.specifications;
 
 import com.byteforge.byteforge.entities.Product;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-
-@Data
+@Entity
+@Table(name = "motherboard_specs")
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "motherboard_specs")
 public class MotherboardSpec {
+
     @Id
     private Integer productId;
 
@@ -36,7 +33,7 @@ public class MotherboardSpec {
     private Integer memorySlots;
 
     @Column(nullable = false)
-    private Integer maxMemory; // GB
+    private Integer maxMemory;
 
     @Column(nullable = false, length = 20)
     private String memoryType;

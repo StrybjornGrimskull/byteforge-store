@@ -9,7 +9,7 @@ public record CaseSpecDTO(
         Integer maxCpuCoolerHeight,
         Integer fansIncluded,
         String radiatorSupport
-) implements ProductSpecDTO {
+) {
 
     public static CaseSpecDTO fromEntity(CaseSpec spec) {
         return new CaseSpecDTO(

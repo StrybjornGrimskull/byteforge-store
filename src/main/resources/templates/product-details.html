@@ -9,7 +9,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* Удалены стили навигации и футера, оставлены только уникальные для product-details */
+
         .product-image {
             max-width: 350px;
             max-height: 350px;
@@ -37,6 +37,29 @@
         }
         .stock-badge {
             font-size: 0.9rem;
+        }
+
+        /* Стили для выпадающей секции */
+        #techSpecsHeader:hover {
+            background-color: #f8f9fa !important;
+        }
+
+        #techSpecsHeader .d-flex:hover {
+            background-color: #e9ecef;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+
+        #techSpecsContent {
+            background-color: #f8f9fa;
+        }
+
+        #techSpecsIcon {
+            transition: transform 0.3s ease;
+        }
+
+        #techSpecsIcon.rotated {
+            transform: rotate(180deg);
         }
     </style>
 </head>
@@ -137,16 +160,32 @@
                         <td class="pe-4 py-3 fw-medium" th:text="${product.warrantyMonths} + ' months'"></td>
                     </tr>
 
-                    <!-- Разделитель для технических характеристик -->
-                    <tr class="bg-light">
+                    <!-- Выпадающая секция для технических характеристик -->
+                    <tr class="bg-light" id="techSpecsHeader">
                         <td colspan="2" class="px-4 py-2">
-                            <div class="d-flex  align-items-center">
+                            <button type="button" class="btn btn-link p-0 border-0 bg-transparent text-start w-100 d-flex align-items-center justify-content-between" onclick="toggleTechSpecs()" aria-expanded="false" aria-controls="techSpecsContent">
                                 <span class="text-primary fw-semibold small me-2">TECHNICAL SPECIFICATIONS</span>
+                                <i class="bi bi-chevron-down text-primary" id="techSpecsIcon"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr id="techSpecsContent" style="display: none;">
+                        <td colspan="2" class="p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0" id="techSpecsTable">
+                                    <thead>
+                                        <tr>
+                                            <th class="ps-4 py-2 text-muted" style="width: 40%;">Specification</th>
+                                            <th class="pe-4 py-2 text-muted">Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!-- Динамические технические характеристики будут добавлены здесь -->
+                                    </tbody>
+                                </table>
                             </div>
                         </td>
                     </tr>
-
-                    <!-- Динамические характеристики будут добавлены здесь -->
                     </tbody>
                 </table>
             </div>
@@ -154,88 +193,41 @@
     </div>
 </div>
 <!-- Footer Fragment -->
-<div th:replace="fragments/footer :: footer"></div>
+<th:block th:replace="fragments/footer :: footer"></th:block>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<!--<script th:inline="javascript">-->
-<!--    /*<![CDATA[*/-->
-<!--    window.productData = {-->
-<!--        spec: /*[[${product.spec}]]*/ null,-->
-<!--        categoryId: /*[[${product.categoryId}]]*/ 0-->
-<!--    };-->
-<!--    /*]]>*/-->
-<!--</script>-->
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const productId = window.location.pathname.split('/').pop();
-
-        // Загружаем данные продукта через API
-        fetch(`/api/products/${productId}`)
-            .then(response => response.json())
-            .then(product => {
-                if (product.spec) {
-                    renderSpecifications(product.spec, product.categoryId);
-                }
-            })
-            .catch(error => {
-                console.error("Error loading product details:", error);
-            });
-    });
+<script th:inline="javascript">
+    // Инициализируем глобальную переменную с данными о продукте
+    window.productData = /*[[${product}]]*/ {};
 </script>
 
 <script>
+    // Глобальная переменная для отслеживания загрузки спецификаций
+    var specsLoaded = false;
+
     document.addEventListener('DOMContentLoaded', function() {
-        try {
-            const productData = window.productData;
-            const productSpec = productData.spec || {};
-            const categoryId = productData.categoryId || 0;
+        // Не загружаем спецификации автоматически при загрузке страницы
+        // Они будут загружены при нажатии на выпадающее меню
 
-            if (!productSpec || Object.keys(productSpec).length === 0) {
-                return;
-            }
-
-            renderSpecifications(productSpec, categoryId);
-        } catch (e) {
-            console.error("Error:", e);
+        // Если в шаблоне есть данные о продукте, сохраняем их
+        if (window.productData && window.productData.spec) {
+            specsLoaded = true;
+            // Не рендерим спецификации сразу, они будут отображены при открытии выпадающего меню
         }
     });
-    // document.addEventListener('DOMContentLoaded', function() {
-    //     try {
-    //         const productData = window.productData;
-    //         let productSpec;
-    //
-    //         if (typeof productData.spec === 'string') {
-    //             try {
-    //                 productSpec = JSON.parse(productData.spec);
-    //             } catch (e) {
-    //                 console.error("Failed to parse spec JSON:", e);
-    //                 productSpec = {};
-    //             }
-    //         } else {
-    //             productSpec = productData.spec || {};
-    //         }
-    //
-    //         const categoryId = productData.categoryId || 0;
-    //
-    //         if (!productSpec || Object.keys(productSpec).length === 0) {
-    //             return;
-    //         }
-    //
-    //         renderSpecifications(productSpec, categoryId);
-    //     } catch (e) {
-    //         console.error("Error:", e);
-    //     }
-    // });
-
+</script>
+<script>
     function renderSpecifications(spec, categoryId) {
-        const table = document.getElementById('specsTable');
+        const table = document.getElementById('techSpecsTable');
+
+        // Очищаем таблицу перед добавлением новых данных
+        table.innerHTML = '';
 
         switch (categoryId) {
             case 1: // GPU
                 appendSpecRow(table, 'Memory Size', spec.memorySize, ' GB');
                 appendSpecRow(table, 'Memory Type', spec.memoryType);
-                appendSpecRow(table, 'Bus Width', spec.busWidth, '-bit');
+                appendSpecRow(table, 'Bus Width', spec.busWidth, ' bit');
                 appendSpecRow(table, 'Base Clock', spec.baseClock, ' MHz');
                 appendSpecRow(table, 'Boost Clock', spec.boostClock, ' MHz');
                 appendSpecRow(table, 'TDP', spec.tdp, ' W');
@@ -313,7 +305,22 @@
                 appendSpecRow(table, 'Thickness', spec.thickness, ' mm');
                 break;
 
-            case 9: // Wireless Keyboard
+            case 9: // Wired Keyboard
+                appendSpecRow(table, 'Layout', spec.layout);
+                appendSpecRow(table, 'Switch Type', spec.switchType);
+                appendSpecRow(table, 'Switch Brand', spec.switchBrand);
+                appendSpecRow(table, 'Switch Model', spec.switchModel);
+                appendSpecRow(table, 'RGB Lighting', spec.rgbLighting);
+                appendSpecRow(table, 'Hot Swappable', spec.hotSwappable);
+                appendSpecRow(table, 'Actuation Force', spec.actuationForce, ' g');
+                appendSpecRow(table, 'Travel Distance', spec.travelDistance, ' mm');
+                appendSpecRow(table, 'Weight', spec.weight, ' g');
+                appendSpecRow(table, 'Cable Length', spec.cableLength, ' m');
+                appendSpecRow(table, 'USB Passthrough', spec.usbPassthrough);
+                appendSpecRow(table, 'Detachable Cable', spec.detachableCable);
+                break;
+
+            case 10: // Wireless Keyboard
                 appendSpecRow(table, 'Layout', spec.layout);
                 appendSpecRow(table, 'Switch Type', spec.switchType);
                 appendSpecRow(table, 'Switch Brand', spec.switchBrand);
@@ -327,21 +334,6 @@
                 appendSpecRow(table, 'Battery Life', spec.batteryLife, ' hours');
                 appendSpecRow(table, 'Charging Type', spec.chargingType);
                 appendSpecRow(table, 'Multi-device Pairing', spec.multiDevicePairing);
-                break;
-
-            case 10: // Wired Keyboard
-                appendSpecRow(table, 'Layout', spec.layout);
-                appendSpecRow(table, 'Switch Type', spec.switchType);
-                appendSpecRow(table, 'Switch Brand', spec.switchBrand);
-                appendSpecRow(table, 'Switch Model', spec.switchModel);
-                appendSpecRow(table, 'RGB Lighting', spec.rgbLighting);
-                appendSpecRow(table, 'Hot Swappable', spec.hotSwappable);
-                appendSpecRow(table, 'Actuation Force', spec.actuationForce, ' g');
-                appendSpecRow(table, 'Travel Distance', spec.travelDistance, ' mm');
-                appendSpecRow(table, 'Weight', spec.weight, ' g');
-                appendSpecRow(table, 'Cable Length', spec.cableLength, ' m');
-                appendSpecRow(table, 'USB Passthrough', spec.usbPassthrough);
-                appendSpecRow(table, 'Detachable Cable', spec.detachableCable);
                 break;
 
             case 11: // Wired Mouse
@@ -412,10 +404,18 @@
 
         if (displayValue !== undefined && displayValue !== '') {
             const row = table.insertRow();
+            row.className = 'border-bottom';
+
             const th = document.createElement('th');
+            th.className = 'ps-4 py-3 text-muted';
+            th.style.width = '35%';
+            th.style.minWidth = '200px';
             th.textContent = formatLabel(label);
+
             const td = document.createElement('td');
+            td.className = 'pe-4 py-3 fw-medium';
             td.textContent = displayValue;
+
             row.appendChild(th);
             row.appendChild(td);
         }
@@ -433,74 +433,209 @@
             .replace(/Sata/i, 'SATA')
             .replace(/Pcie/i, 'PCIe');
     }
+
+    function toggleTechSpecs() {
+        const content = document.getElementById('techSpecsContent');
+        const icon = document.getElementById('techSpecsIcon');
+
+        if (content.style.display === 'none') {
+            // Show content
+            content.style.display = 'table-row';
+            icon.classList.remove('bi-chevron-down');
+            icon.classList.add('bi-chevron-up', 'rotated');
+
+            // Always load specifications
+            const productId = window.location.pathname.split('/').pop();
+            const categoryId = window.productData?.categoryId;
+
+            if (categoryId) {
+                const specType = getSpecType(categoryId);
+                if (specType) {
+                    loadSpecifications(specType, productId, categoryId);
+                } else {
+                    fallbackToGeneralApi(productId);
+                }
+            }
+        } else {
+            // Hide content
+            content.style.display = 'none';
+            icon.classList.remove('bi-chevron-up', 'rotated');
+            icon.classList.add('bi-chevron-down');
+        }
+    }
+
+    // Helper function to get spec type from category ID
+    function getSpecType(categoryId) {
+        const specTypes = {
+            1: 'gpu', 2: 'cpu', 3: 'motherboard', 4: 'ram',
+            5: 'ssd', 6: 'psu', 7: 'case', 8: 'monitor',
+            9: 'wired-keyboard', 10: 'wireless-keyboard',
+            11: 'wired-mouse', 12: 'wireless-mouse'
+        };
+        return specTypes[categoryId] || '';
+    }
+
+    // Function to load specifications
+    function loadSpecifications(specType, productId, categoryId) {
+        fetch(`/api/specifications/${specType}/${productId}`)
+            .then(response => response.json())
+            .then(specData => {
+                if (!window.productData) window.productData = {};
+                window.productData.spec = specData;
+                renderSpecifications(specData, categoryId);
+            })
+            .catch(() => fallbackToGeneralApi(productId));
+    }
 </script>
-<script th:inline="javascript">
+<script>
+    // Cart functionality
+    const cartApi = {
+        checkCartStatus: async (productId) => {
+            try {
+                const response = await fetch(`/api/shopping-cart/exists/${productId}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include'
+                });
+                return response.ok ? await response.json() : false;
+            } catch (error) {
+                console.error('Error checking cart status:', error);
+                return false;
+            }
+        },
+
+        addToCart: async (productId) => {
+            const response = await fetch(`/api/shopping-cart?productId=${productId}`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error(text);
+            }
+            return true;
+        },
+
+        removeFromCart: async (productId) => {
+            await fetch(`/api/shopping-cart/${productId}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+            return true;
+        }
+    };
+
+    async function handleCartClick() {
+        const productId = cartBtn.dataset.productId;
+        const stockQuantity = parseInt(cartBtn.dataset.stockQuantity);
+
+        if (stockQuantity <= 0) return;
+
+        try {
+            const isInCart = await cartApi.checkCartStatus(productId);
+
+            if (isInCart) {
+                await cartApi.removeFromCart(productId);
+            } else {
+                await cartApi.addToCart(productId);
+            }
+
+            updateCartButton(!isInCart);
+        } catch (error) {
+            alert('Не удалось обновить корзину: ' + error.message);
+        }
+    }
+
+    function updateCartButton(isInCart) {
+        const icon = cartBtn.querySelector('i');
+        const stockQuantity = parseInt(cartBtn.dataset.stockQuantity);
+
+        cartBtn.disabled = isInCart || stockQuantity <= 0;
+
+        if (isInCart || stockQuantity <= 0) {
+            cartBtn.classList.remove('btn-primary');
+            cartBtn.classList.add('btn-secondary');
+            icon.classList.remove('bi-cart-plus');
+            icon.classList.add('bi-cart-check');
+        } else {
+            cartBtn.classList.remove('btn-secondary');
+            cartBtn.classList.add('btn-primary');
+            icon.classList.remove('bi-cart-check');
+            icon.classList.add('bi-cart-plus');
+        }
+    }
+
+    // Initialize cart functionality
+    async function initializeCart() {
+        try {
+            const isInCart = await cartApi.checkCartStatus(cartBtn.dataset.productId);
+            updateCartButton(isInCart);
+        } catch (error) {
+            console.error('Error initializing cart:', error);
+            updateCartButton(false);
+        }
+    }
+
+    // Initialize cart
+    initializeCart();
+    cartBtn.addEventListener('click', handleCartClick);
+</script>
+
+<script>
     document.addEventListener('DOMContentLoaded', function() {
         const wishlistBtn = document.getElementById('wishlistBtn');
         const productId = wishlistBtn.dataset.productId;
 
-        // Проверяем, есть ли товар в вишлисте при загрузке страницы
-        checkWishlistStatus();
-
-        wishlistBtn.addEventListener('click', function() {
-            fetch(`/api/wishlist/exists/${productId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            })
-                .then(response => response.json())
-                .then(isInWishlist => {
-                    if (isInWishlist) {
-                        // Удаляем из вишлиста
-                        fetch(`/api/wishlist/${productId}`, {
-                            method: 'DELETE',
-                            credentials: 'include'
-                        })
-                            .then(() => {
-                                updateWishlistButton(false);
-                            });
-                    } else {
-                        fetch(`/api/wishlist?productId=${productId}`, {
-                            method: 'POST',
-                            credentials: 'include' // Для передачи кук (сессии)
-                        })
-                            .then(response => {
-                                if (!response.ok) {
-                                    return response.text().then(text => { throw new Error(text) });
-                                }
-                                updateWishlistButton(true);
-                            })
-                            .catch(error => {
-                                console.error('Ошибка:', error);
-                                alert('Не удалось добавить в вишлист: ' + error.message);
-                            });
-                    }
+        const wishlistApi = {
+            checkStatus: async (productId) => {
+                const response = await fetch(`/api/wishlist/exists/${productId}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include'
                 });
-        });
+                return response.ok ? await response.json() : false;
+            },
 
-        function checkWishlistStatus() {
-            fetch(`/api/wishlist/exists/${productId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    }
-                    return false;
-                })
-                .then(isInWishlist => {
-                    updateWishlistButton(isInWishlist);
-                })
-                .catch(() => {
-                    // Если пользователь не аутентифицирован, оставляем серую кнопку
+            addToWishlist: async (productId) => {
+                const response = await fetch(`/api/wishlist?productId=${productId}`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(text);
+                }
+                return true;
+            },
+
+            removeFromWishlist: async (productId) => {
+                await fetch(`/api/wishlist/${productId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                return true;
+            }
+        };
+
+        async function handleWishlistClick() {
+            try {
+                const isInWishlist = await wishlistApi.checkStatus(productId);
+
+                if (isInWishlist) {
+                    await wishlistApi.removeFromWishlist(productId);
                     updateWishlistButton(false);
-                });
+                } else {
+                    await wishlistApi.addToWishlist(productId);
+                    updateWishlistButton(true);
+                }
+            } catch (error) {
+                alert('Не удалось обновить вишлист: ' + error.message);
+            }
+        }
+
+        async function checkWishlistStatus() {
+            const isInWishlist = await wishlistApi.checkStatus(productId);
+            updateWishlistButton(isInWishlist);
         }
 
         function updateWishlistButton(isInWishlist) {
@@ -517,98 +652,10 @@
                 icon.classList.add('bi-heart');
             }
         }
-    });
-</script>
-<script th:inline="javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-        const cartBtn = document.getElementById('cartBtn');
-        const wishlistBtn = document.getElementById('wishlistBtn');
-        const productId = cartBtn.dataset.productId;
-        const stockQuantity = cartBtn.dataset.stockQuantity;
 
-        // Проверяем статус корзины при загрузке страницы
-        checkCartStatus();
-
-        cartBtn.addEventListener('click', function() {
-            if (stockQuantity <= 0) return;
-
-            fetch(`/api/shopping-cart/exists/${productId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            })
-                .then(response => response.json())
-                .then(isInCart => {
-                    if (isInCart) {
-                        // Удаляем из корзины
-                        fetch(`/api/shopping-cart/${productId}`, {
-                            method: 'DELETE',
-                            credentials: 'include'
-                        })
-                            .then(() => {
-                                updateCartButton(false);
-                            });
-                    } else {
-                        // Добавляем в корзину
-                        fetch(`/api/shopping-cart?productId=${productId}`, {
-                            method: 'POST',
-                            credentials: 'include'
-                        })
-                            .then(response => {
-                                if (!response.ok) {
-                                    return response.text().then(text => { throw new Error(text) });
-                                }
-                                updateCartButton(true);
-                            })
-                            .catch(error => {
-                                console.error('Ошибка:', error);
-                                alert('Не удалось добавить в корзину: ' + error.message);
-                            });
-                    }
-                });
-        });
-
-        function checkCartStatus() {
-            fetch(`/api/shopping-cart/exists/${productId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    }
-                    return false;
-                })
-                .then(isInCart => {
-                    updateCartButton(isInCart);
-                })
-                .catch(() => {
-                    // Если пользователь не аутентифицирован, оставляем кнопку в исходном состоянии
-                    updateCartButton(false);
-                });
-        }
-
-        function updateCartButton(isInCart) {
-            const icon = cartBtn.querySelector('i');
-            if (isInCart || stockQuantity <= 0) {
-                cartBtn.disabled = true;
-                cartBtn.classList.remove('btn-primary');
-                cartBtn.classList.add('btn-secondary');
-                icon.classList.remove('bi-cart-plus');
-                icon.classList.add('bi-cart-check');
-            } else {
-                cartBtn.disabled = false;
-                cartBtn.classList.remove('btn-secondary');
-                cartBtn.classList.add('btn-primary');
-                icon.classList.remove('bi-cart-check');
-                icon.classList.add('bi-cart-plus');
-            }
-        }
+        // Initialize wishlist
+        checkWishlistStatus();
+        wishlistBtn.addEventListener('click', handleWishlistClick);
     });
 </script>
 
