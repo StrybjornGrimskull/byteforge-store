@@ -1,149 +1,64 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мои заказы и отзывы</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <th:block th:replace="fragments/navigation :: head-links"></th:block>
+    <title>My Orders and Reviews</title>
     <style>
-        /* CSS переменные для темной темы */
-        :root {
-            --primary-color: #6c5ce7;
-            --secondary-color: #a29bfe;
-            --dark-color: #2d3436;
-            --light-color: #f5f6fa;
-        }
-        
         body {
-            background-color: #f8f9fa;
-            font-family: 'Poppins', sans-serif;
+            padding-top: 56px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 20px;
-            flex: 1;
-        }
-        
-        .header {
-            margin-bottom: 30px;
-            color: #343a40;
-            border-bottom: 2px solid #dee2e6;
-            padding-bottom: 10px;
-        }
-        
-        .table-container {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .table {
-            margin-bottom: 0;
-        }
-        
-        .table thead th {
-            border-bottom: 2px solid #dee2e6;
-            font-weight: 600;
-        }
-        
-        .btn-review {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 4px;
-            text-decoration: none;
-            transition: all 0.3s;
-            border: none;
-        }
-        
-        .btn-review:hover {
-            background-color: #5a4bd1;
-            color: white;
-            transform: translateY(-1px);
-        }
-        
-        .reviewed-badge {
-            background-color: #6c757d;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-        }
-        
-        .product-name {
-            font-weight: 500;
-        }
-        
-        /* Стили для навигации */
-        .navbar-brand {
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        
-        .navbar-nav .nav-link i {
-            font-size: 1.1rem;
         }
     </style>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
-<div th:replace="fragments/navigation :: navigation"></div>
+<nav th:replace="fragments/navigation :: navigation"></nav>
 
-<div class="main-content">
+<main class="flex-grow-1 py-4">
     <div class="container">
-        <div class="header">
-            <h2><i class="bi bi-bag me-2"></i>Мои купленные товары</h2>
-            <p class="text-muted">Здесь вы можете оставить отзывы на приобретённые товары</p>
+        <div class="mb-4 pb-2 border-bottom">
+            <h2 class="mb-2"><i class="bi bi-bag me-2"></i>My Purchased Products</h2>
+            <p class="text-muted mb-0">Here you can leave reviews for your purchased products</p>
         </div>
 
-        <div class="table-container">
-            <table class="table table-hover">
-                <thead class="table-light">
-                <tr>
-                    <th>Название товара</th>
-                    <th class="text-end">Действие</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="product : ${products}">
-                    <td class="product-name" th:text="${product.name}"></td>
-                    <td class="text-end">
-                        <span th:if="${!reviewedProductIds.contains(product.id)}">
-                            <a class="btn-review" th:href="@{'/reviews/create/' + ${product.id}}">
-                                <i class="bi bi-chat-dots me-1"></i>Оставить отзыв
-                            </a>
-                        </span>
-                        <span th:if="${reviewedProductIds.contains(product.id)}">
-                            <span class="reviewed-badge">
-                                <i class="bi bi-check-circle me-1"></i>Отзыв оставлен
-                            </span>
-                        </span>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Product Name</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="product : ${products}">
+                                <td class="align-middle fw-medium" th:text="${product.name}"></td>
+                                <td class="text-end">
+                                    <span th:if="${!reviewedProductIds.contains(product.id)}">
+                                        <a class="btn btn-primary btn-sm" th:href="@{'/reviews/create/' + ${product.id}}">
+                                            <i class="bi bi-chat-dots me-1"></i>Leave a Review
+                                        </a>
+                                    </span>
+                                    <span th:if="${reviewedProductIds.contains(product.id)}">
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-check-circle me-1"></i>Reviewed
+                                        </span>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</main>
 
-<th:block th:replace="fragments/footer :: footer"></th:block>
+<footer th:replace="fragments/footer :: footer" class="mt-auto"></footer>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script th:replace="fragments/navigation :: user-account-script"></script>
 

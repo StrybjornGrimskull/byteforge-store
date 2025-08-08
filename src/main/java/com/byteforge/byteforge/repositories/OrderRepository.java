@@ -13,8 +13,13 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Optional<Order> findFirstByCustomerIdAndActiveTrueOrderByDateDesc(Integer customerId);
+
     @Query("SELECT o FROM Order o JOIN FETCH o.orderProducts op JOIN FETCH op.product WHERE o.customer.id = :customerId AND o.active = true")
     List<Order> findByCustomerIdAndActiveTrue(@Param("customerId") Integer customerId);
+
     @Query("SELECT o FROM Order o JOIN FETCH o.orderProducts op JOIN FETCH op.product WHERE o.customer.id = :customerId AND o.active = false")
     List<Order> findByCustomerIdAndActiveFalse(@Param("customerId") Integer customerId);
+
+    @Query("SELECT DISTINCT o FROM Order o JOIN FETCH o.orderProducts op JOIN FETCH op.product WHERE o.active = true ORDER BY o.date DESC")
+    List<Order> findAllActiveOrders();
 }

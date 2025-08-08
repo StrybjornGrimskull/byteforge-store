@@ -1,5 +1,6 @@
 package com.byteforge.byteforge.services;
 
+import com.byteforge.byteforge.constants.ApplicationConstants;
 import com.byteforge.byteforge.dto.request.OrderRequestDto;
 import com.byteforge.byteforge.dto.response.ActiveOrderDto;
 import com.byteforge.byteforge.dto.response.OrderResponseDto;
@@ -12,11 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class OrderService{
+public class OrderService {
 
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
@@ -29,7 +31,7 @@ public class OrderService{
     public OrderResponseDto createOrder(String email, OrderRequestDto orderDto) {
         // 1. Получаем покупателя
         Customer customer = customerRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new RuntimeException(ApplicationConstants.CUSTOMER_NOT_FOUND));
 
         // 2. Получаем товары из корзины
         List<ShoppingCart> cartItems = shoppingCartRepository.findAllProductCustomerByEmail(email);
@@ -68,7 +70,7 @@ public class OrderService{
 
         // 6. Сохраняем заказ и очищаем корзину
         Order savedOrder = orderRepository.save(order);
-        
+
         // 7. Уменьшаем количество на складе для каждого продукта
         for (OrderProduct op : savedOrder.getOrderProducts()) {
             Product product = op.getProduct();
@@ -98,7 +100,7 @@ public class OrderService{
     @Transactional(readOnly = true)
     public List<ActiveOrderDto> getActiveOrdersForUser(String email) {
         Customer customer = customerRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new RuntimeException(ApplicationConstants.CUSTOMER_NOT_FOUND));
         List<Order> orders = orderRepository.findByCustomerIdAndActiveTrue(customer.getId());
         return orders.stream().map(ActiveOrderDto::fromEntity).toList();
     }
@@ -106,10 +108,24 @@ public class OrderService{
     @Transactional(readOnly = true)
     public List<OrderResponseDto> getCompletedOrdersForUser(String email) {
         Customer customer = customerRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new RuntimeException(ApplicationConstants.CUSTOMER_NOT_FOUND));
         List<Order> orders = orderRepository.findByCustomerIdAndActiveFalse(customer.getId());
-        // "Прогреваем" ленивые коллекции
-        orders.forEach(order -> order.getOrderProducts().size());
         return orders.stream().map(OrderResponseDto::fromEntity).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderResponseDto> getAllActiveOrders() {
+        List<Order> orders = orderRepository.findAllActiveOrders();
+        return orders.stream().map(OrderResponseDto::fromEntity).toList();
+    }
+
+    @Transactional
+    public void completeOrder(Long orderId) {
+        Optional<Order> optional = orderRepository.findById(orderId);
+        if (optional.isEmpty()) {
+            throw new RuntimeException(ApplicationConstants.ORDER_NOT_FOUND);
+        }
+        Order order = optional.get();
+        order.setActive(false);
     }
 }
