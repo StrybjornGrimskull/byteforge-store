@@ -6,107 +6,127 @@
     <title>User Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        .profile-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .profile-card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-        }
-        .profile-title {
-            border-bottom: 1px solid #eee;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
-        }
-        .info-item {
-            margin-bottom: 1.2rem;
-        }
-        .info-label {
-            font-weight: 500;
-            color: #6c757d;
-            display: flex;
-            align-items: center;
-        }
-        .info-label i {
-            margin-right: 8px;
-            width: 20px;
-            text-align: center;
-        }
-        .info-value {
-            font-weight: 400;
-            color: #212529;
-            padding-left: 28px;
-        }
-    </style>
+    <!-- Bootstrap CSS and Icons are already included -->
 </head>
 <body>
 
 <div th:replace="fragments/navigation :: navigation"></div>
 
-<div class="container py-5">
-    <div class="profile-container">
+<div class="bg-light py-5 min-vh-100">
+    <div class="container">
         <div th:if="${user == null}">
             <div class="alert alert-warning text-center">Profile not found or you are not logged in.</div>
         </div>
 
-        <div th:if="${user != null}">
-            <div class="card profile-card p-4">
-                <div class="profile-title">
-                    <h3 class="mb-0"><i class="bi bi-person-badge"></i> Personal Information</h3>
-                </div>
-
-                <div id="active-orders-block" class="mb-4">
-                    <div class="text-center text-muted">Loading active orders...</div>
-                </div>
-
-                <div class="card-body px-0 pt-0">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="info-item">
-                                <div class="info-label"><i class="bi bi-person"></i>First Name</div>
-                                <div class="info-value" th:text="${user.firstName}"></div>
+        <div th:if="${user != null}" class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                    <!-- Profile Header -->
+                    <div class="bg-primary bg-opacity-10 p-4 border-bottom">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary bg-opacity-25 rounded-circle p-3 me-4">
+                                <i class="bi bi-person-badge fs-1 text-primary"></i>
                             </div>
-                            <div class="info-item">
-                                <div class="info-label"><i class="bi bi-person"></i>Last Name</div>
-                                <div class="info-value" th:text="${user.lastName}"></div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label"><i class="bi bi-envelope"></i>Email</div>
-                                <div class="info-value" th:text="${user.email}"></div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="info-item">
-                                <div class="info-label"><i class="bi bi-telephone"></i>Phone</div>
-                                <div class="info-value" th:text="${user.phoneNumber} ?: 'Not specified'"></div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label"><i class="bi bi-geo-alt"></i>Address</div>
-                                <div class="info-value" th:text="${user.address} ?: 'Not specified'"></div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label"><i class="bi bi-pin-map"></i>City/Postal Code</div>
-                                <div class="info-value">
-                                    <span th:text="${user.city} ?: 'Not specified'"></span>,
-                                    <span th:text="${user.postIndex} ?: ''"></span>
-                                </div>
+                            <div>
+                                <h2 class="h4 mb-1">Personal Information</h2>
+                                <p class="text-muted mb-0">View and manage your profile details</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-end mt-4">
-                        <a th:href="@{/orders/history}" class="btn btn-outline-secondary me-2">
-                            <i class="bi bi-clock-history"></i> Order History
-                        </a>
-                        <a th:href="@{/reviews/my-orders}" class="btn btn-outline-secondary me-2">
-                            <i class="bi bi-journal-text"></i> Мои заказы/Отзывы
-                        </a>
-                        <a href="#" class="btn btn-outline-primary">
-                            <i class="bi bi-pencil"></i> Edit Profile
-                        </a>
+                    <!-- Active Orders Section -->
+                    <div id="active-orders-block" class="p-4 border-bottom">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-cart-check fs-4 text-primary me-2"></i>
+                            <h5 class="mb-0">Active Orders</h5>
+                        </div>
+                        <div class="text-center text-muted py-3">
+                            <div class="spinner-border text-primary spinner-border-sm me-2" aria-hidden="true">
+                                <span class="visually-hidden">Loading orders</span>
+                            </div>
+                            <output class="d-inline">Loading your active orders...</output>
+                        </div>
+                    </div>
+
+                    <!-- Profile Information -->
+                    <div class="p-4">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="card h-100 border-0 shadow-sm rounded-3">
+                                    <div class="card-body">
+                                        <h6 class="text-uppercase text-muted mb-4">Personal Details</h6>
+                                        <div class="d-flex mb-3">
+                                            <div class="icon-circle bg-primary bg-opacity-10 text-primary me-3">
+                                                <i class="bi bi-person"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-muted small mb-0">Full Name</p>
+                                                <p class="mb-0 fw-medium" th:text="${user.firstName + ' ' + user.lastName}"></p>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex mb-3">
+                                            <div class="icon-circle bg-primary bg-opacity-10 text-primary me-3">
+                                                <i class="bi bi-envelope"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-muted small mb-0">Email Address</p>
+                                                <p class="mb-0 fw-medium" th:text="${user.email}"></p>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex">
+                                            <div class="icon-circle bg-primary bg-opacity-10 text-primary me-3">
+                                                <i class="bi bi-telephone"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-muted small mb-0">Phone Number</p>
+                                                <p class="mb-0 fw-medium" th:text="${user.phoneNumber ?: 'Not specified'}"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 border-0 shadow-sm rounded-3">
+                                    <div class="card-body">
+                                        <h6 class="text-uppercase text-muted mb-4">Address Information</h6>
+                                        <div class="d-flex mb-3">
+                                            <div class="icon-circle bg-primary bg-opacity-10 text-primary me-3">
+                                                <i class="bi bi-geo-alt"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-muted small mb-0">Address</p>
+                                                <p class="mb-0 fw-medium" th:text="${user.address ?: 'Not specified'}"></p>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex">
+                                            <div class="icon-circle bg-primary bg-opacity-10 text-primary me-3">
+                                                <i class="bi bi-pin-map"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-muted small mb-0">City & Postal Code</p>
+                                                <p class="mb-0 fw-medium">
+                                                    <span th:text="${user.city ?: 'Not specified'}"></span>
+                                                    <span th:if="${user.postIndex}" th:text="', ' + ${user.postIndex}"></span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                            <a th:href="@{/orders/history}" class="btn btn-outline-secondary d-flex align-items-center">
+                                <i class="bi bi-clock-history me-2"></i> Order History
+                            </a>
+                            <a th:href="@{/reviews/my-orders}" class="btn btn-outline-secondary d-flex align-items-center">
+                                <i class="bi bi-journal-text me-2"></i> My Orders/Reviews
+                            </a>
+                            <a href="#" class="btn btn-primary d-flex align-items-center">
+                                <i class="bi bi-pencil-square me-2"></i> Edit Profile
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
