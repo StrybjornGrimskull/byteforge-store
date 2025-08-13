@@ -27,10 +27,9 @@ public class ProjectSecurityProdConfig {
 
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
-     @Bean
+    @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-//                .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 // .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class) // УБРАТЬ или добавить null-check в фильтр!
                 .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
@@ -40,7 +39,7 @@ public class ProjectSecurityProdConfig {
                 .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .requiresChannel(rcc -> rcc.anyRequest().requiresSecure()) //HTTPS
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/admin").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/notices").hasRole("USER")
                         .requestMatchers("/api/brands/**").permitAll()
                         .requestMatchers("/api/specifications/**").permitAll()
@@ -66,25 +65,25 @@ public class ProjectSecurityProdConfig {
                                 "/brands",
                                 "/error",
                                 "/auth/**"
-                                ).permitAll()
+                        ).permitAll()
                 );
-         http
-                 .exceptionHandling()
-                 .accessDeniedPage("/auth/login?error=forbidden")
-                 .and()
-                 .formLogin(form -> form
-                         .loginPage("/auth/login")
-                         .loginProcessingUrl("/auth/login")
-                         .defaultSuccessUrl("/", true)
-                         .failureHandler(customAuthenticationFailureHandler))
-                 .logout(logout -> logout
-                         .logoutUrl("/auth/logout")
-                         .logoutSuccessUrl("/?logout=true")
-                         .invalidateHttpSession(true)
-                         .deleteCookies("JSESSIONID")
-                         .clearAuthentication(true)
-                 );
-         return http.build();
+        http
+                .exceptionHandling()
+                .accessDeniedPage("/auth/login?error=forbidden")
+                .and()
+                .formLogin(form -> form
+                        .loginPage("/auth/login")
+                        .loginProcessingUrl("/auth/login")
+                        .defaultSuccessUrl("/", true)
+                        .failureHandler(customAuthenticationFailureHandler))
+                .logout(logout -> logout
+                        .logoutUrl("/auth/logout")
+                        .logoutSuccessUrl("/?logout=true")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .clearAuthentication(true)
+                );
+        return http.build();
     }
 
     @Bean

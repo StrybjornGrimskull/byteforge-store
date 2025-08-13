@@ -25,7 +25,7 @@
                     <div class="bg-primary bg-opacity-10 p-4 border-bottom">
                         <div class="d-flex align-items-center">
                             <div class="bg-primary bg-opacity-25 rounded-circle p-3 me-4">
-                                <i class="bi bi-person-badge fs-1 text-primary"></i>
+                                <i class="bi bi-person-badge fs-2 text-primary"></i>
                             </div>
                             <div>
                                 <h2 class="h4 mb-1">Personal Information</h2>
@@ -37,7 +37,7 @@
                     <!-- Active Orders Section -->
                     <div id="active-orders-block" class="p-4 border-bottom">
                         <div class="d-flex align-items-center mb-3">
-                            <i class="bi bi-cart-check fs-4 text-primary me-2"></i>
+                            <i class="bi bi-cart-check fs-3 text-primary me-2"></i>
                             <h5 class="mb-0">Active Orders</h5>
                         </div>
                         <div class="text-center text-muted py-3">
@@ -57,29 +57,29 @@
                                         <h6 class="text-uppercase text-muted mb-4">Personal Details</h6>
                                         <div class="d-flex mb-3">
                                             <div class="icon-circle bg-primary bg-opacity-10 text-primary me-3">
-                                                <i class="bi bi-person"></i>
+                                                <i class="bi bi-person fs-4"></i>
                                             </div>
                                             <div>
                                                 <p class="text-muted small mb-0">Full Name</p>
-                                                <p class="mb-0 fw-medium" th:text="${user.firstName + ' ' + user.lastName}"></p>
+                                                <p class="mb-0 fw-medium" id="view-fullname" th:text="${user.firstName + ' ' + user.lastName}"></p>
                                             </div>
                                         </div>
                                         <div class="d-flex mb-3">
                                             <div class="icon-circle bg-primary bg-opacity-10 text-primary me-3">
-                                                <i class="bi bi-envelope"></i>
+                                                <i class="bi bi-envelope fs-4"></i>
                                             </div>
                                             <div>
                                                 <p class="text-muted small mb-0">Email Address</p>
-                                                <p class="mb-0 fw-medium" th:text="${user.email}"></p>
+                                                <p class="mb-0 fw-medium" id="view-email" th:text="${user.email}"></p>
                                             </div>
                                         </div>
                                         <div class="d-flex">
                                             <div class="icon-circle bg-primary bg-opacity-10 text-primary me-3">
-                                                <i class="bi bi-telephone"></i>
+                                                <i class="bi bi-telephone fs-4"></i>
                                             </div>
                                             <div>
                                                 <p class="text-muted small mb-0">Phone Number</p>
-                                                <p class="mb-0 fw-medium" th:text="${user.phoneNumber ?: 'Not specified'}"></p>
+                                                <p class="mb-0 fw-medium" id="view-phone" th:text="${user.phoneNumber ?: 'Not specified'}"></p>
                                             </div>
                                         </div>
                                     </div>
@@ -91,11 +91,11 @@
                                         <h6 class="text-uppercase text-muted mb-4">Address Information</h6>
                                         <div class="d-flex mb-3">
                                             <div class="icon-circle bg-primary bg-opacity-10 text-primary me-3">
-                                                <i class="bi bi-geo-alt"></i>
+                                                <i class="bi bi-geo-alt fs-4"></i>
                                             </div>
                                             <div>
                                                 <p class="text-muted small mb-0">Address</p>
-                                                <p class="mb-0 fw-medium" th:text="${user.address ?: 'Not specified'}"></p>
+                                                <p class="mb-0 fw-medium" id="view-address" th:text="${user.address ?: 'Not specified'}"></p>
                                             </div>
                                         </div>
                                         <div class="d-flex">
@@ -105,8 +105,8 @@
                                             <div>
                                                 <p class="text-muted small mb-0">City & Postal Code</p>
                                                 <p class="mb-0 fw-medium">
-                                                    <span th:text="${user.city ?: 'Not specified'}"></span>
-                                                    <span th:if="${user.postIndex}" th:text="', ' + ${user.postIndex}"></span>
+                                                    <span id="view-city" th:text="${user.city ?: 'Not specified'}"></span>
+                                                    <span id="view-postIndex" th:text="${user.postIndex != null} ? ', ' + ${user.postIndex} : ''"></span>
                                                 </p>
                                             </div>
                                         </div>
@@ -118,13 +118,13 @@
                         <!-- Action Buttons -->
                         <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
                             <a th:href="@{/orders/history}" class="btn btn-outline-secondary d-flex align-items-center">
-                                <i class="bi bi-clock-history me-2"></i> Order History
+                                <i class="bi bi-clock-history me-2 fs-5"></i> Order History
                             </a>
                             <a th:href="@{/reviews/my-orders}" class="btn btn-outline-secondary d-flex align-items-center">
-                                <i class="bi bi-journal-text me-2"></i> My Orders/Reviews
+                                <i class="bi bi-journal-text me-2 fs-5"></i> My Orders/Reviews
                             </a>
-                            <a href="#" class="btn btn-primary d-flex align-items-center">
-                                <i class="bi bi-pencil-square me-2"></i> Edit Profile
+                            <a href="#" id="editProfileBtn" class="btn btn-primary d-flex align-items-center">
+                                <i class="bi bi-pencil-square me-2 fs-5"></i> Edit Profile
                             </a>
                         </div>
                     </div>
@@ -134,11 +134,93 @@
     </div>
 </div>
 
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editProfileForm" class="row g-3">
+          <div class="col-md-6">
+            <label for="firstName" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="firstName" maxlength="100">
+          </div>
+          <div class="col-md-6">
+            <label for="lastName" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="lastName" maxlength="100">
+          </div>
+            <div class="col-md-12">
+                <fieldset class="form-group" aria-describedby="phoneHelp">
+                    <legend class="col-form-label pt-0 form-label">Phone</legend>
+                    <div class="input-group input-group-sm flex-nowrap align-items-center" aria-label="Phone number input">
+                        <span class="px-1 d-flex align-items-center" style="height: 38px; padding: 0 .25rem; line-height: 1.5;">+</span>
+                        <input type="text" class="form-control w-auto digit-only fs-6"
+                               style="width:3ch; min-width:3ch; max-width:3ch; text-align:center; padding:.25rem 0; border:0; background:transparent; box-shadow:none;"
+                               id="phoneCountry" inputmode="numeric" pattern="\d{3}"
+                               maxlength="3" size="3" placeholder="380" title="3-digit country code" aria-label="Country code">
+                        <span class="px-1 d-flex align-items-center" style="height: 38px; padding: 0 .25rem; line-height: 1.5;"> - (</span>
+                        <input type="text" class="form-control w-auto digit-only fs-6"
+                               style="width:3ch; min-width:3ch; max-width:3ch; text-align:center; padding:.25rem 0; border:0; background:transparent; box-shadow:none;"
+                               id="phonePart1" inputmode="numeric" pattern="\d{3}"
+                               maxlength="3" size="3" placeholder="XXX" title="3-digit area code" aria-label="Area code">
+                        <span class="px-1 d-flex align-items-center" style="height: 38px; padding: 0 .25rem; line-height: 1.5;">) - </span>
+                        <input type="text" class="form-control w-auto digit-only fs-6"
+                               style="width:3ch; min-width:3ch; max-width:3ch; text-align:center; padding:.25rem 0; border:0; background:transparent; box-shadow:none;"
+                               id="phonePart2" inputmode="numeric" pattern="\d{3}"
+                               maxlength="3" size="3" placeholder="XXX" title="3-digit exchange code" aria-label="Exchange code">
+                        <span class="px-1 d-flex align-items-center" style="height: 38px; padding: 0 .25rem; line-height: 1.5;"> - </span>
+                        <input type="text" class="form-control w-auto digit-only fs-6"
+                               style="width:2ch; min-width:2ch; max-width:2ch; text-align:center; padding:.25rem 0; border:0; background:transparent; box-shadow:none;"
+                               id="phonePart3" inputmode="numeric" pattern="\d{2}"
+                               maxlength="2" size="2" placeholder="XX" title="2-digit subscriber number" aria-label="Subscriber number part 1">
+                        <span class="px-1 d-flex align-items-center" style="height: 38px; padding: 0 .25rem; line-height: 1.5;"> - </span>
+                        <input type="text" class="form-control w-auto digit-only fs-6"
+                               style="width:2ch; min-width:2ch; max-width:2ch; text-align:center; padding:.25rem 0; border:0; background:transparent; box-shadow:none;"
+                               id="phonePart4" inputmode="numeric" pattern="\d{2}"
+                               maxlength="2" size="2" placeholder="XX" title="2-digit subscriber number" aria-label="Subscriber number part 2">
+                    </div>
+                </fieldset>
+            </div>
+          <div class="col-md-6">
+            <label for="city" class="form-label">City</label>
+            <input type="text" class="form-control" id="city" maxlength="255">
+          </div>
+          <div class="col-md-6">
+            <label for="postIndex" class="form-label">Postal Code</label>
+            <input type="text" class="form-control digit-only" id="postIndex" inputmode="numeric" pattern="\d*" placeholder="Postal code">
+          </div>
+          <div class="col-12">
+            <label for="address" class="form-label">Address</label>
+            <input type="text" class="form-control" id="address" maxlength="1000">
+          </div>
+          <div class="col-md-6">
+            <label for="birthDate" class="form-label">Birth Date</label>
+            <input type="date" class="form-control" id="birthDate">
+          </div>
+        </form>
+        <div class="alert alert-danger d-none mt-2" id="editProfileError"></div>
+        <div class="alert alert-success d-none mt-2" id="editProfileSuccess">Profile updated successfully</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" id="saveProfileBtn" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <th:block th:replace="fragments/footer :: footer"></th:block>
 <script th:replace="fragments/navigation :: user-account-script"></script>
 
+<!-- Bootstrap JS (for Modal) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Load Active Orders
     fetch('/api/orders/active')
         .then(res => res.json())
         .then(orders => {
@@ -159,6 +241,146 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('active-orders-block').innerHTML =
                 '<div class="alert alert-danger">Failed to load active orders</div>';
         });
+
+    // Edit Profile Modal logic
+    const editBtn = document.getElementById('editProfileBtn');
+    const modalEl = document.getElementById('editProfileModal');
+    const modal = new bootstrap.Modal(modalEl);
+    const errorBox = document.getElementById('editProfileError');
+    const successBox = document.getElementById('editProfileSuccess');
+
+    function showError(msg) {
+        errorBox.textContent = msg;
+        errorBox.classList.remove('d-none');
+        successBox.classList.add('d-none');
+    }
+    function showSuccess() {
+        successBox.classList.remove('d-none');
+        errorBox.classList.add('d-none');
+    }
+
+    if (editBtn) {
+        editBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Fetch current profile
+            fetch('/api/profile')
+                .then(r => {
+                    if (!r.ok) throw new Error('Failed to load profile');
+                    return r.json();
+                })
+                .then(p => {
+                    // Prefill form
+                    document.getElementById('firstName').value = p.firstName ?? '';
+                    document.getElementById('lastName').value = p.lastName ?? '';
+                    // Prefill phone parts
+                    (function() {
+                        const raw = (p.phone ?? '').toString();
+                        const digits = raw.replace(/\D/g, '');
+                        let cc = '', local = '';
+                        if (digits.length >= 10) {
+                            local = digits.slice(-10);
+                            cc = digits.slice(0, digits.length - 10);
+                        }
+                        document.getElementById('phoneCountry').value = cc || '';
+                        document.getElementById('phonePart1').value = local ? local.slice(0,3) : '';
+                        document.getElementById('phonePart2').value = local ? local.slice(3,6) : '';
+                        document.getElementById('phonePart3').value = local ? local.slice(6,8) : '';
+                        document.getElementById('phonePart4').value = local ? local.slice(8,10) : '';
+                    })();
+                    document.getElementById('city').value = p.city ?? '';
+                    document.getElementById('address').value = p.address ?? '';
+                    document.getElementById('postIndex').value = p.postIndex ?? '';
+                    document.getElementById('birthDate').value = p.birthDate ? p.birthDate : '';
+
+                    errorBox.classList.add('d-none');
+                    successBox.classList.add('d-none');
+                    modal.show();
+                })
+                .catch(err => showError(err.message));
+        });
+    }
+
+    // Save profile
+    const saveBtn = document.getElementById('saveProfileBtn');
+    saveBtn.addEventListener('click', function() {
+        // Build phone from parts
+        const cc = (document.getElementById('phoneCountry').value || '').replace(/\D/g, '');
+        const p1 = (document.getElementById('phonePart1').value || '').replace(/\D/g, '');
+        const p2 = (document.getElementById('phonePart2').value || '').replace(/\D/g, '');
+        const p3 = (document.getElementById('phonePart3').value || '').replace(/\D/g, '');
+        const p4 = (document.getElementById('phonePart4').value || '').replace(/\D/g, '');
+        let phoneVal = '';
+        const allEmpty = !cc && !p1 && !p2 && !p3 && !p4;
+        if (!allEmpty) {
+            if (!(cc.length >= 1 && cc.length <= 3)) {
+                showError('Country code must be 1-3 digits.');
+                document.getElementById('phoneCountry').focus();
+                return;
+            }
+            if (!(p1.length === 3 && p2.length === 3 && p3.length === 2 && p4.length === 2)) {
+                showError('Complete phone number: 3-3-2-2 digits.');
+                if (p1.length !== 3) document.getElementById('phonePart1').focus();
+                else if (p2.length !== 3) document.getElementById('phonePart2').focus();
+                else if (p3.length !== 2) document.getElementById('phonePart3').focus();
+                else document.getElementById('phonePart4').focus();
+                return;
+            }
+            phoneVal = `+${cc}${p1}${p2}${p3}${p4}`;
+        }
+        const dto = {
+            firstName: document.getElementById('firstName').value?.trim() || null,
+            lastName: document.getElementById('lastName').value?.trim() || null,
+            phone: phoneVal,
+            city: document.getElementById('city').value?.trim() || null,
+            address: document.getElementById('address').value?.trim() || null,
+            postIndex: (function(){
+                const v = document.getElementById('postIndex').value;
+                return v === '' ? null : Number(v);
+            })(),
+            birthDate: (function(){
+                const v = document.getElementById('birthDate').value;
+                return v === '' ? null : v;
+            })()
+        };
+
+        fetch('/api/profile', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dto)
+        })
+        .then(r => {
+            if (!r.ok) return r.text().then(t => { throw new Error(t || 'Failed to update profile'); });
+            // Optimistically update visible fields
+            const fn = dto.firstName || '';
+            const ln = dto.lastName || '';
+            document.getElementById('view-fullname').textContent = (fn + ' ' + ln).trim() || document.getElementById('view-fullname').textContent;
+            document.getElementById('view-phone').textContent = dto.phone || 'Not specified';
+            document.getElementById('view-address').textContent = dto.address || 'Not specified';
+            document.getElementById('view-city').textContent = dto.city || 'Not specified';
+            const postIndexEl = document.getElementById('view-postIndex');
+            if (postIndexEl) {
+                if (dto.postIndex != null && !isNaN(dto.postIndex)) {
+                    postIndexEl.textContent = ', ' + dto.postIndex;
+                } else {
+                    postIndexEl.textContent = '';
+                }
+            }
+            showSuccess();
+            setTimeout(() => modal.hide(), 700);
+        })
+        .catch(err => showError(err.message));
+    });
+
+    // Enforce digits-only for specific inputs
+    document.querySelectorAll('input.digit-only').forEach(inp => {
+        inp.addEventListener('input', () => {
+            const digits = inp.value.replace(/\D/g, '');
+            const max = inp.getAttribute('maxlength');
+            inp.value = max ? digits.slice(0, parseInt(max, 10)) : digits;
+        });
+    });
 });
 </script>
 
