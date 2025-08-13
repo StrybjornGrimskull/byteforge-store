@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - ByteForge</title>
+    <title>Admin Orders - ByteForge</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -46,60 +46,60 @@
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
-                        <tr>
-                            <th>Order #</th>
-                            <th>Customer</th>
-                            <th>Date</th>
-                            <th>Products</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Products</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="order : ${activeOrders}" class="align-middle">
-                            <td>
-                                <a th:href="'#'" class="text-decoration-none">
-                                    #<span th:text="${order.id}"></span>
-                                </a>
-                            </td>
-                            <td>
-                                <div th:text="${order.firstName + ' ' + order.lastName}"></div>
-                                <small class="text-muted" th:text="${order.email}"></small>
-                            </td>
-                            <td>
-                                <span th:text="${#temporals.format(order.date, 'dd.MM.yyyy HH:mm')}"></span>
-                            </td>
-                            <td>
-                                <div class="d-flex flex-wrap gap-1">
+                    <tr th:each="order : ${activeOrders}" class="align-middle">
+                        <td>
+                            <a th:href="'#'" class="text-decoration-none">
+                                #<span th:text="${order.id}"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <div th:text="${order.firstName + ' ' + order.lastName}"></div>
+                            <small class="text-muted" th:text="${order.email}"></small>
+                        </td>
+                        <td>
+                            <span th:text="${#temporals.format(order.date, 'dd.MM.yyyy HH:mm')}"></span>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-wrap gap-1">
                                     <span th:each="product : ${order.orderProducts}"
                                           class="badge bg-light text-dark border"
                                           th:text="${product.product.name + ' x' + product.quantity}">
                                     </span>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="fw-bold" th:text="${#numbers.formatDecimal(order.totalPrice, 1, 2)} + ' $'"></span>
-                            </td>
-                            <td>
-                                <span class="badge bg-warning text-dark">Processing</span>
-                            </td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-eye"></i> View
-                                </button>
-                                <button class="btn btn-sm btn-outline-success complete-order-btn"
-                                        th:data-order-id="${order.id}">
-                                    <i class="bi bi-check2"></i> Complete
-                                </button>
-                            </td>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(activeOrders)}">
-                            <td colspan="7" class="text-center py-4 text-muted">
-                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                                No active orders found
-                            </td>
-                        </tr>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="fw-bold" th:text="${#numbers.formatDecimal(order.totalPrice, 1, 2)} + ' $'"></span>
+                        </td>
+                        <td>
+                            <span class="badge bg-warning text-dark">Processing</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> View
+                            </button>
+                            <button class="btn btn-sm btn-outline-success complete-order-btn"
+                                    th:data-order-id="${order.id}">
+                                <i class="bi bi-check2"></i> Complete
+                            </button>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(activeOrders)}">
+                        <td colspan="7" class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                            No active orders found
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -137,18 +137,18 @@
                     },
                     body: JSON.stringify({})
                 })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.text().then(text => { throw new Error(text) });
-                    }
-                    return response.text();
-                })
-                .then(() => {
-                    // Show success message
-                    const toast = document.createElement('div');
-                    toast.className = 'position-fixed top-0 end-0 p-3';
-                    toast.style.zIndex = '1100';
-                    toast.innerHTML = `
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.text().then(text => { throw new Error(text) });
+                        }
+                        return response.text();
+                    })
+                    .then(() => {
+                        // Show success message
+                        const toast = document.createElement('div');
+                        toast.className = 'position-fixed top-0 end-0 p-3';
+                        toast.style.zIndex = '1100';
+                        toast.innerHTML = `
                         <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
                             <div class="toast-header bg-success text-white">
                                 <strong class="me-auto">Success</strong>
@@ -159,45 +159,45 @@
                             </div>
                         </div>
                     `;
-                    document.body.appendChild(toast);
+                        document.body.appendChild(toast);
 
-                    // Remove the toast after 3 seconds
-                    setTimeout(() => {
-                        toast.remove();
-                    }, 3000);
+                        // Remove the toast after 3 seconds
+                        setTimeout(() => {
+                            toast.remove();
+                        }, 3000);
 
-                    // Remove the row from the table
-                    orderRow.style.opacity = '0.5';
-                    setTimeout(() => {
-                        orderRow.remove();
+                        // Remove the row from the table
+                        orderRow.style.opacity = '0.5';
+                        setTimeout(() => {
+                            orderRow.remove();
 
-                        // Update orders count
-                        const orderCount = document.querySelectorAll('tbody tr:not(.no-orders)').length;
-                        const orderCountBadge = document.querySelector('.order-count span');
-                        if (orderCountBadge) {
-                            orderCountBadge.textContent = orderCount;
-                        }
+                            // Update orders count
+                            const orderCount = document.querySelectorAll('tbody tr:not(.no-orders)').length;
+                            const orderCountBadge = document.querySelector('.order-count span');
+                            if (orderCountBadge) {
+                                orderCountBadge.textContent = orderCount;
+                            }
 
-                        // Show no orders message if needed
-                        if (orderCount === 0) {
-                            const tbody = document.querySelector('tbody');
-                            tbody.innerHTML = `
+                            // Show no orders message if needed
+                            if (orderCount === 0) {
+                                const tbody = document.querySelector('tbody');
+                                tbody.innerHTML = `
                                 <tr class="no-orders">
                                     <td colspan="7" class="text-center py-4 text-muted">
                                         <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                                         No active orders found
                                     </td>
                                 </tr>`;
-                        }
-                    }, 300);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    // Show error toast
-                    const toast = document.createElement('div');
-                    toast.className = 'position-fixed top-0 end-0 p-3';
-                    toast.style.zIndex = '1100';
-                    toast.innerHTML = `
+                            }
+                        }, 300);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Show error toast
+                        const toast = document.createElement('div');
+                        toast.className = 'position-fixed top-0 end-0 p-3';
+                        toast.style.zIndex = '1100';
+                        toast.innerHTML = `
                         <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
                             <div class="toast-header bg-danger text-white">
                                 <strong class="me-auto">Error</strong>
@@ -208,16 +208,16 @@
                             </div>
                         </div>
                     `;
-                    document.body.appendChild(toast);
+                        document.body.appendChild(toast);
 
-                    // Remove the toast after 5 seconds
-                    setTimeout(() => {
-                        toast.remove();
-                    }, 5000);
+                        // Remove the toast after 5 seconds
+                        setTimeout(() => {
+                            toast.remove();
+                        }, 5000);
 
-                    button.disabled = false;
-                    button.innerHTML = originalText;
-                });
+                        button.disabled = false;
+                        button.innerHTML = originalText;
+                    });
             }
         });
     });

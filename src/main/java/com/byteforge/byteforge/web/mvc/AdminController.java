@@ -13,16 +13,22 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/admin/dashboard")
 public class AdminController {
 
     private final OrderService orderService;
 
-    @GetMapping
+    @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
+    public String adminDashboard() {
+        return "admin-dashboard";
+    }
+
+    @GetMapping("/orders")
     @PreAuthorize("hasRole('ADMIN')")
     public String adminDashboard(Model model) {
         List<OrderResponseDto> activeOrders = orderService.getAllActiveOrders();
         model.addAttribute("activeOrders", activeOrders);
-        return "admin";
+        return "admin-orders";
     }
 }

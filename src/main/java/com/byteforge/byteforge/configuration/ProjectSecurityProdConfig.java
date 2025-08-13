@@ -39,7 +39,7 @@ public class ProjectSecurityProdConfig {
                 .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .requiresChannel(rcc -> rcc.anyRequest().requiresSecure()) //HTTPS
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/admin/dashboard/**").hasRole("ADMIN")
                         .requestMatchers("/notices").hasRole("USER")
                         .requestMatchers("/api/brands/**").permitAll()
                         .requestMatchers("/api/specifications/**").permitAll()

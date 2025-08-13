@@ -3,7 +3,6 @@ package com.byteforge.byteforge.web.api;
 import com.byteforge.byteforge.dto.response.WishlistItemResponseDto;
 import com.byteforge.byteforge.services.WishlistService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/wishlist")
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class WishlistApiController {
 
     private final WishlistService wishlistService;
