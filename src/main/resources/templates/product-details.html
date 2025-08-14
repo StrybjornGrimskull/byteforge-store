@@ -61,26 +61,42 @@
         #techSpecsIcon.rotated {
             transform: rotate(180deg);
         }
+
+        .product-header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 1.5rem 0;
+            margin-bottom: 1.5rem;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
 <!-- Navigation Fragment -->
 <div th:replace="fragments/navigation :: navigation"></div>
+
+<!-- Product Header -->
+<header class="product-header">
+    <div class="container">
+        <!-- Breadcrumb navigation -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a th:href="@{/}" class="text-white">Home</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/}" class="text-white">Categories</a></li>
+                <li class="breadcrumb-item">
+                    <a th:href="@{/products/list(categoryId=${product.categoryId})}" class="text-white"
+                       th:text="${product.categoryName}">Category</a>
+                </li>
+                <li class="breadcrumb-item active text-white-50" aria-current="page" th:text="${product.name}"></li>
+            </ol>
+        </nav>
+        <h1 class="mb-0" th:text="${product.name} ?: 'Product Details'">Product Details</h1>
+    </div>
+</header>
+
 <div class="container py-4">
-
-    <!-- Breadcrumb navigation -->
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item"><a href="#" th:href="@{/}">Catigories</a></li>
-            <li class="breadcrumb-item">
-                <a th:href="@{/products/list(categoryId=${product.categoryId})}"
-                   th:text="${product.categoryName}"></a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page" th:text="${product.name}"></li>
-        </ol>
-    </nav>
-
     <!-- Main product information -->
     <div class="row mb-5">
         <div class="col-lg-6 mb-4 d-flex align-items-center justify-content-center position-relative">
@@ -95,7 +111,6 @@
             </button>
         </div>
         <div class="col-lg-6">
-            <h1 class="mb-3" th:text="${product.name}"></h1>
             <div class="d-flex align-items-center mb-3">
                 <img th:src="@{'/uploads/' + ${product.brandLogo}}"
                      class="brand-logo me-3">
@@ -116,6 +131,9 @@
                     <span th:text="${#numbers.formatDecimal(averageRating, 1, 1)}"></span>
                     <span th:if="${reviewCount > 0}" class="text-secondary ms-2" style="font-size:1rem;">
                         (<span th:text="${reviewCount}"></span> reviews)
+                        <a th:href="@{/reviews/product/{productId}(productId=${product.id})}" class="ms-2">
+                            <i class="bi bi-chat-square-text"></i> View all reviews
+                        </a>
                     </span>
                 </span>
                 <span th:if="${averageRating == null}" class="text-muted">No ratings yet</span>

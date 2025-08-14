@@ -3,7 +3,6 @@ package com.byteforge.byteforge.configuration;
 import com.byteforge.byteforge.filter.*;
 import com.byteforge.byteforge.security.handlers.CustomAuthenticationFailureHandler;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -11,8 +10,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +20,7 @@ import org.springframework.security.web.authentication.password.HaveIBeenPwnedRe
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
+@EnableWebSecurity
 @Profile("prod")
 @RequiredArgsConstructor
 public class ProjectSecurityProdConfig {
@@ -86,11 +86,6 @@ public class ProjectSecurityProdConfig {
         return http.build();
     }
 
-    @Bean
-    public InitializingBean initializingBean() {
-        return () -> SecurityContextHolder.setStrategyName(
-                SecurityContextHolder.MODE_GLOBAL);
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

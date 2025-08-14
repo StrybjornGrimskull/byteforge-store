@@ -55,7 +55,7 @@ class ReviewServiceTest {
         Review review = new Review();
         review.setCustomer(customer);
         product.setReviews(List.of(review));
-        boolean result = reviewService.hasReviewByCustomer(product, customer);
+        boolean result = reviewRepository.existsByProductAndCustomer(product, customer);
         assertTrue(result);
     }
 
@@ -65,7 +65,7 @@ class ReviewServiceTest {
         Customer customer = new Customer();
         customer.setId(1);
         product.setReviews(Collections.emptyList());
-        boolean result = reviewService.hasReviewByCustomer(product, customer);
+        boolean result = reviewRepository.existsByProductAndCustomer(product, customer);
         assertFalse(result);
     }
 
