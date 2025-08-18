@@ -67,7 +67,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public void createReview(String email, Integer productId, Review review) {
+    public Review createReview(String email, Integer productId, Review review) {
         Customer customer = customerRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException(ApplicationConstants.CUSTOMER_NOT_FOUND));
         Product product = productRepository.findById(productId)
@@ -79,6 +79,7 @@ public class ReviewService {
         review.setActive(false); // Отзыв неактивен до модерации
 
         reviewRepository.save(review);
+        return review;
     }
 
     @Transactional(readOnly = true)
