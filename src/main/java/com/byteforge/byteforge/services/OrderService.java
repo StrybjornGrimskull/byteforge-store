@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -115,17 +114,24 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public List<OrderResponseDto> getAllActiveOrders() {
-        List<Order> orders = orderRepository.findAllActiveOrders();
-        return orders.stream().map(OrderResponseDto::fromEntity).toList();
+        List<Order> activeOrders = orderRepository.findAllByActiveTrue();
+        return activeOrders.stream()
+                .map(OrderResponseDto::fromEntity)
+                .toList();
+    }
+    
+    @Transactional(readOnly = true)
+    public OrderResponseDto getActiveOrderById(Long orderId) {
+        return orderRepository.findByIdAndActiveTrue(orderId)
+                .map(OrderResponseDto::fromEntity)
+                .orElseThrow(() -> new RuntimeException(ApplicationConstants.ORDER_NOT_FOUND));
     }
 
     @Transactional
     public void completeOrder(Long orderId) {
-        Optional<Order> optional = orderRepository.findById(orderId);
-        if (optional.isEmpty()) {
-            throw new RuntimeException(ApplicationConstants.ORDER_NOT_FOUND);
-        }
-        Order order = optional.get();
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException(ApplicationConstants.ORDER_NOT_FOUND));
         order.setActive(false);
+        orderRepository.save(order);
     }
 }

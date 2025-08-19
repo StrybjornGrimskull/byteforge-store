@@ -1,46 +1,52 @@
 package com.byteforge.byteforge.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.DynamicUpdate;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 
+import static lombok.AccessLevel.PRIVATE;
+
 @Entity
-@Table(name = "profiles")
 @Getter
 @Setter
-@DynamicUpdate
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "profiles")
+@FieldDefaults(level = PRIVATE)
 public class Profile {
 
     @Id
     @Column(name = "customer_id")
-    private Integer customerId;
+    Integer customerId;
 
     @OneToOne
     @MapsId
     @JoinColumn(name = "customer_id")
-    private Customer customer;
+    Customer customer;
 
     @Column(name = "first_name", length = 100)
-    private String firstName;
+    String firstName;
 
     @Column(name = "last_name", length = 100)
-    private String lastName;
+    String lastName;
 
     @Column(name = "phone_number", length = 20)
-    private String phone;
+    String phone;
 
     @Column(name = "city", columnDefinition = "TEXT")
-    private String city;
+    String city;
 
     @Column(name = "address", columnDefinition = "TEXT")
-    private String address;
+    String address;
 
     @Column(name = "post_index")
-    private Integer postIndex;
+    Integer postIndex;
 
     @Column(name = "birth_date")
-    private LocalDate birthDate;
+    LocalDate birthDate;
 }

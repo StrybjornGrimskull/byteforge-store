@@ -2,45 +2,52 @@ package com.byteforge.byteforge.entities.specifications;
 
 import com.byteforge.byteforge.entities.Product;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
+
+import static lombok.AccessLevel.PRIVATE;
 
 @Entity
-@Table(name = "gpu_specs")
-@Getter @Setter
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
+@Table(name = "gpu_specs")
+@FieldDefaults(level = PRIVATE)
 public class GpuSpec {
 
     @Id
-    private Integer productId;
+    Integer productId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "product_id")
-    private Product product;
+    Product product;
 
     @Column(nullable = false)
-    private Integer memorySize;
+    Integer memorySize;
 
     @Column(nullable = false, length = 20)
-    private String memoryType;
+    String memoryType;
 
     @Column(nullable = false)
-    private Integer busWidth;
+    Integer busWidth;
 
     @Column(nullable = false)
-    private Integer baseClock;
+    Integer baseClock;
 
     @Column(nullable = false)
-    private Integer boostClock;
+    Integer boostClock;
 
     @Column(nullable = false)
-    private Integer tdp;
+    Integer tdp;
 
     @Column(nullable = false)
-    private Integer length;
+    Integer length;
 
-    @Column(nullable = false, length = 255)
-    private String displayOutputs;
+    @Column(nullable = false)
+    String displayOutputs;
 }

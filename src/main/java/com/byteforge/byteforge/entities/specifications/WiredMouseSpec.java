@@ -2,14 +2,21 @@ package com.byteforge.byteforge.entities.specifications;
 
 import com.byteforge.byteforge.entities.Product;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
+
+import static lombok.AccessLevel.PRIVATE;
 
 @Entity
-@Table(name = "wired_mice_specs")
-@Getter @Setter
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
+@Table(name = "wired_mice_specs")
+@FieldDefaults(level = PRIVATE)
 public class WiredMouseSpec {
     @Id
     private Integer productId;
@@ -34,7 +41,7 @@ public class WiredMouseSpec {
     private Integer buttons;
 
     @Column(nullable = false)
-    private Integer cableLength; // cm
+    private Integer cableLength;
 
     @Column(nullable = false, length = 30)
     private String cableType;

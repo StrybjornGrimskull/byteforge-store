@@ -2,86 +2,94 @@ package com.byteforge.byteforge.entities;
 
 import com.byteforge.byteforge.entities.specifications.*;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+import static lombok.AccessLevel.PRIVATE;
+
 @Entity
-@Table(name = "products")
-@Getter @Setter
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
+@Table(name = "products")
+@FieldDefaults(level = PRIVATE)
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @Column(nullable = false, length = 255)
-    private String name;
+    String name;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
+    BigDecimal price;
 
     @Column(nullable = false)
-    private Integer warrantyMonths = 24;
+    Integer warrantyMonths = 24;
 
     @Column(nullable = false)
-    private Integer releaseYear;
+    Integer releaseYear;
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String shortDescription;
+    String shortDescription;
 
     @Column(nullable = false, length = 255)
-    private String imageUrl;
+    String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    Category category;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "brand_id", nullable = false)
-    private Brand brand;
+    Brand brand;
 
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
-    private StockQuantity stockQuantity;
+    StockQuantity stockQuantity;
 
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
-    private CaseSpec caseSpec;
-    @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
-    private CpuSpec cpuSpec;
+    CaseSpec caseSpec;
 
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
-    private GpuSpec gpuSpec;
+    CpuSpec cpuSpec;
 
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
-    private MonitorSpec monitorSpec;
+    GpuSpec gpuSpec;
 
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
-    private MotherboardSpec motherboardSpec;
+    MonitorSpec monitorSpec;
 
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
-    private PsuSpec psuSpec;
+    MotherboardSpec motherboardSpec;
 
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
-    private RamSpec ramSpec;
+    PsuSpec psuSpec;
 
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
-    private SsdSpec ssdSpec;
+    RamSpec ramSpec;
 
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
-    private WiredKeyboardSpec wiredKeyboardSpec;
+    SsdSpec ssdSpec;
 
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
-    private WiredMouseSpec wiredMouseSpec;
+    WiredKeyboardSpec wiredKeyboardSpec;
 
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
-    private WirelessKeyboardSpec wirelessKeyboardSpec;
+    WiredMouseSpec wiredMouseSpec;
 
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
-    private WirelessMouseSpec wirelessMouseSpec;
+    WirelessKeyboardSpec wirelessKeyboardSpec;
+
+    @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
+    WirelessMouseSpec wirelessMouseSpec;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews;
+    List<Review> reviews;
 }

@@ -5,40 +5,44 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
+import static lombok.AccessLevel.PRIVATE;
+
+@Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@NoArgsConstructor
 @Table(name = "reviews")
+@FieldDefaults(level = PRIVATE)
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    Customer customer;
 
     @Column(name = "user_first_name", nullable = false)
-    private String userFirstName;
+    String userFirstName;
 
     @Column(nullable = false)
-    private Integer rating;
+    Integer rating;
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String text;
+    String text;
 
     @Column(nullable = false)
-    private boolean active = false;
+    boolean active = false;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    LocalDateTime createdAt = LocalDateTime.now();
 } 

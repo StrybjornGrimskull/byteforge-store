@@ -2,39 +2,46 @@ package com.byteforge.byteforge.entities.specifications;
 
 import com.byteforge.byteforge.entities.Product;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
+
+import static lombok.AccessLevel.PRIVATE;
 
 @Entity
-@Table(name = "case_specs")
-@Getter @Setter
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
+@Table(name = "case_specs")
+@FieldDefaults(level = PRIVATE)
 public class CaseSpec {
 
     @Id
-    private Integer productId;
+    Integer productId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "product_id")
-    private Product product;
+    Product product;
 
     @Column(nullable = false, length = 50)
-    private String formFactor;
+    String formFactor;
 
     @Column(nullable = false)
-    private String motherboardSupport;
+    String motherboardSupport;
 
     @Column(nullable = false)
-    private Integer maxGpuLength;
+    Integer maxGpuLength;
 
     @Column(nullable = false)
-    private Integer maxCpuCoolerHeight;
+    Integer maxCpuCoolerHeight;
 
     @Column(nullable = false)
-    private Integer fansIncluded;
+    Integer fansIncluded;
 
     @Column(nullable = false)
-    private String radiatorSupport;
+    String radiatorSupport;
 }

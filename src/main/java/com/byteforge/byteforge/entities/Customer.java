@@ -2,42 +2,51 @@ package com.byteforge.byteforge.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import static lombok.AccessLevel.PRIVATE;
+
 @Entity
-@Table(name = "customers")
-@Getter @Setter
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name="customers")
+@FieldDefaults(level = PRIVATE)
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @Column(nullable = false, unique = true)
-    private String email;
+    String email;
 
     @Column(nullable = false)
-    private String password;
+    String password;
 
     @Column(name="email_verified", nullable = false)
-    private boolean emailVerified = false;
+    boolean emailVerified = false;
 
     @Column (name ="email_verification_token")
-    private String emailVerificationToken;
+    String emailVerificationToken;
 
     @Column(name = "password_reset_token")
-    private String passwordResetToken;
+    String passwordResetToken;
 
     @Column(name = "password_reset_token_expiry")
-    private LocalDateTime passwordResetTokenExpiry;
+    LocalDateTime passwordResetTokenExpiry;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "customer", cascade = CascadeType.ALL)
-    private Profile profile;
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    Profile profile;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
     @JsonIgnore
-    private Set<Authority> authorities;
+    Set<Authority> authorities;
 }

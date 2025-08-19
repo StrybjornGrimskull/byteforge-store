@@ -1,7 +1,6 @@
 package com.byteforge.byteforge.web.api;
 
 import com.byteforge.byteforge.dto.request.OrderRequestDto;
-import com.byteforge.byteforge.dto.response.ActiveOrderDto;
 import com.byteforge.byteforge.dto.response.OrderResponseDto;
 import com.byteforge.byteforge.services.OrderService;
 import jakarta.validation.Valid;
@@ -30,17 +29,23 @@ public class OrderApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/active")
-    public ResponseEntity<List<ActiveOrderDto>> getActiveOrders(Authentication authentication) {
-        String email = authentication.getName();
-        List<ActiveOrderDto> orders = orderService.getActiveOrdersForUser(email);
-        return ResponseEntity.ok(orders);
+    @GetMapping("/{orderId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<OrderResponseDto> getOrderById(@PathVariable Long orderId) {
+        OrderResponseDto order = orderService.getActiveOrderById(orderId);
+        return ResponseEntity.status(HttpStatus.OK).body(order);
     }
 
     @PostMapping("/{orderId}/complete")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> completeOrder(@PathVariable Long orderId) {
-            orderService.completeOrder(orderId);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        orderService.completeOrder(orderId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+    
+    @GetMapping("/active")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<OrderResponseDto>> getActiveOrders() {
+        return ResponseEntity.ok(orderService.getAllActiveOrders());
     }
 }

@@ -13,7 +13,7 @@ public record OrderProductResponseDto(
 ) {
     public static OrderProductResponseDto fromEntity(OrderProduct orderProduct) {
         return new OrderProductResponseDto(
-                orderProduct.getId(),
+                orderProduct.getOrder().getId(),
                 orderProduct.getQuantity(),
                 ProductDto.fromEntity(orderProduct.getProduct())
         );

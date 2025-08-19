@@ -2,29 +2,31 @@ package com.byteforge.byteforge.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
+import static lombok.AccessLevel.PRIVATE;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
-@Table(name = "stock_quantity")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name="stock_quantity")
+@FieldDefaults(level = PRIVATE)
 public class StockQuantity {
-
 
     @Id
     @Column(name = "product_id")
-    private Integer productId;
+    Integer productId;
 
     @OneToOne
     @MapsId
     @JoinColumn(name = "product_id")
-    private Product product;
+    Product product;
 
     @Column(name = "quantity")
-    private Integer quantity = 0;
+    Integer quantity = 0;
 }

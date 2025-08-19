@@ -1,9 +1,8 @@
 package com.byteforge.byteforge.repositories;
 
 import com.byteforge.byteforge.entities.Order;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,12 +13,15 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Optional<Order> findFirstByCustomerIdAndActiveTrueOrderByDateDesc(Integer customerId);
 
-    @Query("SELECT o FROM Order o JOIN FETCH o.orderProducts op JOIN FETCH op.product WHERE o.customer.id = :customerId AND o.active = true")
-    List<Order> findByCustomerIdAndActiveTrue(@Param("customerId") Integer customerId);
+    @EntityGraph(attributePaths = {"orderProducts", "orderProducts.product"})
+    List<Order> findByCustomerIdAndActiveTrue(Integer customerId);
 
-    @Query("SELECT o FROM Order o JOIN FETCH o.orderProducts op JOIN FETCH op.product WHERE o.customer.id = :customerId AND o.active = false")
-    List<Order> findByCustomerIdAndActiveFalse(@Param("customerId") Integer customerId);
+    @EntityGraph(attributePaths = {"orderProducts", "orderProducts.product"})
+    List<Order> findByCustomerIdAndActiveFalse(Integer customerId);
 
-    @Query("SELECT DISTINCT o FROM Order o JOIN FETCH o.orderProducts op JOIN FETCH op.product WHERE o.active = true ORDER BY o.date DESC")
-    List<Order> findAllActiveOrders();
+    @EntityGraph(attributePaths = {"orderProducts", "orderProducts.product"})
+    List<Order> findAllByActiveTrue();
+
+    @EntityGraph(attributePaths = {"orderProducts", "orderProducts.product"})
+    Optional<Order> findByIdAndActiveTrue(Long id);
 }

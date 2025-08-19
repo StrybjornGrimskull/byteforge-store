@@ -1,30 +1,34 @@
 package com.byteforge.byteforge.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.util.Set;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+import static lombok.AccessLevel.PRIVATE;
+
 @Entity
-@Table(name = "categories", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "name"),
-        @UniqueConstraint(columnNames = "slug")
-})
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "categories")
+@FieldDefaults(level = PRIVATE)
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @Column(nullable = false, length = 100, unique = true)
-    private String name;
+    String name;
 
     @Column(nullable = false, length = 100, unique = true)
-    private String slug;
+    String slug;
 
     @OneToMany(mappedBy = "category")
-    private Set<Product> products;
+    Set<Product> products;
 }

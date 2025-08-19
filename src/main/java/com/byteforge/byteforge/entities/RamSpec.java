@@ -2,42 +2,46 @@ package com.byteforge.byteforge.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+import static lombok.AccessLevel.PRIVATE;
+
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "ram_specs")
+@FieldDefaults(level = PRIVATE)
 public class RamSpec {
     @Id
-    private Integer productId;
+    Integer productId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "product_id")
-    private Product product;
+    Product product;
 
     @Column(nullable = false)
-    private Integer memorySize; // GB
+    Integer memorySize; // GB
 
     @Column(nullable = false)
-    private Integer modulesCount;
+    Integer modulesCount;
 
     @Column(nullable = false)
-    private Integer speed; // MHz
+    Integer speed; // MHz
 
     @Column(nullable = false, length = 20)
-    private String type;
+    String type;
 
     @Column(nullable = false, length = 20)
-    private String timings;
+    String timings;
 
     @Column(nullable = false, precision = 3, scale = 2)
-    private BigDecimal voltage; // V
+    BigDecimal voltage; // V
 }

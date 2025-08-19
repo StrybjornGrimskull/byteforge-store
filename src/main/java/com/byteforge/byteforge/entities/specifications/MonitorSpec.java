@@ -2,40 +2,47 @@ package com.byteforge.byteforge.entities.specifications;
 
 import com.byteforge.byteforge.entities.Product;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 
+import static lombok.AccessLevel.PRIVATE;
+
 @Entity
-@Table(name = "monitor_specs")
-@Getter @Setter
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
+@Table(name = "monitor_specs")
+@FieldDefaults(level = PRIVATE)
 public class MonitorSpec {
 
     @Id
-    private Integer productId;
+    Integer productId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "product_id")
-    private Product product;
+    Product product;
 
     @Column(nullable = false, precision = 4, scale = 1)
-    private BigDecimal screenSize;
+    BigDecimal screenSize;
 
     @Column(nullable = false, length = 20)
-    private String resolution;
+    String resolution;
 
     @Column(nullable = false, length = 30)
-    private String panelType;
+    String panelType;
 
     @Column(nullable = false)
-    private Integer refreshRate;
+    Integer refreshRate;
 
     @Column(nullable = false)
-    private Integer responseTime;
+    Integer responseTime;
 }
 
 

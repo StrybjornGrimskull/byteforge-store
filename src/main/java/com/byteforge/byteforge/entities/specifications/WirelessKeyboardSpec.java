@@ -2,58 +2,65 @@ package com.byteforge.byteforge.entities.specifications;
 
 import com.byteforge.byteforge.entities.Product;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 
+import static lombok.AccessLevel.PRIVATE;
+
 @Entity
-@Table(name = "wireless_keyboards_spec")
-@Getter @Setter
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
+@Table(name = "wireless_keyboards_spec")
+@FieldDefaults(level = PRIVATE)
 public class WirelessKeyboardSpec {
     @Id
-    private Integer productId;
+    Integer productId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "product_id")
-    private Product product;
+    Product product;
 
     @Column(nullable = false, length = 20)
-    private String layout;
+    String layout;
 
     @Column(nullable = false, length = 30)
-    private String switchType;
+    String switchType;
 
     @Column(nullable = false, length = 30)
-    private String switchBrand;
+    String switchBrand;
 
     @Column(nullable = false, length = 50)
-    private String switchModel;
+    String switchModel;
 
     @Column(nullable = false, length = 30)
-    private String wirelessTech;
+    String wirelessTech;
 
-    private Boolean rgbLighting = false;
+    Boolean rgbLighting = false;
 
-    private Boolean hotSwappable = false;
-
-    @Column(nullable = false, precision = 3, scale = 1)
-    private BigDecimal actuationForce;
+    Boolean hotSwappable = false;
 
     @Column(nullable = false, precision = 3, scale = 1)
-    private BigDecimal travelDistance;
+    BigDecimal actuationForce;
+
+    @Column(nullable = false, precision = 3, scale = 1)
+    BigDecimal travelDistance;
 
     @Column(nullable = false)
-    private Integer weight;
+    Integer weight;
 
     @Column(nullable = false)
-    private Integer batteryLife;
+    Integer batteryLife;
 
     @Column(nullable = false, length = 20)
-    private String chargingType;
+    String chargingType;
 
-    private Boolean multiDevicePairing = false;
+    Boolean multiDevicePairing = false;
 }

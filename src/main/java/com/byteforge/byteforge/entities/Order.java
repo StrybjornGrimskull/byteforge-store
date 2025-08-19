@@ -5,57 +5,61 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static lombok.AccessLevel.PRIVATE;
+
 @Entity
-@Table(name = "orders")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "orders")
+@FieldDefaults(level = PRIVATE)
 public class Order {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(name = "total_price", nullable = false, precision = 12, scale = 2)
-    private BigDecimal totalPrice;
+    BigDecimal totalPrice;
 
     @Column(name = "date", columnDefinition = "timestamp default current_timestamp")
-    private LocalDateTime date = LocalDateTime.now();
+    LocalDateTime date = LocalDateTime.now();
 
     @Column(name = "first_name", nullable = false)
-    private String firstName;
+    String firstName;
 
     @Column(name = "last_name", nullable = false)
-    private String lastName;
+    String lastName;
 
     @Column(name = "city", nullable = false)
-    private String city;
+    String city;
 
     @Column(name = "address", nullable = false)
-    private String address;
+    String address;
 
     @Column(name = "email", nullable = false)
-    private String email;
+    String email;
 
     @Column(name = "phone_number", nullable = false)
-    private String phoneNumber;
+    String phoneNumber;
 
     @Column(name = "post_index", nullable = false)
-    private Integer postIndex;
+    Integer postIndex;
 
     @Column(name = "active", nullable = false)
-    private Boolean active = true;
+    boolean active = true;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderProduct> orderProducts;
+    List<OrderProduct> orderProducts;
 
     @ManyToOne
-    private Customer customer;
+    Customer customer;
 }
