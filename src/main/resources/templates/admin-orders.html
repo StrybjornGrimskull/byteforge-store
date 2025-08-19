@@ -9,19 +9,12 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
-        .order-card {
-            transition: transform 0.2s;
-            margin-bottom: 1rem;
-        }
-        .order-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .order-status {
-            font-weight: 500;
-        }
-        .order-status.active {
-            color: #0d6efd;
+        #toastContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+            min-width: 300px;
         }
     </style>
 </head>
@@ -29,6 +22,9 @@
 
 <!-- Navigation Fragment -->
 <div th:replace="fragments/navigation :: navigation"></div>
+
+<!-- Toast Container -->
+<div id="toastContainer"></div>
 
 <div class="container py-4">
     <!-- Breadcrumb Navigation -->
@@ -42,75 +38,48 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0">Order Management</h1>
         <span class="badge bg-primary order-count">
-            <span th:text="${#lists.size(activeOrders)}"></span> Active Orders
+            <span id="ordersCount">0</span> Active Orders
         </span>
     </div>
 
+    <!-- Search Form -->
     <div class="card shadow-sm mb-4">
-        <div class="card-header bg-white">
-            <h5 class="mb-0">Active Orders</h5>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                    <tr>
-                        <th>Order #</th>
-                        <th>Customer</th>
-                        <th>Date</th>
-                        <th>Products</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="order : ${activeOrders}" class="align-middle">
-                        <td>
-                            <a th:href="'#'" class="text-decoration-none">
-                                #<span th:text="${order.id}"></span>
-                            </a>
-                        </td>
-                        <td>
-                            <div th:text="${order.firstName + ' ' + order.lastName}"></div>
-                            <small class="text-muted" th:text="${order.email}"></small>
-                        </td>
-                        <td>
-                            <span th:text="${#temporals.format(order.date, 'dd.MM.yyyy HH:mm')}"></span>
-                        </td>
-                        <td>
-                            <div class="d-flex flex-wrap gap-1">
-                                    <span th:each="product : ${order.orderProducts}"
-                                          class="badge bg-light text-dark border"
-                                          th:text="${product.product.name + ' x' + product.quantity}">
-                                    </span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="fw-bold" th:text="${#numbers.formatDecimal(order.totalPrice, 1, 2)} + ' $'"></span>
-                        </td>
-                        <td>
-                            <span class="badge bg-warning text-dark">Processing</span>
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i> View
-                            </button>
-                            <button class="btn btn-sm btn-outline-success complete-order-btn"
-                                    th:data-order-id="${order.id}">
-                                <i class="bi bi-check2"></i> Complete
-                            </button>
-                        </td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(activeOrders)}">
-                        <td colspan="7" class="text-center py-4 text-muted">
-                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                            No active orders found
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+        <div class="card-body">
+            <div class="row g-2">
+                <div class="col-12 col-md-8 col-lg-6">
+                    <div class="input-group flex-nowrap">
+                        <input type="text" class="form-control" id="orderSearchInput" placeholder="Search by order number">
+                        <button class="btn btn-primary" type="button" id="searchOrderBtn">
+                            <i class="bi bi-search d-md-none"></i>
+                            <span class="d-none d-md-inline">Search</span>
+                        </button>
+                        <button class="btn btn-outline-secondary" type="button" id="showAllOrdersBtn">
+                            <i class="bi bi-list-ul d-md-none"></i>
+                            <span class="d-none d-md-inline">Show All</span>
+                        </button>
+                    </div>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <div class="row g-3" id="ordersContainer">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Active Orders</h5>
+                <span class="badge bg-primary">
+                    <span id="activeOrdersCount">0</span> Orders
+                </span>
+            </div>
+        </div>
+        
+        <!-- Loading State -->
+        <div class="col-12 text-center py-4">
+            <output class="d-flex align-items-center justify-content-center">
+                <div class="spinner-border text-primary me-2" aria-hidden="true"></div>
+                <span>Loading orders...</span>
+            </output>
+            <p class="mt-2 mb-0">Loading orders...</p>
         </div>
     </div>
 </div>
@@ -124,108 +93,485 @@
 <div th:replace="fragments/navigation :: user-account-script"></div>
 
 <script th:inline="javascript">
+    // Function to render orders in a responsive grid
+    function renderOrders(orders) {
+        const container = document.getElementById('ordersContainer');
+        
+        if (!orders || orders.length === 0) {
+            container.innerHTML = `
+                <div class="col-12 text-center py-4 text-muted">
+                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                    No active orders found
+                </div>`;
+            return 0;
+        }
+
+        // Clear loading state
+        container.innerHTML = '';
+        
+        // Add orders in a responsive grid
+        orders.forEach(order => {
+            const orderDate = new Date(order.date);
+            const formattedDate = orderDate.toLocaleString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            const orderElement = document.createElement('div');
+            orderElement.className = 'col-12 col-md-6 col-lg-4 col-xl-3';
+            orderElement.innerHTML = `
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">#${order.id}</span>
+                            <span class="badge bg-warning text-dark">Processing</span>
+                        </div>
+                        <div class="small text-muted">${formattedDate}</div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-title">${order.firstName} ${order.lastName}</h6>
+                        <p class="card-text small text-muted mb-2 text-truncate">${order.email}</p>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex flex-wrap gap-1">
+                                ${(order.orderProducts || []).slice(0, 3).map(product => {
+                                    const productName = product.product?.name || 'Unknown Product';
+                                    return `<span class="badge bg-light text-dark border small text-truncate" title="${productName}">
+                                        ${productName} x${product.quantity || 1}
+                                    </span>`;
+                                }).join('')}
+                                ${order.orderProducts && order.orderProducts.length > 3 ? 
+                                    `<span class="badge bg-light text-dark border small">+${order.orderProducts.length - 3} more</span>` : ''}
+                                ${(!order.orderProducts || order.orderProducts.length === 0) ? 
+                                    '<span class="text-muted small">No products</span>' : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">${order.totalPrice.toFixed(2)} $</span>
+                            <div>
+                                <button class="btn btn-sm btn-outline-primary me-1" title="View">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-success complete-order-btn" 
+                                        data-order-id="${order.id}" title="Complete">
+                                    <i class="bi bi-check2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            
+            container.appendChild(orderElement);
+        });
+        
+        return orders.length;
+    }
+
+    // Handle complete order click with event delegation
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.complete-order-btn')) {
+            const button = e.target.closest('.complete-order-btn');
+            const orderId = button.dataset.orderId;
+            console.log('Complete button clicked:', orderId);
+            completeOrder(button, orderId);
+        }
+    });
+
+    async function completeOrder(button, orderId) {
+        const originalText = button.innerHTML;
+        
+        if (!orderId) {
+            console.error('No order ID found');
+            return;
+        }
+        
+        try {
+            button.disabled = true;
+            button.innerHTML = `
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Completing...`;
+            
+            const response = await fetch(`/api/orders/${orderId}/complete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                let errorMessage = 'Failed to complete order';
+                if (response.status === 404) {
+                    errorMessage = 'Order not found';
+                } else {
+                    const error = await response.json().catch(() => ({}));
+                    errorMessage = error.message || errorMessage;
+                }
+                throw new Error(errorMessage);
+            }
+            
+            // Show success message
+            showToast('Success', 'Order marked as completed', 'success');
+            
+            // Remove the order card from the grid
+            const orderCard = button.closest('.col-12.col-md-6.col-lg-4.col-xl-3');
+            if (orderCard) {
+                orderCard.style.opacity = '0.5';
+                setTimeout(() => {
+                    orderCard.remove();
+                    
+                    // Update orders count
+                    const remainingOrders = document.querySelectorAll('.col-12.col-md-6.col-lg-4.col-xl-3').length;
+                    updateOrdersCount(remainingOrders);
+                    
+                    // If no orders left, show no orders message
+                    if (remainingOrders === 0) {
+                        const container = document.getElementById('ordersContainer');
+                        container.innerHTML = `
+                            <div class="col-12 text-center py-4 text-muted">
+                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                No active orders found
+                            </div>`;
+                    }
+                }, 300);
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            showToast('Error', `Failed to complete order: ${error.message}`, 'danger');
+            button.disabled = false;
+            button.innerHTML = originalText;
+        }
+    }
+
+    // Function to fetch all active orders
+    async function fetchAllOrders() {
+        const container = document.getElementById('ordersContainer');
+        
+        try {
+            // Show loading state
+            container.innerHTML = `
+                <div class="col-12 text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 mb-0">Loading orders...</p>
+                </div>`;
+
+            const response = await fetch('/api/orders/active');
+            if (!response.ok) {
+                throw new Error('Failed to fetch orders');
+            }
+            const orders = await response.json();
+            
+            // Clear container before adding new content
+            container.innerHTML = '';
+            
+            if (!orders || orders.length === 0) {
+                showNoOrdersMessage();
+                updateOrdersCount(0);
+                return;
+            }
+            
+            // Create row for order cards
+            const row = document.createElement('div');
+            row.className = 'row g-3';
+            
+            // Add each order as a card
+            orders.forEach(order => {
+                const orderDate = new Date(order.date);
+                const formattedDate = orderDate.toLocaleString('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const orderElement = document.createElement('div');
+                orderElement.className = 'col-12 col-md-6 col-lg-4 col-xl-3';
+                orderElement.innerHTML = `
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold">#${order.id}</span>
+                                <span class="badge bg-warning text-dark">Processing</span>
+                            </div>
+                            <div class="small text-muted">${formattedDate}</div>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title">${order.firstName || ''} ${order.lastName || ''}</h6>
+                            <p class="card-text small text-muted mb-2 text-truncate" title="${order.email || ''}">
+                                ${order.email || 'No email provided'}
+                            </p>
+                            
+                            <div class="mb-3">
+                                <div class="d-flex flex-wrap gap-1">
+                                    ${(order.orderProducts || []).slice(0, 3).map(product => {
+                                        const productName = product.product?.name || 'Unknown Product';
+                                        return `<span class="badge bg-light text-dark border small text-truncate" title="${productName}">
+                                            ${productName} x${product.quantity || 1}
+                                        </span>`;
+                                    }).join('')}
+                                    ${order.orderProducts && order.orderProducts.length > 3 ? 
+                                        `<span class="badge bg-light text-dark border small">+${order.orderProducts.length - 3} more</span>` : ''}
+                                    ${(!order.orderProducts || order.orderProducts.length === 0) ? 
+                                        '<span class="text-muted small">No products</span>' : ''}
+                                </div>
+                            </div>
+                            
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <span class="fw-bold">${order.totalPrice ? order.totalPrice.toFixed(2) : '0.00'} $</span>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-primary me-1" title="View">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success complete-order-btn" 
+                                            data-order-id="${order.id}" title="Complete">
+                                        <i class="bi bi-check2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                
+                row.appendChild(orderElement);
+            });
+            
+            container.appendChild(row);
+            updateOrdersCount(orders.length);
+            
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+            showToast('Error', 'Failed to load orders', 'danger');
+            // Show error state
+            container.innerHTML = `
+                <div class="col-12 text-center py-4 text-danger">
+                    <i class="bi bi-exclamation-triangle-fill d-block mb-2"></i>
+                    Failed to load orders. Please try again.
+                    <div class="mt-2">
+                        <button class="btn btn-sm btn-outline-primary" onclick="fetchAllOrders()">
+                            <i class="bi bi-arrow-clockwise"></i> Retry
+                        </button>
+                    </div>
+                </div>`;
+        }
+    }
+
+    // Function to search for a specific order
+    async function searchOrder(orderId) {
+        const container = document.getElementById('ordersContainer');
+        
+        if (!orderId) {
+            showToast('Warning', 'Please enter an order number', 'warning');
+            return;
+        }
+
+        try {
+            // Show loading state
+            container.innerHTML = `
+                <div class="col-12 text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Searching...</span>
+                    </div>
+                    <p class="mt-2 mb-0">Searching for order #${orderId}...</p>
+                </div>`;
+
+            const response = await fetch(`/api/orders/${orderId}`);
+            if (!response.ok) {
+                throw new Error('Order not found or it has already been completed');
+            }
+            
+            const order = await response.json();
+            const count = renderOrders([order]);
+            updateOrdersCount(count);
+            
+            // Scroll to the order
+            const orderElement = document.querySelector(`[data-order-id="${order.id}"]`);
+            if (orderElement) {
+                orderElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+        } catch (error) {
+            console.error('Error searching order:', error);
+            showToast('Error', error.message || 'Failed to search order', 'danger');
+        }
+    }
+
+    // Function to show toast messages
+    function showToast(title, message, type = 'success') {
+        const toastContainer = document.getElementById('toastContainer');
+        const toastId = 'toast-' + Date.now();
+        const toast = document.createElement('div');
+        
+        const iconMap = {
+            success: 'check-circle-fill',
+            error: 'exclamation-triangle-fill',
+            warning: 'exclamation-triangle-fill',
+            info: 'info-circle-fill',
+            danger: 'exclamation-triangle-fill'
+        };
+        
+        const icon = iconMap[type] || 'info-circle-fill';
+        
+        toast.className = `toast show align-items-center text-white bg-${type} border-0 mb-2`;
+        toast.role = 'alert';
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
+        toast.id = toastId;
+        
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-${icon} me-2"></i>
+                        <div>
+                            <h6 class="mb-0">${title}</h6>
+                            <div class="small">${message}</div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>`;
+        
+        toastContainer.appendChild(toast);
+        
+        // Auto-remove toast after 5 seconds
+        setTimeout(() => {
+            const toastElement = document.getElementById(toastId);
+            if (toastElement) {
+                toastElement.remove();
+            }
+        }, 5000);
+    }
+
+    // Handle complete order
+    async function handleCompleteOrder(e) {
+        const button = e.target.closest('.complete-order-btn');
+        if (!button) return;
+        
+        const orderId = button.dataset.orderId;
+        const originalText = button.innerHTML;
+        
+        if (!orderId) {
+            console.error('No order ID found');
+            return;
+        }
+        
+        try {
+            button.disabled = true;
+            button.innerHTML = `
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Completing...`;
+            
+            const response = await fetch(`/api/orders/${orderId}/complete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                let errorMessage = 'Failed to complete order';
+                if (response.status === 404) {
+                    errorMessage = 'Order not found';
+                } else {
+                    const error = await response.json().catch(() => ({}));
+                    errorMessage = error.message || errorMessage;
+                }
+                throw new Error(errorMessage);
+            }
+            
+            // Show success message
+            showToast('Success', 'Order marked as completed', 'success');
+            
+            // Remove the order card from the grid
+            const orderCard = button.closest('.col-12.col-md-6.col-lg-4.col-xl-3');
+            if (orderCard) {
+                orderCard.style.opacity = '0.5';
+                setTimeout(() => {
+                    orderCard.remove();
+                    
+                    // Update orders count
+                    const remainingOrders = document.querySelectorAll('.col-12.col-md-6.col-lg-4.col-xl-3').length;
+                    updateOrdersCount(remainingOrders);
+                    
+                    // If no orders left, show no orders message
+                    if (remainingOrders === 0) {
+                        showNoOrdersMessage();
+                    }
+                }, 300);
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            showToast('Error', `Failed to complete order: ${error.message}`, 'danger');
+            button.disabled = false;
+            button.innerHTML = originalText;
+        }
+    }
+    
+    // Function to update orders count
+    function updateOrdersCount(count) {
+        const orderCountBadge = document.getElementById('ordersCount');
+        const activeOrdersCount = document.getElementById('activeOrdersCount');
+        
+        if (orderCountBadge) {
+            orderCountBadge.textContent = count;
+        }
+        if (activeOrdersCount) {
+            activeOrdersCount.textContent = count;
+        }
+        
+        return count;
+    }
+
+    // Show no orders message function
+    function showNoOrdersMessage() {
+        const tbody = document.getElementById('ordersTableBody');
+        tbody.innerHTML = `
+            <tr class="no-orders">
+                <td colspan="7" class="text-center py-4 text-muted">
+                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                    No active orders found
+                </td>
+            </tr>`;
+    }
+
+    // Initialize when DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
-        // Handle complete order button clicks
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.complete-order-btn')) {
-                const button = e.target.closest('.complete-order-btn');
-                const orderId = button.dataset.orderId;
-                const orderRow = button.closest('tr');
-
-                // Show loading state
-                const originalText = button.innerHTML;
-                button.disabled = true;
-                button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Completing...';
-
-                // Send AJAX request
-                fetch(`/api/orders/${orderId}/complete`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({})
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            return response.text().then(text => { throw new Error(text) });
-                        }
-                        return response.text();
-                    })
-                    .then(() => {
-                        // Show success message
-                        const toast = document.createElement('div');
-                        toast.className = 'position-fixed top-0 end-0 p-3';
-                        toast.style.zIndex = '1100';
-                        toast.innerHTML = `
-                        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
-                            <div class="toast-header bg-success text-white">
-                                <strong class="me-auto">Success</strong>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-                            </div>
-                            <div class="toast-body">
-                                Order #${orderId} has been marked as completed.
-                            </div>
-                        </div>
-                    `;
-                        document.body.appendChild(toast);
-
-                        // Remove the toast after 3 seconds
-                        setTimeout(() => {
-                            toast.remove();
-                        }, 3000);
-
-                        // Remove the row from the table
-                        orderRow.style.opacity = '0.5';
-                        setTimeout(() => {
-                            orderRow.remove();
-
-                            // Update orders count
-                            const orderCount = document.querySelectorAll('tbody tr:not(.no-orders)').length;
-                            const orderCountBadge = document.querySelector('.order-count span');
-                            if (orderCountBadge) {
-                                orderCountBadge.textContent = orderCount;
-                            }
-
-                            // Show no orders message if needed
-                            if (orderCount === 0) {
-                                const tbody = document.querySelector('tbody');
-                                tbody.innerHTML = `
-                                <tr class="no-orders">
-                                    <td colspan="7" class="text-center py-4 text-muted">
-                                        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                                        No active orders found
-                                    </td>
-                                </tr>`;
-                            }
-                        }, 300);
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        // Show error toast
-                        const toast = document.createElement('div');
-                        toast.className = 'position-fixed top-0 end-0 p-3';
-                        toast.style.zIndex = '1100';
-                        toast.innerHTML = `
-                        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
-                            <div class="toast-header bg-danger text-white">
-                                <strong class="me-auto">Error</strong>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-                            </div>
-                            <div class="toast-body">
-                                Failed to complete order: ${error.message}
-                            </div>
-                        </div>
-                    `;
-                        document.body.appendChild(toast);
-
-                        // Remove the toast after 5 seconds
-                        setTimeout(() => {
-                            toast.remove();
-                        }, 5000);
-
-                        button.disabled = false;
-                        button.innerHTML = originalText;
-                    });
+        console.log('DOM fully loaded');
+        // Initial load of orders
+        fetchAllOrders();
+        
+        // Search button click handler
+        document.getElementById('searchOrderBtn').addEventListener('click', () => {
+            const orderId = document.getElementById('orderSearchInput').value.trim();
+            if (orderId) {
+                searchOrder(orderId);
+            } else {
+                showToast('Warning', 'Please enter an order number', 'warning');
+            }
+        });
+        
+        // Show all orders button click handler
+        document.getElementById('showAllOrdersBtn').addEventListener('click', () => {
+            document.getElementById('orderSearchInput').value = '';
+            fetchAllOrders();
+        });
+        
+        // Handle Enter key in search input
+        document.getElementById('orderSearchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const orderId = e.target.value.trim();
+                if (orderId) {
+                    searchOrder(orderId);
+                } else {
+                    showToast('Warning', 'Please enter an order number', 'warning');
+                }
             }
         });
     });
