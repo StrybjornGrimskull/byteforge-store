@@ -7,6 +7,8 @@ import com.byteforge.byteforge.dto.response.OrderResponseDto;
 import com.byteforge.byteforge.entities.*;
 import com.byteforge.byteforge.repositories.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,13 +43,13 @@ public class OrderService {
         // 3. Создаем заказ
         Order order = new Order();
         order.setCustomer(customer);
-        order.setFirstName(orderDto.getFirstName());
-        order.setLastName(orderDto.getLastName());
-        order.setEmail(orderDto.getEmail());
-        order.setPhoneNumber(orderDto.getPhoneNumber());
-        order.setCity(orderDto.getCity());
-        order.setAddress(orderDto.getAddress());
-        order.setPostIndex(orderDto.getPostIndex());
+        order.setFirstName(orderDto.firstName());
+        order.setLastName(orderDto.lastName());
+        order.setEmail(orderDto.email());
+        order.setPhoneNumber(orderDto.phoneNumber());
+        order.setCity(orderDto.city());
+        order.setAddress(orderDto.address());
+        order.setPostIndex(orderDto.postIndex());
         order.setDate(LocalDateTime.now());
 
         // 4. Создаем продукты заказа
@@ -113,11 +115,9 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderResponseDto> getAllActiveOrders() {
-        List<Order> activeOrders = orderRepository.findAllByActiveTrue();
-        return activeOrders.stream()
-                .map(OrderResponseDto::fromEntity)
-                .toList();
+    public Page<OrderResponseDto> getAllActiveOrders(Pageable pageable) {
+        return orderRepository.findAllByActiveTrue(pageable)
+                .map(OrderResponseDto::fromEntity);
     }
     
     @Transactional(readOnly = true)

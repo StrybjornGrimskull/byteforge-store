@@ -42,9 +42,13 @@
 
     <div id="ordersContainer">
         <div class="text-center py-4">
-            <output class="spinner-border text-primary" aria-live="polite"></output>
             <p class="mt-2 mb-0">Loading orders...</p>
         </div>
+    </div>
+    <div class="text-center mt-4" id="loadMoreContainer" style="display: none;">
+        <button class="btn btn-primary" id="loadMoreBtn">
+            <i class="bi bi-arrow-down-circle me-2"></i>Load More Orders
+        </button>
     </div>
 </div>
 
@@ -64,22 +68,6 @@
         });
     }
 
-    function generateProductBadges(orderProducts) {
-        if (!orderProducts || orderProducts.length === 0) {
-            return '<span class="text-muted small">No products</span>';
-        }
-
-        const firstThree = orderProducts.slice(0, 3).map(product => {
-            const productName = product.product?.name || 'Unknown Product';
-            return `<span class="badge bg-light text-dark border small">${productName} x${product.quantity || 1}</span>`;
-        }).join('');
-
-        const moreCount = orderProducts.length > 3 ?
-            `<span class="badge bg-light text-dark border small">+${orderProducts.length - 3} more</span>` : '';
-
-        return firstThree + moreCount;
-    }
-
     function createOrderCard(order) {
         return `
             <div class="col-12 col-md-6 col-lg-4 col-xl-3 mb-3">
@@ -93,127 +81,207 @@
                     </div>
                     <div class="card-body d-flex flex-column">
                         <h6 class="card-title">${order.firstName || ''} ${order.lastName || ''}</h6>
-                        <p class="card-text small text-muted mb-2">${order.email || 'No email provided'}</p>
-
-                        <div class="mb-3">
-                            <div class="d-flex flex-wrap gap-1">
-                                ${generateProductBadges(order.orderProducts)}
-                            </div>
-                        </div>
+                        <p class="card-text small text-muted mb-2">
+                            <i class="bi bi-envelope"></i> ${order.email || 'No email provided'}
+                        </p>
+                        <p class="card-text small text-muted mb-2">
+                            <i class="bi bi-telephone"></i> ${order.phoneNumber || 'No phone provided'}
+                        </p>
+                        <p class="card-text small text-muted mb-3">
+                            <i class="bi bi-geo-alt"></i> ${order.city || ''}, ${order.address || ''}
+                        </p>
 
                         <div class="mt-auto d-flex justify-content-between align-items-center">
                             <span class="fw-bold">${order.totalPrice ? order.totalPrice.toFixed(2) : '0.00'} $</span>
-                            <button class="btn btn-sm btn-outline-success complete-order-btn"
-                                    data-order-id="${order.id}" title="Complete">
-                                <i class="bi bi-check2"></i>
-                            </button>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline-primary view-order-btn"
+                                        data-order-id="${order.id}" title="View Details">
+                                    <i class="bi bi-eye"></i> View
+                                </button>
+                                <button class="btn btn-sm btn-outline-success complete-order-btn"
+                                        data-order-id="${order.id}" title="Complete">
+                                    <i class="bi bi-check2"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>`;
     }
 
-    function showNoOrdersMessage() {
+    function showNoOrdersMessage(message = 'No orders found.') {
         return `
             <div class="col-12 text-center py-4 text-muted">
                 <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                No active orders found
+                ${message}
             </div>`;
     }
 
-    function showLoadingState(message = 'Loading orders...') {
-        return `
-            <div class="col-12 text-center py-4">
-                <output class="spinner-border text-primary" aria-live="polite"></output>
-                <p class="mt-2 mb-0">${message}</p>
-            </div>`;
+    function viewOrderDetails(orderId) {
+        alert(`View order details for order #${orderId}\nThis will show order details in the future`);
     }
 
-    function updateOrdersCount(count) {
-        const orderCountBadge = document.getElementById('ordersCount');
-        if (orderCountBadge) {
-            orderCountBadge.textContent = count;
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+
+    function updateLoadMoreButton(hasMorePages) {
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        const loadMoreContainer = document.getElementById('loadMoreContainer');
+
+        if (hasMorePages) {
+            loadMoreBtn.innerHTML = '<i class="bi bi-arrow-down-circle me-2"></i>Load More Orders';
+            loadMoreBtn.onclick = loadMoreOrders;
+        } else {
+            loadMoreBtn.innerHTML = '<i class="bi bi-arrow-up-circle me-2"></i>Back to Top';
+            loadMoreBtn.onclick = scrollToTop;
         }
+        loadMoreContainer.style.display = 'block';
     }
 
     async function completeOrder(button, orderId) {
         const originalText = button.innerHTML;
 
         button.disabled = true;
-        button.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        button.innerHTML = 'Completing...';
 
-        const response = await fetch(`/api/orders/${orderId}/complete`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (response.ok) {
-            const orderCard = button.closest('.col-12.col-md-6.col-lg-4.col-xl-3');
-            if (orderCard) {
-                orderCard.remove();
-
-                const remainingOrders = document.querySelectorAll('.col-12.col-md-6.col-lg-4.col-xl-3').length;
-                updateOrdersCount(remainingOrders);
-
-                if (remainingOrders === 0) {
-                    document.getElementById('ordersContainer').innerHTML = showNoOrdersMessage();
+        try {
+            const response = await fetch(`/api/orders/${orderId}/complete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
                 }
+            });
+
+            if (response.ok) {
+                const orderCard = button.closest('.col-12.col-md-6.col-lg-4.col-xl-3');
+                if (orderCard) {
+                    orderCard.remove();
+                    const remainingOrders = document.querySelectorAll('.col-12.col-md-6.col-lg-4.col-xl-3').length;
+                    document.getElementById('ordersCount').textContent = remainingOrders;
+
+                    if (remainingOrders === 0) {
+                        document.getElementById('ordersContainer').innerHTML = showNoOrdersMessage();
+                    }
+                }
+            } else {
+                button.disabled = false;
+                button.innerHTML = originalText;
+                alert('Error completing order');
             }
-        } else {
+        } catch (error) {
+            console.error('Error completing order:', error);
             button.disabled = false;
             button.innerHTML = originalText;
         }
     }
 
-    async function fetchAllOrders() {
+    let currentPage = 0;
+    let totalPages = 0;
+    let totalElements = 0;
+    const pageSize = 12;
+
+    async function fetchOrders(page = 0) {
         const container = document.getElementById('ordersContainer');
-        container.innerHTML = showLoadingState();
 
-        const response = await fetch('/api/orders/active');
+        if (page === 0) {
+            container.innerHTML = `
+                <div class="text-center py-4">
+                    <p class="mt-2 mb-0">Loading orders...</p>
+                </div>
+            `;
+        }
 
-        if (response.ok) {
-            const orders = await response.json();
+        try {
+            const response = await fetch(`/api/orders/active?page=${page}&size=${pageSize}`);
 
-            if (!orders || orders.length === 0) {
-                container.innerHTML = showNoOrdersMessage();
-                updateOrdersCount(0);
-            } else {
-                const ordersHTML = orders.map(order => createOrderCard(order)).join('');
-                container.innerHTML = `<div class="row g-3">${ordersHTML}</div>`;
-                updateOrdersCount(orders.length);
+            if (!response.ok) {
+                throw new Error('Failed to fetch orders');
             }
-        } else {
-            container.innerHTML = showNoOrdersMessage();
-            updateOrdersCount(0);
+
+            const data = await response.json();
+
+            if (data.content.length === 0 && page === 0) {
+                container.innerHTML = showNoOrdersMessage();
+                document.getElementById('loadMoreContainer').style.display = 'none';
+                return;
+            }
+
+            const ordersHTML = data.content.map(order => createOrderCard(order)).join('');
+
+            if (page === 0) {
+                container.innerHTML = `<div class="row g-3" id="ordersGrid">${ordersHTML}</div>`;
+            } else {
+                const ordersGrid = document.getElementById('ordersGrid');
+                ordersGrid.insertAdjacentHTML('beforeend', ordersHTML);
+            }
+
+            totalPages = data.totalPages;
+            totalElements = data.totalElements;
+            currentPage = page;
+
+            document.getElementById('ordersCount').textContent = totalElements;
+
+            const hasMorePages = currentPage < totalPages - 1;
+            updateLoadMoreButton(hasMorePages);
+
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+            if (page === 0) {
+                container.innerHTML = showNoOrdersMessage('Error loading orders');
+                document.getElementById('loadMoreContainer').style.display = 'none';
+            }
         }
     }
 
     async function searchOrder(orderId) {
         const container = document.getElementById('ordersContainer');
+        document.getElementById('loadMoreContainer').style.display = 'none';
 
         if (!orderId) {
+            fetchOrders(0);
             return;
         }
 
-        container.innerHTML = showLoadingState(`Searching for order #${orderId}...`);
-        const response = await fetch(`/api/orders/${orderId}`);
+        container.innerHTML = `
+            <div class="text-center py-4">
+                <p class="mt-2 mb-0">Searching for order #${orderId}...</p>
+            </div>
+        `;
 
-        if (!response.ok) {
-            container.innerHTML = showNoOrdersMessage();
-            updateOrdersCount(0);
-            return;
-        }
+        try {
+            const response = await fetch(`/api/orders/${orderId}`);
 
-        const order = await response.json();
+            if (!response.ok) {
+                throw new Error('Order not found');
+            }
 
-        if (order) {
+            const order = await response.json();
             container.innerHTML = `<div class="row g-3">${createOrderCard(order)}</div>`;
-            updateOrdersCount(1);
-        } else {
-            container.innerHTML = showNoOrdersMessage();
-            updateOrdersCount(0);
+            document.getElementById('ordersCount').textContent = 1;
+        } catch (error) {
+            console.error('Error searching order:', error);
+            container.innerHTML = showNoOrdersMessage('Order not found');
+            document.getElementById('ordersCount').textContent = 0;
+        }
+    }
+
+    async function loadMoreOrders() {
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        loadMoreBtn.disabled = true;
+        loadMoreBtn.innerHTML = 'Loading...';
+
+        try {
+            await fetchOrders(currentPage + 1);
+        } catch (error) {
+            console.error('Error loading more orders:', error);
+        } finally {
+            loadMoreBtn.disabled = false;
+            const hasMorePages = currentPage < totalPages - 1;
+            updateLoadMoreButton(hasMorePages);
         }
     }
 
@@ -224,6 +292,12 @@
                 const orderId = button.dataset.orderId;
                 completeOrder(button, orderId);
             }
+
+            if (e.target.closest('.view-order-btn')) {
+                const button = e.target.closest('.view-order-btn');
+                const orderId = button.dataset.orderId;
+                viewOrderDetails(orderId);
+            }
         });
 
         document.getElementById('searchOrderBtn').addEventListener('click', () => {
@@ -233,7 +307,7 @@
 
         document.getElementById('showAllOrdersBtn').addEventListener('click', () => {
             document.getElementById('orderSearchInput').value = '';
-            fetchAllOrders();
+            fetchOrders(0);
         });
 
         document.getElementById('orderSearchInput').addEventListener('keypress', (e) => {
@@ -243,7 +317,7 @@
             }
         });
 
-        fetchAllOrders();
+        fetchOrders(0);
     });
 </script>
 <!-- User Account Script -->
