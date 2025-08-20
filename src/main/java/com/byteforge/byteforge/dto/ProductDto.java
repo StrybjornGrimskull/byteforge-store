@@ -5,6 +5,7 @@ import com.byteforge.byteforge.entities.Product;
 import java.math.BigDecimal;
 
 public record ProductDto(
+
         String name,
         BigDecimal price,
         String imageUrl

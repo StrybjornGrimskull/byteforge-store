@@ -132,6 +132,12 @@ public class OrderService {
                 .map(OrderResponseDto::fromEntity)
                 .orElseThrow(() -> new RuntimeException(ApplicationConstants.ORDER_NOT_FOUND));
     }
+    @Transactional(readOnly = true)
+    public OrderResponseDto getArchivedOrderById(Long orderId) {
+        return orderRepository.findByIdAndActiveFalse(orderId)
+                .map(OrderResponseDto::fromEntity)
+                .orElseThrow(() -> new RuntimeException(ApplicationConstants.ORDER_NOT_FOUND));
+    }
 
     @Transactional
     public void completeOrder(Long orderId) {

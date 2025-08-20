@@ -21,14 +21,32 @@ public class AdminController {
 
     @GetMapping("/orders")
     @PreAuthorize("hasRole('ADMIN')")
-    public String adminOrders() {
-        return "admin-orders";
+    public String ordersManagement() {
+        return "admin-orders-management";
+    }
+    
+    @GetMapping("/orders/active")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String activeOrders() {
+        return "admin-active-orders";
+    }
+    
+    @GetMapping("/orders/archived")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String archivedOrders() {
+        return "admin-archived-orders";
     }
 
-    @GetMapping("/order-details")
+    @GetMapping("/orders/active/order-details")
     @PreAuthorize("hasRole('ADMIN')")
-    public String orderDetails(@RequestParam Long id, Model model) {
+    public String activeOrderDetails(@RequestParam Long id, Model model) {
         model.addAttribute("orderId", id);
-        return "order-details";
+        return "admin-active-order-details";
+
+    } @GetMapping("/orders/archived/order-details")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String archivedOrderDetails(@RequestParam Long id, Model model) {
+        model.addAttribute("orderId", id);
+        return "admin-archived-order-details";
     }
 }

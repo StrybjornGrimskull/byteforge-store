@@ -14,13 +14,13 @@
 <div class="container py-4">
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Orders</li>
+            <li class="breadcrumb-item"><a th:href="@{/admin/dashboard/orders}">Orders Management</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Active Orders</li>
         </ol>
     </nav>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Order Management</h1>
+        <h1 class="h3 mb-0">Active Orders</h1>
         <span class="badge bg-primary">
             <span id="ordersCount">0</span> Active Orders
         </span>
@@ -118,7 +118,7 @@
     }
 
     function viewOrderDetails(orderId) {
-        window.location.href = `/admin/dashboard/order-details?id=${orderId}`;
+        window.location.href = `/admin/dashboard/orders/active/order-details?id=${orderId}`;
     }
 
     function scrollToTop() {
@@ -253,7 +253,7 @@
         `;
 
         try {
-            const response = await fetch(`/api/orders/${orderId}`);
+            const response = await fetch(`/api/orders/active/${orderId}`);
 
             if (!response.ok) {
                 throw new Error('Order not found');

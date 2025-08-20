@@ -15,7 +15,7 @@
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a th:href="@{/admin/dashboard/orders}">Orders</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/admin/dashboard/orders}">Orders Management</a></li>
             <li class="breadcrumb-item active" aria-current="page">Order Details</li>
         </ol>
     </nav>
@@ -199,12 +199,24 @@
 
         try {
             console.log('Fetching order with ID:', orderId);
-            const response = await fetch(`/api/orders/${orderId}`, {
+            // First try active orders endpoint
+            let response = await fetch(`/api/orders/active/${orderId}`, {
                 headers: {
                     'Accept': 'application/json'
                 },
-                credentials: 'include'  // Important for sending cookies/session
+                credentials: 'include'
             });
+
+            // If not found in active orders, try archived orders
+            if (response.status === 404) {
+                console.log('Order not found in active orders, trying archived orders...');
+                response = await fetch(`/api/orders/archived/${orderId}`, {
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+            }
 
             if (!response.ok) {
                 const errorText = await response.text();

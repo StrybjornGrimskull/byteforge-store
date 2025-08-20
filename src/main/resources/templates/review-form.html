@@ -3,20 +3,61 @@
 <head>
     <title>Leave a Review</title>
     <th:block th:insert="~{fragments/navigation :: head-links}" />
+    <style>
+        .review-header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 1.5rem 0;
+            margin-bottom: 1.5rem;
+        }
+        .breadcrumb {
+            margin-bottom: 0.5rem;
+            background: transparent;
+            padding: 0;
+        }
+        .breadcrumb a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover {
+            color: white;
+            text-decoration: none;
+        }
+        .breadcrumb-item + .breadcrumb-item::before {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .breadcrumb-item.active {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .review-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+    </style>
 </head>
 <body>
 <!-- Navigation -->
 <div th:replace="fragments/navigation :: navigation"></div>
 
+<!-- Product Header -->
+<header class="review-header">
+    <div class="container">
+        <!-- Breadcrumb navigation -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a th:href="@{/}" class="text-white">Home</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/profile}" class="text-white">Profile</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/reviews/my-orders}" class="text-white">My Orders & Reviews</a></li>
+                <li class="breadcrumb-item active text-white-50" aria-current="page">Leave a Review</li>
+            </ol>
+        </nav>
+        <h1 class="mb-0">Leave a Review for <span th:text="${product.name}"></span></h1>
+    </div>
+</header>
+
 <div class="container py-4">
-    <!-- Breadcrumb Navigation -->
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a th:href="@{/profile}">Profile</a></li>
-            <li class="breadcrumb-item"><a th:href="@{/reviews/my-orders}">My Orders & Reviews</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Leave a Review</li>
-        </ol>
-    </nav>
     
     <div class="row justify-content-center">
         <div class="col-lg-8">
@@ -37,7 +78,7 @@
                         Your review has been submitted and will be displayed after moderation.
                     </div>
 
-                    <form id="reviewForm" th:action="@{/api/products/{productId}/reviews(productId=${product.id})}" method="post" class="needs-validation" novalidate>
+                    <form id="reviewForm" method="post" class="needs-validation" novalidate>
                         <input type="hidden" id="product-id" th:value="${product.id}" name="productId">
 
                         <div class="mb-3">
@@ -115,16 +156,16 @@
             successMessage.classList.add('d-none');
             
             // Submit review
-            fetch(`/api/products/${productId}/reviews`, {
+            fetch('/api/reviews', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
                 body: JSON.stringify({
-                    rating: formData.get('rating'),
-                    title: formData.get('title'),
-                    text: formData.get('text')
+                    rating: parseInt(formData.get('rating')),
+                    text: formData.get('text'),
+                    product: { id: parseInt(productId) }
                 }),
                 credentials: 'same-origin'
             })

@@ -67,10 +67,12 @@ public class ProjectSecurityProdConfig {
                                 "/auth/**"
                         ).permitAll()
                 );
-        http
-                .exceptionHandling()
-                .accessDeniedPage("/auth/login?error=forbidden")
-                .and()
+
+        http.exceptionHandling(exception -> exception
+                .accessDeniedHandler((request, response, accessDeniedException) -> 
+                    response.sendRedirect("/auth/login?error=forbidden")
+                )
+        )
                 .formLogin(form -> form
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
