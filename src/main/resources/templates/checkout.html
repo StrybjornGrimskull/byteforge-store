@@ -4,58 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Checkout | ByteForge</title>
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-        }
-        .confirmation-section {
-            display: none;
-        }
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; }
+        .confirmation-section { display: none; }
     </style>
 </head>
 <body>
-<!-- Navigation Fragment -->
 <div th:replace="fragments/navigation :: navigation"></div>
 
-<!-- Main Content -->
 <div class="container py-5">
-    <!-- Header -->
     <div class="bg-white p-4 mb-4 text-center mx-auto rounded-3 shadow-sm" style="max-width: 600px;">
         <h1 class="display-5 fw-bold mb-3"><i class="bi bi-cart-check me-2"></i>CHECKOUT</h1>
         <p class="mb-0">Complete your purchase with secure checkout</p>
     </div>
 
     <div class="row justify-content-center">
-        <!-- Checkout Form -->
         <div class="col-lg-8 mx-auto">
             <div id="checkout-form-container">
                 <div class="card mb-4">
                     <h4 class="card-header fw-bold mb-4"><i class="bi bi-person-circle me-2"></i>Contact Information</h4>
-
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="firstName" class="form-label"><span class="text-danger">*</span> First Name</label>
-                                <input type="text" class="form-control" id="firstName" required>
+                                <input type="text" class="form-control" id="firstName" name="firstName" required>
+                                <div class="invalid-feedback" id="firstNameError"></div>
                             </div>
                             <div class="col-md-6">
                                 <label for="lastName" class="form-label"><span class="text-danger">*</span> Last Name</label>
-                                <input type="text" class="form-control" id="lastName" required>
+                                <input type="text" class="form-control" id="lastName" name="lastName" required>
+                                <div class="invalid-feedback" id="lastNameError"></div>
                             </div>
                             <div class="col-md-6">
                                 <label for="email-display" class="form-label">Email</label>
-                                <div class="form-control-plaintext" id="email-display"></div>
+                                <div class="form-control-plaintext" id="email-display" aria-labelledby="email-label"></div>
                             </div>
                             <div class="col-md-6">
                                 <label for="phone" class="form-label"><span class="text-danger">*</span> Phone Number</label>
-                                <input type="tel" class="form-control" id="phone" required>
+                                <input type="tel" class="form-control" id="phone" name="phoneNumber" required>
+                                <div class="invalid-feedback" id="phoneError"></div>
                             </div>
                         </div>
                     </div>
@@ -63,20 +53,22 @@
 
                 <div class="card mb-4">
                     <h4 class="card-header fw-bold mb-4"><i class="bi bi-truck me-2"></i>Shipping Address</h4>
-
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-12">
                                 <label for="address" class="form-label"><span class="text-danger">*</span> Address</label>
-                                <input type="text" class="form-control" id="address" required>
+                                <input type="text" class="form-control" id="address" name="address" required>
+                                <div class="invalid-feedback" id="addressError"></div>
                             </div>
                             <div class="col-md-6">
                                 <label for="city" class="form-label"><span class="text-danger">*</span> City</label>
-                                <input type="text" class="form-control" id="city" required>
+                                <input type="text" class="form-control" id="city" name="city" required>
+                                <div class="invalid-feedback" id="cityError"></div>
                             </div>
                             <div class="col-md-6">
                                 <label for="postIndex" class="form-label"><span class="text-danger">*</span> Postal Code</label>
-                                <input type="text" class="form-control" id="postIndex" required>
+                                <input type="number" class="form-control" id="postIndex" name="postIndex" required>
+                                <div class="invalid-feedback" id="postIndexError"></div>
                             </div>
                         </div>
                     </div>
@@ -92,7 +84,6 @@
                 </div>
             </div>
 
-            <!-- Order Confirmation (hidden by default) -->
             <div id="order-confirmation" class="confirmation-section">
                 <div class="bg-white p-4 text-center mx-auto rounded-3 shadow-sm" style="max-width: 600px;">
                     <div class="mb-4">
@@ -110,30 +101,22 @@
                                 <div class="col-md-6">
                                     <h6 class="fw-bold">Order Number</h6>
                                     <p id="order-number">Loading...</p>
-
                                     <h6 class="fw-bold">Order Date</h6>
                                     <p id="order-date">Loading...</p>
-
-                                    <h6 class="fw-bold">Payment Method</h6>
-                                    <p id="payment-method">Loading...</p>
                                 </div>
                                 <div class="col-md-6">
                                     <h6 class="fw-bold">Shipping Address</h6>
                                     <p id="shipping-address">Loading...</p>
                                 </div>
                             </div>
-
                             <hr>
-
                             <h6 class="fw-bold mb-3">Items Ordered</h6>
                             <div id="ordered-items"></div>
-
                             <hr>
-
                             <div class="row">
                                 <div class="col-md-6">
                                     <h6 class="fw-bold">Delivery Method</h6>
-                                    <p id="delivery-method">Standard Delivery (3-5 business days)</p>
+                                    <p>Standard Delivery (3-5 business days)</p>
                                 </div>
                                 <div class="col-md-6 text-end">
                                     <h6 class="fw-bold">Total</h6>
@@ -152,236 +135,174 @@
     </div>
 </div>
 
-<!-- Footer Fragment -->
 <th:block th:replace="fragments/footer :: footer"></th:block>
 
-<!-- jQuery and Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    $(function () {
-        // Функция для форматирования цены
-        function formatPrice(price) {
-            return '$' + parseFloat(price).toFixed(2);
-        }
+    $(function() {
 
-        // Загрузка данных профиля
-        function loadProfileData() {
-            $.ajax({
-                url: '/api/profile',
-                method: 'GET',
-                success: function(profile) {
-                    if (profile) {
-                        $('#firstName').val(profile.firstName || '');
-                        $('#lastName').val(profile.lastName || '');
-                        $('#email-display').text(profile.email || '');
-                        $('#phone').val(profile.phone || '');
-                        $('#city').val(profile.city || '');
-                        $('#address').val(profile.address || '');
-                        $('#postIndex').val(profile.postIndex || '');
-                        if (profile && profile.firstName) {
-                            $('#user-firstname').html('<i class="bi bi-person me-1"></i> ' + profile.firstName);
-                        }
-                    }
-                },
-                error: function() {
-                    console.log("Profile load failed (non-critical)");
-                }
-            });
-        }
-
-        // Загрузка товаров в Order Summary
-        function loadOrderSummary() {
-            $.ajax({
-                url: '/api/shopping-cart',
-                method: 'GET',
-                success: function(response) {
-                    if (!response || response.length === 0) {
-                        $('#order-items').html('<div class="alert alert-warning">Your cart is empty</div>');
-                        return;
-                    }
-
-                    let itemsHtml = '';
-                    let subtotal = 0;
-
-                    response.forEach(item => {
-                        subtotal += parseFloat(item.price) * item.quantity;
-
-                        itemsHtml += `
-                            <div class="d-flex mb-3">
-                                <div class="d-flex align-items-center justify-content-center bg-light rounded me-3 overflow-hidden" style="height: 100px; width: 100px; flex-shrink: 0;">
-                                    <img th:src="${item.imageUrl}" th:alt="${item.productName}" style="max-height: 100%; max-width: 100%; object-fit: contain; mix-blend-mode: multiply;">
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">${item.productName}</h6>
-                                    <small class="text-muted">Qty: ${item.quantity}</small>
-                                </div>
-                                <div class="flex-shrink-0 text-end">
-                                    <h6 class="mb-1">${formatPrice(item.price)}</h6>
-                                </div>
-                            </div>
-                        `;
-                    });
-
-                    const shippingCost = subtotal >= 1500 ? 0 : 2.86;
-
-                    $('#order-items').html(itemsHtml);
-                    $('#subtotal').text(formatPrice(subtotal));
-                    $('#shipping-cost').text(formatPrice(shippingCost));
-
-                    const total = subtotal + shippingCost;
-                    $('#total').text(formatPrice(total));
-                },
-                error: function() {
-                    $('#order-items').html('<div class="alert alert-danger">Error loading cart items</div>');
-                }
-            });
-        }
-
-        // Обработчик оформления заказа
-        $('#place-order-btn').click(function() {
-            const $btn = $(this);
-
-            // Проверка на заполненность всех полей
-            const requiredFields = [
-                $('#firstName').val(),
-                $('#lastName').val(),
-                $('#email-display').text(),
-                $('#phone').val(),
-                $('#city').val(),
-                $('#address').val(),
-                $('#postIndex').val()
-            ];
-            if (requiredFields.some(f => !f || f.trim() === '')) {
-                alert('Please fill in all required fields.');
-                return;
-            }
-
-            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span> Placing...');
-
-            const orderData = {
-                firstName: $('#firstName').val(),
-                lastName: $('#lastName').val(),
-                email: $('#email-display').text(),
-                phoneNumber: $('#phone').val(),
-                city: $('#city').val(),
-                address: $('#address').val(),
-                postIndex: $('#postIndex').val()
+        function showFieldError(field, message) {
+            const fieldMap = {
+                'phoneNumber': 'phone',
+                'firstName': 'firstName',
+                'lastName': 'lastName',
+                'city': 'city',
+                'address': 'address',
+                'postIndex': 'postIndex'
             };
 
-            // 1. Пытаемся создать заказ
+            const fieldId = fieldMap[field] || field;
+            const $field = $(`#${fieldId}`);
+            const $errorElement = $(`#${fieldId}Error`);
+
+            if ($field.length && $errorElement.length) {
+                $field.addClass('is-invalid');
+                $errorElement.text(message);
+
+                $('html, body').animate({
+                    scrollTop: $field.offset().top - 100
+                }, 500);
+
+                $field.focus();
+            }
+        }
+
+        function clearValidationErrors() {
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').text('');
+        }
+
+        function loadProfileData() {
+            $.get('/api/profile', function(profile) {
+                if (profile) {
+                    $('#firstName').val(profile.firstName || '');
+                    $('#lastName').val(profile.lastName || '');
+                    $('#email-display').text(profile.email || '');
+                    $('#phone').val(profile.phone || '');
+                    $('#city').val(profile.city || '');
+                    $('#address').val(profile.address || '');
+                    $('#postIndex').val(profile.postIndex || '');
+                }
+            }).fail(function() {
+                console.log("Failed to load profile");
+            });
+        }
+
+        function placeOrder(orderData, $btn) {
             $.ajax({
                 url: '/api/orders',
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(orderData),
-                dataType: 'text', // Ожидаем текст, чтобы избежать parsererror
-                success: function(rawResponse) {
-                    try {
-                        // Пытаемся вручную распарсить ответ
-                        const response = rawResponse ? JSON.parse(rawResponse) : {};
-
-                        if (response.id) {
-                            // Если есть ID - показываем подтверждение
-                            showOrderConfirmation(response, orderData);
-                        } else {
-                            // Если нет ID - пробуем найти заказ
-                            findCreatedOrder(orderData);
-                        }
-                    } catch (e) {
-                        console.error("Ошибка парсинга ответа:", e);
-                        findCreatedOrder(orderData); // Пробуем найти заказ
-                    }
+                success: function(response) {
+                    showOrderConfirmation(response, orderData);
+                    $btn.prop('disabled', false).text('Place Order');
                 },
                 error: function(xhr) {
-                    let errorMsg = "Server error";
-                    if (xhr.responseText) {
-                        try {
-                            const err = JSON.parse(xhr.responseText);
-                            errorMsg = err.message || xhr.responseText;
-                        } catch (e) {
-                            errorMsg = xhr.responseText;
-                        }
-                    }
-                    alert("Error: " + errorMsg);
-                    $btn.prop('disabled', false).html('Place Order');
-                }
-            });
-        });
-
-        // Поиск созданного заказа
-        function findCreatedOrder(orderData) {
-            $.ajax({
-                url: '/api/orders/search',
-                method: 'GET',
-                data: {
-                    date: new Date().toISOString()
-                },
-                success: function(order) {
-                    if (order && order.id) {
-                        showOrderConfirmation(order, orderData);
-                    } else {
-                        alert('Error: Could not get order number. Please try again later.');
-                    }
-                },
-                error: function() {
-                    alert('Error: Could not get order number. Please try again later.');
+                    handleOrderError(xhr);
+                    $btn.prop('disabled', false).text('Place Order');
                 }
             });
         }
 
-        // Показ подтверждения заказа (теперь из объекта order)
+        function handleOrderError(xhr) {
+            let errorMessage = 'An error occurred. Please try again.';
+            let hasFieldErrors = false;
+
+            try {
+                if (xhr.status === 400 && xhr.responseText) {
+                    const errorResponse = JSON.parse(xhr.responseText);
+                    if (errorResponse.errors && Array.isArray(errorResponse.errors)) {
+                        errorResponse.errors.forEach(error => {
+                            if (error.field && error.defaultMessage) {
+                                showFieldError(error.field, error.defaultMessage);
+                                hasFieldErrors = true;
+                            }
+                        });
+                    }
+                    if (errorResponse.message && !hasFieldErrors) {
+                        errorMessage = errorResponse.message;
+                    }
+                }
+            } catch (e) {
+                console.error('Error processing error response:', e);
+                if (xhr.responseText.includes('Numeric value') && xhr.responseText.includes('out of range')) {
+                    showFieldError('postIndex', 'Invalid post index');
+                    hasFieldErrors = true;
+                } else {
+                    errorMessage = 'Error processing your request';
+                }
+            }
+
+            if (!hasFieldErrors) {
+                alert(errorMessage);
+            }
+        }
+
         function showOrderConfirmation(order, orderData) {
             $('#checkout-form-container').hide();
             $('#order-confirmation').show();
-            $('#order-number').text('#' + order.id); // Реальный ID или TEMP
-            $('#order-date').text(new Date(order.createdAt || order.date || Date.now()).toLocaleString());
+            $('#order-number').text('#' + (order.id || '0000'));
+            $('#order-date').text(new Date(order.createdAt || Date.now()).toLocaleString());
             $('#shipping-address').html(`
-                ${orderData.firstName} ${orderData.lastName}<br>
-                ${orderData.address}<br>
-                ${orderData.city}, ${orderData.postIndex}
-            `);
+            ${orderData.firstName} ${orderData.lastName}<br>
+            ${orderData.address}<br>
+            ${orderData.city}, ${orderData.postIndex}
+        `);
+            $('#confirmation-email').text(orderData.email);
 
-            // Формируем список товаров и сумму из объекта order
             if (order.orderProducts && order.orderProducts.length > 0) {
                 let itemsHtml = '';
+                let total = 0;
+
                 order.orderProducts.forEach(item => {
                     const product = item.product;
+                    const itemTotal = product.price * item.quantity;
+                    total += itemTotal;
+
                     itemsHtml += `
-                        <div class="d-flex mb-3">
-                                <div class="d-flex align-items-center justify-content-center bg-light rounded me-3 overflow-hidden" style="height: 100px; width: 100px; flex-shrink: 0;">
-                                    <img src="/uploads/${product.imageUrl}" alt="${product.name}" style="max-height: 100%; max-width: 100%; object-fit: contain; mix-blend-mode: multiply;">
-                                </div>
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1">${product.name}</h6>
-                                <small class="text-muted">Qty: ${item.quantity}</small>
-                            </div>
-                            <div class="flex-shrink-0 text-end">
-                                <h6 class="mb-1">$${parseFloat(product.price).toFixed(2)}</h6>
-                            </div>
+                    <div class="d-flex mb-3">
+                        <div class="me-3" style="width: 60px; height: 60px; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                            <img src="/uploads/${product.imageUrl}" alt="${product.name}" style="max-width: 100%; max-height: 100%;">
                         </div>
-                    `;
+                        <div class="flex-grow-1">
+                            <div>${product.name}</div>
+                            <small>Qty: ${item.quantity}</small>
+                        </div>
+                        <div>$${itemTotal.toFixed(2)}</div>
+                    </div>`;
                 });
+
                 $('#ordered-items').html(itemsHtml);
-            } else {
-                $('#ordered-items').html('<div class="alert alert-warning">No items found</div>');
-            }
-            // Итоговая сумма
-            if (order.totalPrice) {
-                $('#order-total').text('$' + parseFloat(order.totalPrice).toFixed(2));
-            } else {
-                $('#order-total').text('$0.00');
+                $('#order-total').text('$' + total.toFixed(2));
             }
         }
 
-        // Инициализация
+        $('#place-order-btn').click(function() {
+            const $btn = $(this);
+            clearValidationErrors();
+
+            $btn.prop('disabled', true).text('Processing...');
+
+            const orderData = {
+                firstName: $('#firstName').val().trim(),
+                lastName: $('#lastName').val().trim(),
+                email: $('#email-display').text().trim(),
+                phoneNumber: $('#phone').val().trim(),
+                city: $('#city').val().trim(),
+                address: $('#address').val().trim(),
+                postIndex: $('#postIndex').val().trim() // Отправляем как строку
+            };
+
+            placeOrder(orderData, $btn);
+        });
+
         loadProfileData();
-        loadOrderSummary();
     });
 </script>
 
-<!-- User Account Script -->
 <div th:replace="fragments/navigation :: user-account-script"></div>
 
 </body>

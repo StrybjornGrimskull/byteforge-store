@@ -49,7 +49,7 @@ public class OrderService {
         order.setPhoneNumber(orderDto.phoneNumber());
         order.setCity(orderDto.city());
         order.setAddress(orderDto.address());
-        order.setPostIndex(orderDto.postIndex());
+        order.setPostIndex(Integer.parseInt(orderDto.postIndex()));
         order.setDate(LocalDateTime.now());
 
         // 4. Создаем продукты заказа

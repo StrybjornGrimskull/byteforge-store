@@ -1,6 +1,9 @@
 package com.byteforge.byteforge.dto.request;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 public record OrderRequestDto(
         @NotBlank(message = "First name is required")
@@ -28,8 +31,7 @@ public record OrderRequestDto(
         @Size(max = 255, message = "Address must be less than 255 characters")
         String address,
 
-        @NotNull(message = "Post index is required")
-        @Min(value = 10000, message = "Invalid post index")
-        @Max(value = 999999, message = "Invalid post index")
-        Integer postIndex
+        @NotBlank(message = "Post index is required")
+        @Pattern(regexp = "^\\d{5,6}$", message = "Invalid post index")
+        String postIndex
 ) {}
