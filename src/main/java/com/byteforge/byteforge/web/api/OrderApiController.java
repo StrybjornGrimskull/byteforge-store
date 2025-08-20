@@ -51,5 +51,13 @@ public class OrderApiController {
             @RequestParam(defaultValue = "12") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(orderService.getAllActiveOrders(pageable));
+
+    }@GetMapping("/archived")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<OrderResponseDto>> getArchivedOrders(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(orderService.getAllArchivedOrders(pageable));
     }
 }

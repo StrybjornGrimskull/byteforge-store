@@ -118,7 +118,7 @@
     }
 
     function viewOrderDetails(orderId) {
-        alert(`View order details for order #${orderId}\nThis will show order details in the future`);
+        window.location.href = `/admin/dashboard/order-details?id=${orderId}`;
     }
 
     function scrollToTop() {
@@ -287,6 +287,13 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('click', function(e) {
+            if (e.target.closest('.view-order-btn')) {
+                const button = e.target.closest('.view-order-btn');
+                const orderId = button.getAttribute('data-order-id');
+                viewOrderDetails(orderId);
+                return;
+            }
+            
             if (e.target.closest('.complete-order-btn')) {
                 const button = e.target.closest('.complete-order-btn');
                 const orderId = button.dataset.orderId;

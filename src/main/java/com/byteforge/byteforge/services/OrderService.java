@@ -119,6 +119,12 @@ public class OrderService {
         return orderRepository.findAllByActiveTrue(pageable)
                 .map(OrderResponseDto::fromEntity);
     }
+
+    @Transactional(readOnly = true)
+    public Page<OrderResponseDto> getAllArchivedOrders(Pageable pageable) {
+        return orderRepository.findAllByActiveFalse(pageable)
+                .map(OrderResponseDto::fromEntity);
+    }
     
     @Transactional(readOnly = true)
     public OrderResponseDto getActiveOrderById(Long orderId) {

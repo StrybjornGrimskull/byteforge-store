@@ -25,6 +25,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o FROM Order o LEFT JOIN FETCH o.orderProducts op LEFT JOIN FETCH op.product WHERE o.active = true")
     Page<Order> findAllByActiveTrue(Pageable pageable);
 
+    @Query("SELECT o FROM Order o LEFT JOIN FETCH o.orderProducts op LEFT JOIN FETCH op.product WHERE o.active = false")
+    Page<Order> findAllByActiveFalse(Pageable pageable);
+
     @EntityGraph(attributePaths = {"orderProducts", "orderProducts.product"})
     Optional<Order> findByIdAndActiveTrue(Long id);
 }
