@@ -2,6 +2,7 @@ package com.byteforge.byteforge.web.mvc;
 
 import com.byteforge.byteforge.dto.response.ProfileResponseDto;
 import com.byteforge.byteforge.services.ProfileService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,7 @@ public class PageController {
     }
 
     @GetMapping("/wishlist")
+    @PreAuthorize("isAuthenticated()")
     public String wishlist() {
         return "wishlist.html";
     }

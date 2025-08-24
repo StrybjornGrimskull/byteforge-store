@@ -1,8 +1,6 @@
 package com.byteforge.byteforge.configuration;
 
-import com.byteforge.byteforge.filter.JWTTokenGeneratorFilter;
-import com.byteforge.byteforge.filter.JWTTokenValidatorFilter;
-import com.byteforge.byteforge.filter.RequestValidationBeforeFilter;
+import com.byteforge.byteforge.filter.JwtAuthenticationFilter;
 import com.byteforge.byteforge.security.handlers.CustomAuthenticationFailureHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -14,12 +12,13 @@ import org.springframework.security.authentication.password.CompromisedPasswordC
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -28,15 +27,17 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class ProjectSecurityProdConfig {
 
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+    private final JwtAuthenticationFilter jwtAuthFilter;
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)// Не используем сессии
+                )
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 //.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class) // УБРАТЬ или добавить null-check в фильтр!
-                .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
-                .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
-                .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .requiresChannel(rcc -> rcc.anyRequest().requiresSecure()) //HTTPS
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/admin/dashboard/**").hasRole("ADMIN")
@@ -64,27 +65,17 @@ public class ProjectSecurityProdConfig {
                                 "/uploads/logo/**",
                                 "/brands",
                                 "/error",
-                                "/auth/**"
+                                "/auth/**",
+                                "api/auth/**"
                         ).permitAll()
                 );
 
-        http.exceptionHandling(exception -> exception
-                .accessDeniedHandler((request, response, accessDeniedException) -> 
-                    response.sendRedirect("/auth/login?error=forbidden")
-                )
-        )
-                .formLogin(form -> form
-                        .loginPage("/auth/login")
-                        .loginProcessingUrl("/auth/login")
-                        .defaultSuccessUrl("/", true)
-                        .failureHandler(customAuthenticationFailureHandler))
-                .logout(logout -> logout
-                        .logoutUrl("/auth/logout")
-                        .logoutSuccessUrl("/?logout=true")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .clearAuthentication(true)
-                );
+       http.exceptionHandling(exception -> exception
+                .authenticationEntryPoint((request, response, authException) -> {
+                    // Перенаправляем на страницу логина если не авторизован
+                    response.sendRedirect("/auth/login?redirect=" + request.getRequestURI());
+                })
+        );
         return http.build();
     }
 
