@@ -1,7 +1,6 @@
 package com.byteforge.byteforge.web.mvc;
 
 import com.byteforge.byteforge.dto.request.ConsumerRequestDto;
-import com.byteforge.byteforge.entities.Customer;
 import com.byteforge.byteforge.services.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -50,22 +49,28 @@ public class AuthController {
 
     @GetMapping("/resend-verification")
     public String resendVerificationEmail(@RequestParam String email, Model model) {
-        customerService.resendVerificationEmail(email);
-        model.addAttribute("email", email);
-        model.addAttribute("resent", true);
+        try {
+            customerService.resendVerificationEmail(email);
+            model.addAttribute("email", email);
+            model.addAttribute("resent", true);
+            model.addAttribute("message", "Verification email sent successfully!");
+        } catch (RuntimeException e) {
+            model.addAttribute("email", email);
+            model.addAttribute("error", "Failed to send verification email: " + e.getMessage());
+        }
         return "verify-email";
     }
 
     @GetMapping("/verify")
     public String verifyEmail(@RequestParam String token, Model model) {
         try {
-            Customer customer = customerService.verifyEmail(token); // Возвращаем Customer
-            model.addAttribute("email", customer.getEmail());
+            customerService.verifyEmail(token); // Возвращаем Customer
             model.addAttribute("verified", true);
-            return "verify-email";
+            return "verification-result";
         } catch (RuntimeException e) {
+            model.addAttribute("verified", false);
             model.addAttribute("error", e.getMessage());
-            return "verification-error";
+            return "verification-result";
         }
     }
 

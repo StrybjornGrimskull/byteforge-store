@@ -62,8 +62,14 @@ public class CustomerService {
         Customer customer = customerRepository.findByEmailVerificationToken(token)
                 .orElseThrow(() -> new RuntimeException("Неверный токен подтверждения"));
 
+        // Проверяем, не верифицирован ли уже email
+        if (customer.isEmailVerified()) {
+            return customer; // Возвращаем пользователя без изменений
+        }
+        
         customer.setEmailVerified(true);
         customer.setEmailVerificationToken(null); // Токен обнуляется
+        
         return customerRepository.save(customer); // Возвращаем обновлённого пользователя
     }
 

@@ -6,6 +6,7 @@ import com.byteforge.byteforge.services.CustomerService;
 import com.byteforge.byteforge.utils.JwtUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -70,12 +73,13 @@ public class AuthApiController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody ConsumerRequestDto registrationDto) {
+    public ResponseEntity<Object> register(@RequestBody @Valid ConsumerRequestDto registrationDto) {
         try {
             customerService.registerNewUser(registrationDto);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", e.getMessage()));
         }
     }
 

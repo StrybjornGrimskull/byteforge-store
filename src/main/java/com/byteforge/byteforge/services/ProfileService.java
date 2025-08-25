@@ -1,12 +1,14 @@
 package com.byteforge.byteforge.services;
 
 import com.byteforge.byteforge.dto.request.ProfileRequestDto;
+import com.byteforge.byteforge.dto.response.CustomerNameFromProfileDto;
 import com.byteforge.byteforge.dto.response.ProfileResponseDto;
 import com.byteforge.byteforge.entities.Customer;
 import com.byteforge.byteforge.entities.Order;
 import com.byteforge.byteforge.entities.Profile;
 import com.byteforge.byteforge.repositories.CustomerRepository;
 import com.byteforge.byteforge.repositories.OrderRepository;
+import com.byteforge.byteforge.repositories.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,7 @@ public class ProfileService {
 
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
+    private final ProfileRepository profileRepository;
 
     @Transactional(readOnly = true)
     public ProfileResponseDto getProfileByEmail(String email) {
@@ -29,6 +32,11 @@ public class ProfileService {
         }
         Order activeOrder = orderRepository.findFirstByCustomerIdAndActiveTrueOrderByDateDesc(customer.getId()).orElse(null);
         return ProfileResponseDto.fromEntity(profile);
+    }
+
+    @Transactional(readOnly = true)
+    public CustomerNameFromProfileDto getCustomerNameByEmail(String email) {
+        return profileRepository.findCustomerNameByEmail(email);
     }
 
     @Transactional

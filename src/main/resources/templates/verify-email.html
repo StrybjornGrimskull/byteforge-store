@@ -1,155 +1,500 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Verify Email | ByteForge</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --background: #f8fafc;
-            --card-bg: #ffffff;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --error: #dc2626;
-            --success: #10b981;
-            --border: #e2e8f0;
-            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --base-bgcolor: #0f172a;
+            --base-color: #94a3b8;
+            --primary-gradient: linear-gradient(160deg, #8ceabb 0%, #378f7b 100%);
+            --secondary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --input-bg: #1e293b;
+            --input-border: #334155;
+            --input-focus: #3b82f6;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }
 
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--background);
-            color: var(--text);
+            background: var(--base-bgcolor);
+            color: var(--base-color);
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            font-size: 1rem;
+            line-height: 1.6;
             min-height: 100vh;
-            display: grid;
-            place-items: center;
-            padding: 1rem;
-            line-height: 1.5;
-        }
-
-        .verify-container {
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .verify-card {
-            background: var(--card-bg);
-            border-radius: 1rem;
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            border: 1px solid var(--border);
-            padding: 2rem;
-            text-align: center;
-        }
-
-        .logo {
-            width: 48px;
-            height: 48px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(37, 99, 235, 0.1);
-            color: var(--primary);
-            border-radius: 50%;
-            margin-bottom: 1rem;
-        }
-
-        h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
-        p {
-            color: var(--text-light);
-            margin-bottom: 1.5rem;
-        }
-
-        .alert {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1.5rem;
-            font-size: 0.875rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        .alert-success {
-            background-color: rgba(16, 185, 129, 0.1);
-            color: var(--success);
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+            z-index: -1;
         }
 
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-            text-decoration: none;
-            display: inline-block;
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
         }
 
-        .btn-primary {
-            background-color: var(--primary);
+        .auth-card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .logo {
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .verification-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 2.5rem;
             color: white;
         }
 
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
+        h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem;
+            color: var(--text-primary);
+            text-transform: none;
         }
 
-        .resend-link {
-            color: var(--primary);
+        .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .email-display {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .form-field {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid var(--input-border);
+            border-radius: 16px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .form-input:focus {
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            z-index: 2;
+        }
+
+        .btn-submit {
+            width: auto;
+            min-width: 200px;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 16px;
+            background: var(--primary-gradient);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            text-decoration: underline;
-            margin-top: 1rem;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+            position: relative;
+            overflow: hidden;
             display: inline-block;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(140, 234, 187, 0.3);
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-submit:hover::before {
+            left: 100%;
+        }
+
+        .btn-secondary {
+            width: auto;
+            min-width: 200px;
+            padding: 0.75rem 2rem;
+            border: 2px solid var(--input-border);
+            border-radius: 16px;
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            margin: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--input-focus);
+            background: rgba(59, 130, 246, 0.1);
+            transform: translateY(-1px);
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .auth-links {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .auth-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .auth-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .alert {
+            border-radius: 12px;
+            border: none;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .alert-success {
+            background: rgba(34, 197, 94, 0.1);
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .verification-steps {
+            text-align: left;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .verification-steps h4 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .verification-steps ol {
+            color: var(--text-secondary);
+            padding-left: 1.5rem;
+            margin: 0;
+        }
+
+        .verification-steps li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 1rem;
+            }
+            
+            .auth-card {
+                padding: 2rem 1.5rem;
+            }
+            
+            h2 {
+                font-size: 1.75rem;
+            }
         }
     </style>
 </head>
 <body>
-<main class="verify-container">
-    <div class="verify-card">
-        <div class="logo">
-            <i class="fas fa-envelope"></i>
-        </div>
+    <!-- Floating Background Shapes -->
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
 
-        <div th:if="${verified}" class="alert alert-success">
-            <i class="fas fa-check-circle"></i>
-            <div>Email successfully verified!</div>
-        </div>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="logo">
+                <i class="bi bi-cpu"></i> ByteForge
+            </div>
+            
+            <div class="verification-icon">
+                <i class="bi bi-envelope-check"></i>
+            </div>
+            
+            <h2>Verify Your Email</h2>
+            <p class="subtitle">
+                We've sent a verification link to your email address. 
+                Please check your inbox and click the link to verify your account.
+            </p>
 
-        <h1 th:unless="${verified}">Verify your email address</h1>
-        <p th:unless="${verified}">
-            We've sent a verification link to <strong th:text="${email}">your email</strong>.
-            Please check your inbox and click the link to verify your account.
-        </p>
+            <!-- Email Display -->
+            <div class="email-display" id="email-display">
+                <i class="bi bi-envelope me-2"></i>
+                <span id="email-text">Loading...</span>
+            </div>
 
-        <div th:if="${resent}" class="alert alert-success">
-            <i class="fas fa-check-circle"></i>
-            <div>Verification email has been resent!</div>
-        </div>
+            <!-- Verification Steps -->
+            <div class="verification-steps">
+                <h4><i class="bi bi-info-circle me-2"></i>What to do next:</h4>
+                <ol>
+                    <li>Check your email inbox (and spam folder)</li>
+                    <li>Click the verification link in the email</li>
+                    <li>Return here and sign in to your account</li>
+                </ol>
+            </div>
 
-        <a th:if="${verified}" href="/auth/login" class="btn btn-primary">Sign In</a>
+            <!-- Resend Verification Form -->
+            <form id="resendForm">
+                <div class="form-field">
+                    <i class="bi bi-envelope input-icon"></i>
+                    <input type="email" 
+                           class="form-input" 
+                           id="email" 
+                           name="email" 
+                           placeholder="Enter your email" 
+                           required>
+                </div>
 
-        <div th:unless="${verified}">
-            <p>Didn't receive the email?</p>
-            <a th:href="@{/auth/resend-verification(email=${email})}" class="resend-link">Resend verification email</a>
+                <button type="submit" class="btn-submit">
+                    <i class="bi bi-arrow-repeat me-2"></i>
+                    Resend Verification Email
+                </button>
+            </form>
+
+            <a href="/auth/login" class="btn-secondary">
+                <i class="bi bi-arrow-left me-2"></i>
+                Back to Sign In
+            </a>
+
+            <div class="auth-links">
+                <span>Need help? </span>
+                <a href="/contact">Contact Support</a>
+            </div>
         </div>
     </div>
-</main>
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(function() {
+            // Extract email from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+            
+            if (email) {
+                $('#email').val(email);
+                $('#email-text').text(email);
+            }
+
+            // Handle resend verification form
+            $('#resendForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                const email = $('#email').val();
+                
+                if (!email) {
+                    alert('Please enter your email address');
+                    return;
+                }
+
+                const $submitBtn = $('.btn-submit');
+                
+                $submitBtn.prop('disabled', true)
+                    .html('<i class="bi bi-arrow-repeat spin me-2"></i>Sending...');
+
+                // Используем GET запрос к MVC endpoint вместо POST к API
+                window.location.href = `/auth/resend-verification?email=${encodeURIComponent(email)}`;
+            });
+
+            // Add spinning animation for loading state
+            $('<style>')
+                .prop('type', 'text/css')
+                .html(`
+                    .spin {
+                        animation: spin 1s linear infinite;
+                    }
+                    @keyframes spin {
+                        from { transform: rotate(0deg); }
+                        to { transform: rotate(360deg); }
+                    }
+                `)
+                .appendTo('head');
+        });
+    </script>
 </body>
 </html>

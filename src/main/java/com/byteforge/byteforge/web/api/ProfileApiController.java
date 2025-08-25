@@ -1,6 +1,7 @@
 package com.byteforge.byteforge.web.api;
 
 import com.byteforge.byteforge.dto.request.ProfileRequestDto;
+import com.byteforge.byteforge.dto.response.CustomerNameFromProfileDto;
 import com.byteforge.byteforge.dto.response.ProfileResponseDto;
 import com.byteforge.byteforge.services.ProfileService;
 import jakarta.validation.Valid;
@@ -22,6 +23,13 @@ public class ProfileApiController {
         String email = authentication.getName();
         ProfileResponseDto profile = profileService.getProfileByEmail(email);
         return ResponseEntity.status(HttpStatus.OK).body(profile);
+    }
+
+    @GetMapping("/name")
+    public ResponseEntity<CustomerNameFromProfileDto> getCustomerName(Authentication authentication) {
+        String email = authentication.getName();
+        CustomerNameFromProfileDto customerName = profileService.getCustomerNameByEmail(email);
+        return ResponseEntity.status(HttpStatus.OK).body(customerName);
     }
 
     @PutMapping
