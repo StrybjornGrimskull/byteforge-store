@@ -30,6 +30,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request){
+        String path = request.getRequestURI();
+        
+        // Пропускаем статические ресурсы и разрешенные пути
+        return path.startsWith("/uploads/") ||
+               path.startsWith("/css/") ||
+               path.startsWith("/js/") ||
+               path.startsWith("/favicon.ico") ||
+               path.equals("/") ||
+               path.startsWith("/auth/") ||
+               path.startsWith("/api/auth/") ||
+               path.startsWith("/products/") ||
+               path.startsWith("/brands") ||
+               path.startsWith("/contact") ||
+               path.startsWith("/error");
+    }
+
+    @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,

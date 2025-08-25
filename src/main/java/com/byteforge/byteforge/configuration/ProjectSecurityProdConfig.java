@@ -1,7 +1,6 @@
 package com.byteforge.byteforge.configuration;
 
 import com.byteforge.byteforge.filter.JwtAuthenticationFilter;
-import com.byteforge.byteforge.security.handlers.CustomAuthenticationFailureHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +25,6 @@ import org.springframework.security.web.authentication.password.HaveIBeenPwnedRe
 @RequiredArgsConstructor
 public class ProjectSecurityProdConfig {
 
-    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     private final JwtAuthenticationFilter jwtAuthFilter;
 
     @Bean
@@ -71,10 +69,9 @@ public class ProjectSecurityProdConfig {
                 );
 
        http.exceptionHandling(exception -> exception
-                .authenticationEntryPoint((request, response, authException) -> {
-                    // Перенаправляем на страницу логина если не авторизован
-                    response.sendRedirect("/auth/login?redirect=" + request.getRequestURI());
-                })
+                .authenticationEntryPoint((request, response, authException) -> 
+                    response.sendRedirect("/auth/login?redirect=" + request.getRequestURI())
+                )
         );
         return http.build();
     }

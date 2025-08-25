@@ -349,6 +349,10 @@
                     window.location.href = '/';
                 }, 1000);
 
+            } else if (response.status === 403) {
+                // Email не подтвержден - перенаправляем на страницу верификации
+                const email = formData.get('email');
+                window.location.href = `/auth/verify-email?email=${encodeURIComponent(email)}`;
             } else {
                 messageEl.className = 'alert alert-error';
                 messageText.textContent = 'Invalid email or password';
@@ -361,15 +365,6 @@
                 messageText.textContent = 'Network error: Unable to connect to the server. Please check your internet connection.';
             } else if (error.name === 'SyntaxError') {
                 messageText.textContent = 'Invalid response from server. Please try again later.';
-            } else if (error.response) {
-                // Handle HTTP error status codes
-                if (error.response.status === 401 || error.response.status === 403) {
-                    messageText.textContent = 'Invalid email or password';
-                } else if (error.response.status >= 500) {
-                    messageText.textContent = 'Server error. Please try again later.';
-                } else {
-                    messageText.textContent = `Error: ${error.response.status} ${error.response.statusText}`;
-                }
             } else {
                 messageText.textContent = 'An unexpected error occurred. Please try again.';
                 console.error('Login error:', error);

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,6 +55,12 @@ public class AuthApiController {
             // Возвращаем только информацию о пользователе (БЕЗ токена!)
             return ResponseEntity.status(HttpStatus.OK).build();
 
+        } catch (DisabledException e) {
+            // Пользователь не подтвердил email
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Email not verified"
+            );
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(
                     HttpStatus.UNAUTHORIZED,

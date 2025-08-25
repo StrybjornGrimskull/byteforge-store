@@ -28,8 +28,9 @@ public class ReviewService {
         Customer customer = customerRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException(ApplicationConstants.CUSTOMER_NOT_FOUND));
 
-        List<Integer> productIds = orderProductRepository.findProductIdsByCustomerId(customer.getId());
-        List<Product> products = productRepository.findAllById(productIds);
+        // Получаем уникальные ID продуктов напрямую из репозитория
+        List<Integer> uniqueProductIds = orderProductRepository.findUniqueProductIdsByCustomerId(customer.getId());
+        List<Product> products = productRepository.findAllById(uniqueProductIds);
 
         Set<Integer> reviewedProductIds = new HashSet<>();
         for (Product product : products) {
@@ -51,9 +52,9 @@ public class ReviewService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException(ApplicationConstants.PRODUCT_NOT_FOUND));
 
-        // Check if customer has purchased the product
-        List<Integer> purchasedProductIds = orderProductRepository.findProductIdsByCustomerId(customer.getId());
-        boolean hasPurchased = purchasedProductIds.contains(productId);
+        // Check if customer has purchased the product (убираем дублирование)
+        List<Integer> uniquePurchasedProductIds = orderProductRepository.findUniqueProductIdsByCustomerId(customer.getId());
+        boolean hasPurchased = uniquePurchasedProductIds.contains(productId);
         // Check if customer already reviewed the product
         boolean hasReviewed = reviewRepository.findByProductAndCustomer(product, customer).isPresent();
 

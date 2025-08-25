@@ -24,11 +24,12 @@ public class ByteForgeProdUsernamePwdAuthenticationProvider implements Authentic
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String pwd = authentication.getCredentials().toString();
+        
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         if (passwordEncoder.matches(pwd, userDetails.getPassword())) {
             // Fetch Age details and perform validation to check if age >18
-            return new UsernamePasswordAuthenticationToken(username,pwd,userDetails.getAuthorities());
-        }else {
+            return new UsernamePasswordAuthenticationToken(username, pwd, userDetails.getAuthorities());
+        } else {
             throw new BadCredentialsException("Invalid password!");
         }
     }

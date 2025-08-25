@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface OrderProductRepository extends JpaRepository<OrderProduct, Long> {
 
-    @Query("SELECT op.product.id FROM OrderProduct op WHERE op.order.customer.id = :customerId")
-    List<Integer> findProductIdsByCustomerId(@Param("customerId") Integer customerId);
+    @Query("SELECT DISTINCT op.product.id FROM OrderProduct op WHERE op.order.customer.id = :customerId")
+    List<Integer> findUniqueProductIdsByCustomerId(@Param("customerId") Integer customerId);
 }
