@@ -44,6 +44,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                path.startsWith("/products/") ||
                path.startsWith("/brands") ||
                path.startsWith("/contact") ||
+               path.startsWith("/forgot-password") ||
+               path.startsWith("/reset-password") ||
+               path.startsWith("/verify-email") ||
+               path.startsWith("/resend-verification") ||
                path.startsWith("/error");
     }
 

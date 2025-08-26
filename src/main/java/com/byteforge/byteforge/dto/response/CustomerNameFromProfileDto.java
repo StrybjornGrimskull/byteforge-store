@@ -1,3 +1,3 @@
 package com.byteforge.byteforge.dto.response;
 
-public record CustomerNameFromProfileDto(String firstName) {}
+public record CustomerNameFromProfileDto(String firstName){}
