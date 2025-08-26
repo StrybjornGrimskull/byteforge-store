@@ -13,7 +13,20 @@ public class WiredKeyboardSpecService {
 
     public WiredKeyboardSpecDTO getWiredKeyboardSpecByProductId(Integer productId) {
         return wiredKeyboardSpecRepository.findByProductId(productId)
-                .map(WiredKeyboardSpecDTO::fromEntity)
+                .map(spec -> new WiredKeyboardSpecDTO(
+                        spec.getLayout(),
+                        spec.getSwitchType(),
+                        spec.getSwitchBrand(),
+                        spec.getSwitchModel(),
+                        spec.getRgbLighting(),
+                        spec.getHotSwappable(),
+                        spec.getActuationForce(),
+                        spec.getTravelDistance(),
+                        spec.getWeight(),
+                        spec.getCableLength(),
+                        spec.getUsbPassthrough(),
+                        spec.getDetachableCable()
+                ))
                 .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
     }
 } 

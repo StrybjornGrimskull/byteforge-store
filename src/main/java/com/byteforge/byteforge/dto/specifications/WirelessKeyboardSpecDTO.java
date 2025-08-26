@@ -1,7 +1,5 @@
 package com.byteforge.byteforge.dto.specifications;
 
-import com.byteforge.byteforge.entities.specifications.WirelessKeyboardSpec;
-
 import java.math.BigDecimal;
 
 public record WirelessKeyboardSpecDTO(
@@ -18,23 +16,4 @@ public record WirelessKeyboardSpecDTO(
         Integer batteryLife,
         String chargingType,
         Boolean multiDevicePairing
-) {
-
-    public static WirelessKeyboardSpecDTO fromEntity(WirelessKeyboardSpec spec) {
-        return new WirelessKeyboardSpecDTO(
-                spec.getLayout(),
-                spec.getSwitchType(),
-                spec.getSwitchBrand(),
-                spec.getSwitchModel(),
-                spec.getWirelessTech(),
-                spec.getRgbLighting(),
-                spec.getHotSwappable(),
-                spec.getActuationForce(),
-                spec.getTravelDistance(),
-                spec.getWeight(),
-                spec.getBatteryLife(),
-                spec.getChargingType(),
-                spec.getMultiDevicePairing()
-        );
-    }
-}
+) {}

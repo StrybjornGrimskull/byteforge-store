@@ -13,7 +13,13 @@ public class MonitorSpecService {
 
     public MonitorSpecDTO getMonitorSpecByProductId(Integer productId) {
         return monitorSpecRepository.findByProductId(productId)
-                .map(MonitorSpecDTO::fromEntity)
+                .map(spec -> new MonitorSpecDTO(
+                        spec.getScreenSize(),
+                        spec.getResolution(),
+                        spec.getPanelType(),
+                        spec.getRefreshRate(),
+                        spec.getResponseTime()
+                ))
                 .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
     }
 } 

@@ -13,7 +13,14 @@ public class CaseSpecService {
 
     public CaseSpecDTO getCaseSpecByProductId(Integer productId) {
         return caseSpecRepository.findByProductId(productId)
-                .map(CaseSpecDTO::fromEntity)
+                .map(spec -> new CaseSpecDTO(
+                        spec.getFormFactor(),
+                        spec.getMotherboardSupport(),
+                        spec.getMaxGpuLength(),
+                        spec.getMaxCpuCoolerHeight(),
+                        spec.getFansIncluded(),
+                        spec.getRadiatorSupport()
+                ))
                 .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
     }
 }

@@ -13,7 +13,16 @@ public class GpuSpecService {
 
     public GpuSpecDTO getGpuSpecByProductId(Integer productId) {
         return gpuSpecRepository.findByProductId(productId)
-                .map(GpuSpecDTO::fromEntity)
+                .map(spec -> new GpuSpecDTO(
+                        spec.getMemorySize(),
+                        spec.getMemoryType(),
+                        spec.getBusWidth(),
+                        spec.getBaseClock(),
+                        spec.getBoostClock(),
+                        spec.getTdp(),
+                        spec.getLength(),
+                        spec.getDisplayOutputs()
+                ))
                 .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
     }
 } 

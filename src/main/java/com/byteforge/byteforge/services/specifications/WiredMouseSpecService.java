@@ -13,7 +13,20 @@ public class WiredMouseSpecService {
 
     public WiredMouseSpecDTO getWiredMouseSpecByProductId(Integer productId) {
         return wiredMouseSpecRepository.findByProductId(productId)
-                .map(WiredMouseSpecDTO::fromEntity)
+                .map(spec -> new WiredMouseSpecDTO(
+                        spec.getSensorType(),
+                        spec.getSensorModel(),
+                        spec.getMaxDpi(),
+                        spec.getAdjustableDpi(),
+                        spec.getButtons(),
+                        spec.getCableLength(),
+                        spec.getCableType(),
+                        spec.getUsbConnector(),
+                        spec.getWeight(),
+                        spec.getRgbLighting(),
+                        spec.getOnboardMemory(),
+                        spec.getWarrantyMonths()
+                ))
                 .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
     }
 } 

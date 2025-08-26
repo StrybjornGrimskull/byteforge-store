@@ -13,7 +13,14 @@ public class PsuSpecService {
 
     public PsuSpecDTO getPsuSpecByProductId(Integer productId) {
         return psuSpecRepository.findByProductId(productId)
-                .map(PsuSpecDTO::fromEntity)
+                .map(spec -> new PsuSpecDTO(
+                        spec.getWattage(),
+                        spec.getFormFactor(),
+                        spec.getEfficiencyCert(),
+                        spec.getModularity(),
+                        spec.getPcie8pinConnectors(),
+                        spec.getSataConnectors()
+                ))
                 .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
     }
 } 

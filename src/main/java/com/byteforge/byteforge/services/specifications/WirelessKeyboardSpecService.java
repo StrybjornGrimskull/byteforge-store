@@ -13,7 +13,21 @@ public class WirelessKeyboardSpecService {
 
     public WirelessKeyboardSpecDTO getWirelessKeyboardSpecByProductId(Integer productId) {
         return wirelessKeyboardSpecRepository.findByProductId(productId)
-                .map(WirelessKeyboardSpecDTO::fromEntity)
+                .map(spec -> new WirelessKeyboardSpecDTO(
+                        spec.getLayout(),
+                        spec.getSwitchType(),
+                        spec.getSwitchBrand(),
+                        spec.getSwitchModel(),
+                        spec.getWirelessTech(),
+                        spec.getRgbLighting(),
+                        spec.getHotSwappable(),
+                        spec.getActuationForce(),
+                        spec.getTravelDistance(),
+                        spec.getWeight(),
+                        spec.getBatteryLife(),
+                        spec.getChargingType(),
+                        spec.getMultiDevicePairing()
+                ))
                 .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
     }
 } 

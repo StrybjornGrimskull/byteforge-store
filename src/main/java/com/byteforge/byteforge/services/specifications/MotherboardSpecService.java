@@ -13,7 +13,16 @@ public class MotherboardSpecService {
 
     public MotherboardSpecDTO getMotherboardSpecByProductId(Integer productId) {
         return motherboardSpecRepository.findByProductId(productId)
-                .map(MotherboardSpecDTO::fromEntity)
+                .map(spec -> new MotherboardSpecDTO(
+                        spec.getSocket(),
+                        spec.getChipset(),
+                        spec.getFormFactor(),
+                        spec.getMemorySlots(),
+                        spec.getMaxMemory(),
+                        spec.getMemoryType(),
+                        spec.getM2Slots(),
+                        spec.getSataPorts()
+                ))
                 .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
     }
 } 

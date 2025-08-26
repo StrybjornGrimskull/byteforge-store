@@ -13,7 +13,18 @@ public class SsdSpecService {
 
     public SsdSpecDTO getSsdSpecByProductId(Integer productId) {
         return ssdSpecRepository.findByProductId(productId)
-                .map(SsdSpecDTO::fromEntity)
+                .map(spec -> new SsdSpecDTO(
+                        spec.getCapacity(),
+                        spec.getFormFactor(),
+                        spec.getInterfaceType(),
+                        spec.getReadSpeed(),
+                        spec.getWriteSpeed(),
+                        spec.getMemoryType(),
+                        spec.getEnduranceTbw(),
+                        spec.getDramCache(),
+                        spec.getEncryption(),
+                        spec.getThickness()
+                ))
                 .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
     }
 } 

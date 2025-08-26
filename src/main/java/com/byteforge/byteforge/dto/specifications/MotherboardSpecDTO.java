@@ -1,7 +1,5 @@
 package com.byteforge.byteforge.dto.specifications;
 
-import com.byteforge.byteforge.entities.specifications.MotherboardSpec;
-
 public record MotherboardSpecDTO(
         String socket,
         String chipset,
@@ -11,18 +9,4 @@ public record MotherboardSpecDTO(
         String memoryType,
         Integer m2Slots,
         Integer sataPorts
-) {
-
-    public static MotherboardSpecDTO fromEntity(MotherboardSpec spec) {
-        return new MotherboardSpecDTO(
-                spec.getSocket(),
-                spec.getChipset(),
-                spec.getFormFactor(),
-                spec.getMemorySlots(),
-                spec.getMaxMemory(),
-                spec.getMemoryType(),
-                spec.getM2Slots(),
-                spec.getSataPorts()
-        );
-    }
-}
+) {}

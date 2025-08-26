@@ -7,12 +7,4 @@ import com.byteforge.byteforge.entities.WishlistItem;
  */
 public record WishlistItemRequestDto(
         Integer productId,
-        Integer customerId) {
-    public static WishlistItemRequestDto fromEntity(WishlistItem wishlistItem) {
-
-        return new WishlistItemRequestDto(
-                wishlistItem.getProduct().getId(),
-                wishlistItem.getCustomer().getId()
-        );
-    }
-}
+        Integer customerId) {}

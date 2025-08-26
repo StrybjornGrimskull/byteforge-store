@@ -13,7 +13,14 @@ public class RamSpecService {
 
     public RamSpecDTO getRamSpecByProductId(Integer productId) {
         return ramSpecRepository.findByProductId(productId)
-                .map(RamSpecDTO::fromEntity)
+                .map(spec -> new RamSpecDTO(
+                        spec.getMemorySize(),
+                        spec.getModulesCount(),
+                        spec.getSpeed(),
+                        spec.getType(),
+                        spec.getTimings(),
+                        spec.getVoltage()
+                ))
                 .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
     }
 } 

@@ -13,7 +13,22 @@ public class WirelessMouseSpecService {
 
     public WirelessMouseSpecDTO getWirelessMouseSpecByProductId(Integer productId) {
         return wirelessMouseSpecRepository.findByProductId(productId)
-                .map(WirelessMouseSpecDTO::fromEntity)
+                .map(spec -> new WirelessMouseSpecDTO(
+                        spec.getSensorType(),
+                        spec.getSensorModel(),
+                        spec.getMaxDpi(),
+                        spec.getButtons(),
+                        spec.getWirelessTech(),
+                        spec.getPollingRate(),
+                        spec.getWeight(),
+                        spec.getRgbLighting(),
+                        spec.getBatteryType(),
+                        spec.getBatteryLife(),
+                        spec.getStandbyBatteryLife(),
+                        spec.getChargingTime(),
+                        spec.getOnboardMemory(),
+                        spec.getWarrantyMonths()
+                ))
                 .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
     }
 } 

@@ -13,7 +13,16 @@ public class CpuSpecService {
 
     public CpuSpecDTO getCpuSpecByProductId(Integer productId) {
         return cpuSpecRepository.findByProductId(productId)
-                .map(CpuSpecDTO::fromEntity)
+                .map(spec -> new CpuSpecDTO(
+                        spec.getCores(),
+                        spec.getThreads(),
+                        spec.getBaseClock(),
+                        spec.getBoostClock(),
+                        spec.getSocket(),
+                        spec.getCacheSize(),
+                        spec.getTdp(),
+                        spec.getIntegratedGpu()
+                ))
                 .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
     }
 }

@@ -10,12 +10,4 @@ public record OrderProductResponseDto(
         Long orderId,
         Integer quantity,
         ProductDto product
-) {
-    public static OrderProductResponseDto fromEntity(OrderProduct orderProduct) {
-        return new OrderProductResponseDto(
-                orderProduct.getOrder().getId(),
-                orderProduct.getQuantity(),
-                ProductDto.fromEntity(orderProduct.getProduct())
-        );
-    }
-}
+) {}

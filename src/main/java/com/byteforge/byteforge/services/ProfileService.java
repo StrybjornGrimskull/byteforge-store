@@ -4,34 +4,42 @@ import com.byteforge.byteforge.dto.request.ProfileRequestDto;
 import com.byteforge.byteforge.dto.response.CustomerNameFromProfileDto;
 import com.byteforge.byteforge.dto.response.ProfileResponseDto;
 import com.byteforge.byteforge.entities.Customer;
-import com.byteforge.byteforge.entities.Order;
 import com.byteforge.byteforge.entities.Profile;
 import com.byteforge.byteforge.repositories.CustomerRepository;
-import com.byteforge.byteforge.repositories.OrderRepository;
 import com.byteforge.byteforge.repositories.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
 
     private final CustomerRepository customerRepository;
-    private final OrderRepository orderRepository;
     private final ProfileRepository profileRepository;
 
     @Transactional(readOnly = true)
     public ProfileResponseDto getProfileByEmail(String email) {
         Customer customer = customerRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new NoSuchElementException("Customer not found"));
         
         Profile profile = customer.getProfile();
-        if (profile == null) {
-            throw new RuntimeException("Profile not found");
-        }
-        Order activeOrder = orderRepository.findFirstByCustomerIdAndActiveTrueOrderByDateDesc(customer.getId()).orElse(null);
-        return ProfileResponseDto.fromEntity(profile);
+        if (profile == null) throw new NoSuchElementException("Profile not found");
+        
+        return new ProfileResponseDto(
+                profile.getCustomerId(),
+                profile.getFirstName(),
+                profile.getLastName(),
+                profile.getPhone(),
+                profile.getCity(),
+                profile.getAddress(),
+                profile.getPostIndex(),
+                profile.getBirthDate(),
+                profile.getPhone(),
+                customer.getEmail()
+        );
     }
 
     @Transactional(readOnly = true)
@@ -40,9 +48,9 @@ public class ProfileService {
     }
 
     @Transactional
-    public ProfileResponseDto updateProfile(String email, ProfileRequestDto profileDto) {
+    public void updateProfile(String email, ProfileRequestDto profileDto) {
         Customer customer = customerRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new NoSuchElementException("Customer not found"));
         
         Profile profile = customer.getProfile();
         if (profile == null) {
@@ -51,7 +59,6 @@ public class ProfileService {
             customer.setProfile(profile);
         }
 
-        // Обновляем поля профиля
         profile.setFirstName(profileDto.firstName());
         profile.setLastName(profileDto.lastName());
         profile.setPhone(profileDto.phone());
@@ -61,6 +68,5 @@ public class ProfileService {
         profile.setBirthDate(profileDto.birthDate());
 
         customerRepository.save(customer);
-        return ProfileResponseDto.fromEntity(profile);
     }
 }

@@ -95,7 +95,7 @@
             .then(customerName => {
                 const link = document.getElementById('user-account-link');
                 const logoutItem = document.getElementById('logout-item');
-                
+
                 if (customerName && customerName.firstName) {
                     // Пользователь аутентифицирован
                     link.innerHTML = '<i class="bi bi-person me-1"></i> ' + customerName.firstName;

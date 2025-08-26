@@ -13,14 +13,4 @@ public record WishlistItemResponseDto(
         String productName,
         Integer quantity,
         LocalDateTime addedDate
-) {
-    public static WishlistItemResponseDto fromEntity(WishlistItem item) {
-        return new WishlistItemResponseDto(
-                item.getProduct().getImageUrl(),
-                item.getProduct().getId(),
-                item.getProduct().getName(),
-                item.getProduct().getStockQuantity().getQuantity(),
-                item.getAddedDate()
-        );
-    }
-}
+) {}

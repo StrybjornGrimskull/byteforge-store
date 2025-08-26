@@ -1,8 +1,10 @@
 package com.byteforge.byteforge.services;
 
 import com.byteforge.byteforge.constants.ApplicationConstants;
+import com.byteforge.byteforge.dto.ProductDto;
 import com.byteforge.byteforge.dto.request.OrderRequestDto;
 import com.byteforge.byteforge.dto.response.ActiveOrderDto;
+import com.byteforge.byteforge.dto.response.OrderProductResponseDto;
 import com.byteforge.byteforge.dto.response.OrderResponseDto;
 import com.byteforge.byteforge.entities.*;
 import com.byteforge.byteforge.repositories.*;
@@ -15,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -59,7 +60,7 @@ public class OrderService {
             orderProduct.setProduct(cartItem.getProduct());
             orderProduct.setQuantity(cartItem.getQuantity());
             return orderProduct;
-        }).collect(Collectors.toList());
+        }).toList();
 
         order.setOrderProducts(orderProducts);
 
@@ -85,7 +86,7 @@ public class OrderService {
         // 8. Отправка письма с подтверждением заказа
         List<String> productNames = orderProducts.stream()
                 .map(op -> op.getProduct().getName())
-                .collect(Collectors.toList());
+                .toList();
         emailService.sendOrderConfirmationEmail(
                 order.getEmail(),
                 order.getFirstName(),
@@ -95,7 +96,30 @@ public class OrderService {
         );
 
         // 9. Возвращаем DTO
-        return OrderResponseDto.fromEntity(savedOrder);
+        return new OrderResponseDto(
+                savedOrder.getId(),
+                savedOrder.getTotalPrice(),
+                savedOrder.getDate(),
+                savedOrder.getFirstName(),
+                savedOrder.getLastName(),
+                savedOrder.getCity(),
+                savedOrder.getAddress(),
+                savedOrder.getEmail(),
+                savedOrder.getPhoneNumber(),
+                savedOrder.getPostIndex(),
+                savedOrder.getOrderProducts().stream()
+                        .map(op -> new OrderProductResponseDto(
+                                op.getOrder().getId(),
+                                op.getQuantity(),
+                                new ProductDto(
+                                        op.getProduct().getName(),
+                                        op.getProduct().getPrice(),
+                                        op.getProduct().getImageUrl()
+                                )
+                        ))
+                        .toList(),
+                savedOrder.getCustomer().getId()
+        );
     }
 
     @Transactional(readOnly = true)
@@ -103,7 +127,11 @@ public class OrderService {
         Customer customer = customerRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException(ApplicationConstants.CUSTOMER_NOT_FOUND));
         List<Order> orders = orderRepository.findByCustomerIdAndActiveTrue(customer.getId());
-        return orders.stream().map(ActiveOrderDto::fromEntity).toList();
+        return orders.stream().map(order -> new ActiveOrderDto(
+                order.getId(),
+                order.getTotalPrice(),
+                order.getDate()
+        )).toList();
     }
 
     @Transactional(readOnly = true)
@@ -111,31 +139,147 @@ public class OrderService {
         Customer customer = customerRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException(ApplicationConstants.CUSTOMER_NOT_FOUND));
         List<Order> orders = orderRepository.findByCustomerIdAndActiveFalse(customer.getId());
-        return orders.stream().map(OrderResponseDto::fromEntity).toList();
+        return orders.stream().map(order -> new OrderResponseDto(
+                order.getId(),
+                order.getTotalPrice(),
+                order.getDate(),
+                order.getFirstName(),
+                order.getLastName(),
+                order.getCity(),
+                order.getAddress(),
+                order.getEmail(),
+                order.getPhoneNumber(),
+                order.getPostIndex(),
+                order.getOrderProducts().stream()
+                        .map(op -> new OrderProductResponseDto(
+                                op.getOrder().getId(),
+                                op.getQuantity(),
+                                new ProductDto(
+                                        op.getProduct().getName(),
+                                        op.getProduct().getPrice(),
+                                        op.getProduct().getImageUrl()
+                                )
+                        ))
+                        .toList(),
+                order.getCustomer().getId()
+        )).toList();
     }
 
     @Transactional(readOnly = true)
     public Page<OrderResponseDto> getAllActiveOrders(Pageable pageable) {
         return orderRepository.findAllByActiveTrue(pageable)
-                .map(OrderResponseDto::fromEntity);
+                .map(order -> new OrderResponseDto(
+                        order.getId(),
+                        order.getTotalPrice(),
+                        order.getDate(),
+                        order.getFirstName(),
+                        order.getLastName(),
+                        order.getCity(),
+                        order.getAddress(),
+                        order.getEmail(),
+                        order.getPhoneNumber(),
+                        order.getPostIndex(),
+                        order.getOrderProducts().stream()
+                                .map(op -> new OrderProductResponseDto(
+                                        op.getOrder().getId(),
+                                        op.getQuantity(),
+                                        new ProductDto(
+                                                op.getProduct().getName(),
+                                                op.getProduct().getPrice(),
+                                                op.getProduct().getImageUrl()
+                                        )
+                                ))
+                                .toList(),
+                        order.getCustomer().getId()
+                ));
     }
 
     @Transactional(readOnly = true)
     public Page<OrderResponseDto> getAllArchivedOrders(Pageable pageable) {
         return orderRepository.findAllByActiveFalse(pageable)
-                .map(OrderResponseDto::fromEntity);
+                .map(order -> new OrderResponseDto(
+                        order.getId(),
+                        order.getTotalPrice(),
+                        order.getDate(),
+                        order.getFirstName(),
+                        order.getLastName(),
+                        order.getCity(),
+                        order.getAddress(),
+                        order.getEmail(),
+                        order.getPhoneNumber(),
+                        order.getPostIndex(),
+                        order.getOrderProducts().stream()
+                                .map(op -> new OrderProductResponseDto(
+                                        op.getOrder().getId(),
+                                        op.getQuantity(),
+                                        new ProductDto(
+                                                op.getProduct().getName(),
+                                                op.getProduct().getPrice(),
+                                                op.getProduct().getImageUrl()
+                                        )
+                                ))
+                                .toList(),
+                        order.getCustomer().getId()
+                ));
     }
     
     @Transactional(readOnly = true)
     public OrderResponseDto getActiveOrderById(Long orderId) {
         return orderRepository.findByIdAndActiveTrue(orderId)
-                .map(OrderResponseDto::fromEntity)
+                .map(order -> new OrderResponseDto(
+                        order.getId(),
+                        order.getTotalPrice(),
+                        order.getDate(),
+                        order.getFirstName(),
+                        order.getLastName(),
+                        order.getCity(),
+                        order.getAddress(),
+                        order.getEmail(),
+                        order.getPhoneNumber(),
+                        order.getPostIndex(),
+                        order.getOrderProducts().stream()
+                                .map(op -> new OrderProductResponseDto(
+                                        op.getOrder().getId(),
+                                        op.getQuantity(),
+                                        new ProductDto(
+                                                op.getProduct().getName(),
+                                                op.getProduct().getPrice(),
+                                                op.getProduct().getImageUrl()
+                                        )
+                                ))
+                                .toList(),
+                        order.getCustomer().getId()
+                ))
                 .orElseThrow(() -> new RuntimeException(ApplicationConstants.ORDER_NOT_FOUND));
     }
+    
     @Transactional(readOnly = true)
     public OrderResponseDto getArchivedOrderById(Long orderId) {
         return orderRepository.findByIdAndActiveFalse(orderId)
-                .map(OrderResponseDto::fromEntity)
+                .map(order -> new OrderResponseDto(
+                        order.getId(),
+                        order.getTotalPrice(),
+                        order.getDate(),
+                        order.getFirstName(),
+                        order.getLastName(),
+                        order.getCity(),
+                        order.getAddress(),
+                        order.getEmail(),
+                        order.getPhoneNumber(),
+                        order.getPostIndex(),
+                        order.getOrderProducts().stream()
+                                .map(op -> new OrderProductResponseDto(
+                                        op.getOrder().getId(),
+                                        op.getQuantity(),
+                                        new ProductDto(
+                                                op.getProduct().getName(),
+                                                op.getProduct().getPrice(),
+                                                op.getProduct().getImageUrl()
+                                        )
+                                ))
+                                .toList(),
+                        order.getCustomer().getId()
+                ))
                 .orElseThrow(() -> new RuntimeException(ApplicationConstants.ORDER_NOT_FOUND));
     }
 
