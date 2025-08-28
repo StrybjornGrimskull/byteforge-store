@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.HtmlUtils;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,11 +26,13 @@ public class ProfileApiController {
         return ResponseEntity.status(HttpStatus.OK).body(profile);
     }
 
+
     @GetMapping("/name")
     public ResponseEntity<CustomerNameFromProfileDto> getCustomerName(Authentication authentication) {
         String email = authentication.getName();
-        CustomerNameFromProfileDto customerName = profileService.getCustomerNameByEmail(email);
-        return ResponseEntity.status(HttpStatus.OK).body(customerName);
+        CustomerNameFromProfileDto customerNameDto = profileService.getCustomerNameByEmail(email);
+        String name = HtmlUtils.htmlEscape(customerNameDto.firstName());
+        return ResponseEntity.status(HttpStatus.OK).body(new CustomerNameFromProfileDto(name));
     }
 
     @PutMapping

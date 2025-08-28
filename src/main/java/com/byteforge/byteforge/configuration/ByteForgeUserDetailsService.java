@@ -3,6 +3,7 @@ package com.byteforge.byteforge.configuration;
 import com.byteforge.byteforge.entities.Customer;
 import com.byteforge.byteforge.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,6 +23,7 @@ public class ByteForgeUserDetailsService implements UserDetailsService {
     private final CustomerRepository customerRepository;
 
     @Override
+    @Cacheable("userDetails")
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Customer customer = customerRepository.findByEmail(username).orElseThrow(() -> new
                 UsernameNotFoundException("User details not found for the user: " + username));

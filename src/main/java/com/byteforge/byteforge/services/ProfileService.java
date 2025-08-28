@@ -6,7 +6,6 @@ import com.byteforge.byteforge.dto.response.ProfileResponseDto;
 import com.byteforge.byteforge.entities.Customer;
 import com.byteforge.byteforge.entities.Profile;
 import com.byteforge.byteforge.repositories.CustomerRepository;
-import com.byteforge.byteforge.repositories.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +17,7 @@ import java.util.NoSuchElementException;
 public class ProfileService {
 
     private final CustomerRepository customerRepository;
-    private final ProfileRepository profileRepository;
+
 
     @Transactional(readOnly = true)
     public ProfileResponseDto getProfileByEmail(String email) {
@@ -42,9 +41,10 @@ public class ProfileService {
         );
     }
 
+
     @Transactional(readOnly = true)
     public CustomerNameFromProfileDto getCustomerNameByEmail(String email) {
-        return profileRepository.findCustomerNameByEmail(email);
+                return customerRepository.findCustomerNameByEmail(email);
     }
 
     @Transactional
