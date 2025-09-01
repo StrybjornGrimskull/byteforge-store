@@ -1,6 +1,5 @@
 package com.byteforge.byteforge.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,6 +46,5 @@ public class Customer {
     Profile profile;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
-    @JsonIgnore
     Set<Authority> authorities;
 }

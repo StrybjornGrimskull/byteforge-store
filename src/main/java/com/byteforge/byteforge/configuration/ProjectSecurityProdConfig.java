@@ -35,10 +35,11 @@ public class ProjectSecurityProdConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)// Не используем сессии
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                //.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class) // УБРАТЬ или добавить null-check в фильтр!
                 .requiresChannel(rcc -> rcc.anyRequest().requiresSecure()) //HTTPS
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/admin/dashboard/**").hasRole("ADMIN")
+                        .requestMatchers("/api/customers/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/users").hasRole("ADMIN")
                         .requestMatchers("/notices").hasRole("USER")
                         .requestMatchers("/api/brands/**").permitAll()
                         .requestMatchers("/api/specifications/**").permitAll()

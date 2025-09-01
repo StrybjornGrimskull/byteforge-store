@@ -43,10 +43,16 @@ public class AdminController {
         model.addAttribute("orderId", id);
         return "admin-active-order-details";
 
-    } @GetMapping("/orders/archived/order-details")
+    }     @GetMapping("/orders/archived/order-details")
     @PreAuthorize("hasRole('ADMIN')")
     public String archivedOrderDetails(@RequestParam Long id, Model model) {
         model.addAttribute("orderId", id);
         return "admin-archived-order-details";
+    }
+
+    @GetMapping("/users")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String usersManagement() {
+        return "admin-users";
     }
 }

@@ -1,17 +1,22 @@
 package com.byteforge.byteforge.services;
 
 import com.byteforge.byteforge.dto.request.ConsumerRequestDto;
+import com.byteforge.byteforge.dto.request.UserRoleUpdateRequest;
+import com.byteforge.byteforge.dto.response.CustomerRoleManagementDto;
 import com.byteforge.byteforge.entities.Authority;
 import com.byteforge.byteforge.entities.Customer;
 import com.byteforge.byteforge.entities.Profile;
 import com.byteforge.byteforge.repositories.AuthorityRepository;
 import com.byteforge.byteforge.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
@@ -125,6 +130,37 @@ public class CustomerService {
         // Проверка существования email
         if (customerRepository.findByEmail(registrationDto.email()).isPresent()) {
             throw new RuntimeException("Email already exists");
+        }
+    }
+
+    public Page<CustomerRoleManagementDto> getAllCustomersForRoleManagement(Pageable pageable, String search, String role) {
+        // Подготавливаем параметры для поиска
+        String searchParam = (search != null && !search.trim().isEmpty()) ? search.trim() : null;
+        String roleParam = (role != null && !role.trim().isEmpty()) ? role.trim() : null;
+        
+        // Используем один универсальный метод
+        Page<Customer> customers = customerRepository.findAllCustomersWithAuthoritiesAndFilters(searchParam, roleParam, pageable);
+        
+        return customers.map(customer -> {
+            Collection<String> authorities = customer.getAuthorities().stream()
+                    .map(Authority::getName)
+                    .toList();
+            return new CustomerRoleManagementDto(customer.getId(), customer.getEmail(), authorities);
+        });
+    }
+
+    @Transactional
+    public void updateUserRoles(UserRoleUpdateRequest request) {
+        Customer customer = customerRepository.findById(request.userId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Удаляем все существующие роли
+        authorityRepository.deleteByCustomerId(customer.getId());
+
+        // Добавляем новые роли
+        for (String roleName : request.roles()) {
+            Authority authority = new Authority(roleName, customer);
+            authorityRepository.save(authority);
         }
     }
 }
