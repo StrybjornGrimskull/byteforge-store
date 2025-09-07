@@ -121,6 +121,10 @@ public class CustomerService {
         customerRepository.save(customer);
     }
 
+    public boolean emailExists(String email) {
+        return customerRepository.findByEmail(email).isPresent();
+    }
+
     private void validateRegistration(ConsumerRequestDto registrationDto) {
         // Проверка совпадения паролей
         if (!registrationDto.password().equals(registrationDto.confirmPassword())) {

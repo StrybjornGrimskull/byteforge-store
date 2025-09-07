@@ -442,6 +442,10 @@
                            name="email" 
                            placeholder="Enter your email" 
                            required>
+                    <div id="email-error" class="error-message" style="display: none; color: #fca5a5; font-size: 0.8rem; margin-top: 0.5rem;">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                        <span>This email is already registered</span>
+                    </div>
                 </div>
 
                 <div class="form-field">
@@ -534,34 +538,18 @@
                         confirmPassword: confirmPassword
                     }),
                     success: function(response) {
-                        // Успешная регистрация - перенаправляем на страницу верификации
+                        // Успешная регистрация - скрываем ошибки и перенаправляем
+                        hideEmailError();
                         window.location.href = `/auth/verify-email?email=${email}`;
                     },
                     error: function(xhr) {
-                        // ВРЕМЕННО - логируем детали ошибки
-                        console.log('Статус ошибки:', xhr.status);
-                        console.log('Текст ответа:', xhr.responseText);
-                        console.log('Заголовки ответа:', xhr.getAllResponseHeaders());
-                        
                         if (xhr.status === 409) {
+                            // Показываем ошибку под полем email
+                            $('#email-error').show();
+                            $('#email').addClass('error-border');
                             alert('Email already exists. Please use a different email or sign in.');
                         } else if (xhr.status === 400) {
-                            // Попробуем получить детали ошибки из ответа
-                            let errorMessage = 'Invalid data provided. Please check your input.';
-                            try {
-                                if (xhr.responseText) {
-                                    const errorResponse = JSON.parse(xhr.responseText);
-                                    if (errorResponse.message) {
-                                        errorMessage = errorResponse.message;
-                                    } else if (errorResponse.errors) {
-                                        errorMessage = 'Validation errors: ' + Object.values(errorResponse.errors).join(', ');
-                                    }
-                                }
-                            } catch (e) {
-                                // Если не удалось распарсить JSON, используем стандартное сообщение
-                                console.log('Failed to parse error response:', e);
-                            }
-                            alert(errorMessage);
+                            alert('Invalid data provided. Please check your input.');
                         } else {
                             alert('An error occurred during registration. Please try again.');
                         }
@@ -570,6 +558,21 @@
                         $submitBtn.prop('disabled', false).html(originalText);
                     }
                 });
+            });
+
+            // Email validation in real-time
+            $('#email').on('blur', function() {
+                const email = $(this).val();
+                if (email && isValidEmail(email)) {
+                    checkEmailExists(email);
+                } else {
+                    hideEmailError();
+                }
+            });
+
+            // Clear email error when user starts typing
+            $('#email').on('input', function() {
+                hideEmailError();
             });
 
             // Password strength indicator (optional enhancement)
@@ -602,6 +605,40 @@
                 }
             }
 
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            function checkEmailExists(email) {
+                $.ajax({
+                    url: '/api/auth/check-email',
+                    method: 'POST',
+                    data: { email: email },
+                    success: function(exists) {
+                        if (exists) {
+                            showEmailError();
+                        } else {
+                            hideEmailError();
+                        }
+                    },
+                    error: function() {
+                        // В случае ошибки API, скрываем ошибку
+                        hideEmailError();
+                    }
+                });
+            }
+
+            function showEmailError() {
+                $('#email-error').show();
+                $('#email').addClass('error-border');
+            }
+
+            function hideEmailError() {
+                $('#email-error').hide();
+                $('#email').removeClass('error-border');
+            }
+
             // Add spinning animation for loading state
             $('<style>')
                 .prop('type', 'text/css')
@@ -624,6 +661,11 @@
                     
                     .form-input.strong {
                         border-color: #10b981;
+                    }
+                    
+                    .form-input.error-border {
+                        border-color: #ef4444;
+                        box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
                     }
                 `)
                 .appendTo('head');
