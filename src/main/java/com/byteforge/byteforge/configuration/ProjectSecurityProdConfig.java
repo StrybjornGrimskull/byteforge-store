@@ -1,6 +1,7 @@
 package com.byteforge.byteforge.configuration;
 
 import com.byteforge.byteforge.filter.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -70,9 +71,13 @@ public class ProjectSecurityProdConfig {
                 );
 
        http.exceptionHandling(exception -> exception
-                .authenticationEntryPoint((request, response, authException) -> 
-                    response.sendRedirect("/auth/login?redirect=" + request.getRequestURI())
-                )
+                .authenticationEntryPoint((request, response, authException) -> {
+                    if (request.getRequestURI().startsWith("/api/")) {
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                    } else {
+                        response.sendRedirect("/auth/login?redirect=" + request.getRequestURI());
+                    }
+                })
         );
         return http.build();
     }

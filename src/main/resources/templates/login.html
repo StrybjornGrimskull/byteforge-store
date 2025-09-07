@@ -469,7 +469,8 @@
                     },
                     error: function(xhr) {
                         if (xhr.status === 403) {
-                            window.location.href = `/auth/verify-email?email=${email}`;
+                            // Показываем сообщение об ошибке для неверифицированного пользователя
+                            showErrorMessage('Invalid email or password. Please check your credentials and try again.');
                         } else if (xhr.status === 401) {
                             // Показываем сообщение об ошибке вместо alert
                             showErrorMessage('Invalid email or password. Please check your credentials and try again.');
