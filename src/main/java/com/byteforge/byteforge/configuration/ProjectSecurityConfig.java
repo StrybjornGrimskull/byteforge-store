@@ -30,7 +30,9 @@ public class ProjectSecurityConfig {
                 // .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class) // УБРАТЬ или добавить null-check в фильтр!
                 .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()) // Только HTTP, для продакшена лучше requiresSecure()
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/admin").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/admin").hasAnyRole("USER", "ADMIN", "MODERATOR")
+                        .requestMatchers("/admin/dashboard/**").hasAnyRole("ADMIN", "MODERATOR")
+                        .requestMatchers("/admin/dashboard/reviews").hasAnyRole("ADMIN", "MODERATOR")
                         .requestMatchers("/notices").hasRole("USER")
                         .requestMatchers("/reviews/**", "/api/reviews/**").authenticated()
                         .requestMatchers("/", "/contact", "/error", "/register", "/invalidSession", "/apiLogin").permitAll()

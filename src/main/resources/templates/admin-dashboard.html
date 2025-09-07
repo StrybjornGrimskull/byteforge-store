@@ -44,8 +44,8 @@
     </div>
 
     <div class="row g-4">
-        <!-- Orders Card -->
-        <div class="col-md-6 col-lg-4">
+        <!-- Orders Card (visible only for ADMIN) -->
+        <div class="col-md-6 col-lg-4" sec:authorize="hasRole('ADMIN')">
             <div class="card dashboard-card h-100">
                 <div class="card-body">
                     <div class="dashboard-icon">
@@ -60,8 +60,8 @@
             </div>
         </div>
 
-        <!-- Products Card -->
-        <div class="col-md-6 col-lg-4">
+        <!-- Products Card (visible only for ADMIN) -->
+        <div class="col-md-6 col-lg-4" sec:authorize="hasRole('ADMIN')">
             <div class="card dashboard-card h-100">
                 <div class="card-body">
                     <div class="dashboard-icon">
@@ -76,8 +76,8 @@
             </div>
         </div>
 
-        <!-- Users Card -->
-        <div class="col-md-6 col-lg-4">
+        <!-- Users Card (visible only for ADMIN) -->
+        <div class="col-md-6 col-lg-4" sec:authorize="hasRole('ADMIN')">
             <div class="card dashboard-card h-100">
                 <div class="card-body">
                     <div class="dashboard-icon">
@@ -87,6 +87,22 @@
                     <p class="card-text">Manage user roles</p>
                     <a href="/admin/dashboard/users" class="btn btn-primary">
                         <i class="bi bi-arrow-right-circle me-1"></i> Manage Users
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews Moderation Card (visible only for ADMIN and MODERATOR) -->
+        <div class="col-md-6 col-lg-4" sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+            <div class="card dashboard-card h-100">
+                <div class="card-body">
+                    <div class="dashboard-icon">
+                        <i class="bi bi-chat-square-text"></i>
+                    </div>
+                    <h5 class="card-title">Reviews Moderation</h5>
+                    <p class="card-text">Moderate and manage customer reviews, approve or reject submissions.</p>
+                    <a href="/admin/dashboard/reviews" class="btn btn-primary">
+                        <i class="bi bi-arrow-right-circle me-1"></i> Moderate Reviews
                     </a>
                 </div>
             </div>
