@@ -412,6 +412,28 @@
 
     <script>
         $(function() {
+            // Функция для показа сообщений об ошибках
+            function showErrorMessage(message) {
+                // Удаляем предыдущие сообщения об ошибках
+                $('.alert-error').remove();
+                
+                // Создаем новое сообщение об ошибке
+                const errorAlert = $(`
+                    <div class="alert alert-error">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        ${message}
+                    </div>
+                `);
+                
+                // Вставляем сообщение перед формой
+                $('#loginForm').before(errorAlert);
+                
+                // Прокручиваем к сообщению об ошибке
+                $('html, body').animate({
+                    scrollTop: errorAlert.offset().top - 100
+                }, 500);
+            }
+            
             $('#loginForm').on('submit', function(e) {
                 e.preventDefault();
                 
@@ -419,10 +441,13 @@
                 const password = $('#password').val();
                 
                 if (!email || !password) {
-                    alert('Please fill in all fields');
+                    showErrorMessage('Please fill in all fields');
                     return;
                 }
 
+                // Очищаем предыдущие сообщения об ошибках
+                $('.alert-error').remove();
+                
                 const $submitBtn = $('.btn-submit');
                 const originalText = $submitBtn.html();
                 
@@ -446,9 +471,10 @@
                         if (xhr.status === 403) {
                             window.location.href = `/auth/verify-email?email=${email}`;
                         } else if (xhr.status === 401) {
-                            alert('Invalid email or password');
+                            // Показываем сообщение об ошибке вместо alert
+                            showErrorMessage('Invalid email or password. Please check your credentials and try again.');
                         } else {
-                            alert('An error occurred. Please try again.');
+                            showErrorMessage('An error occurred. Please try again.');
                         }
                     },
                     complete: function() {
