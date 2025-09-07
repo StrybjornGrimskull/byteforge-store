@@ -1,6 +1,7 @@
 package com.byteforge.byteforge.services;
 
 import com.byteforge.byteforge.constants.ApplicationConstants;
+import com.byteforge.byteforge.dto.response.ReviewModerationDto;
 import com.byteforge.byteforge.entities.Customer;
 import com.byteforge.byteforge.entities.Product;
 import com.byteforge.byteforge.entities.Review;
@@ -9,6 +10,8 @@ import com.byteforge.byteforge.repositories.OrderProductRepository;
 import com.byteforge.byteforge.repositories.ProductRepository;
 import com.byteforge.byteforge.repositories.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -129,5 +132,29 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public long getActiveReviewCountByProductId(Integer productId) {
         return reviewRepository.countByProductIdAndActiveTrue(productId);
+    }
+
+    // Методы для модерации отзывов
+    @Transactional(readOnly = true)
+    public Page<ReviewModerationDto> getPendingReviews(Pageable pageable) {
+        return reviewRepository.findByActiveFalseOrderByCreatedAtDesc(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public long getPendingReviewsCount() {
+        return reviewRepository.countByActiveFalse();
+    }
+
+    @Transactional
+    public void approveReview(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+        review.setActive(true);
+        reviewRepository.save(review);
+    }
+
+    @Transactional
+    public void deleteReview(Long reviewId) {
+        reviewRepository.deleteById(reviewId);
     }
 }

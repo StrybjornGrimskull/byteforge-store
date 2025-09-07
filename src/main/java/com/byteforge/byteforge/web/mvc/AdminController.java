@@ -55,4 +55,10 @@ public class AdminController {
     public String usersManagement() {
         return "admin-users";
     }
+
+    @GetMapping("/reviews")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
+    public String reviewsModeration() {
+        return "admin-reviews-moderation";
+    }
 }

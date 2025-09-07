@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews Moderation - ByteForge</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        .page-header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+        }
+        .breadcrumb a {
+            text-decoration: none;
+        }
+        .review-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s ease-in-out;
+        }
+        .review-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        .review-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px 10px 0 0;
+            padding: 1rem;
+        }
+        .rating-stars {
+            color: #ffc107;
+            font-size: 1.2rem;
+        }
+        .product-info {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .review-text {
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            min-height: 100px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+        .btn-approve {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        .btn-approve:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+        .btn-delete {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .btn-delete:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        .no-reviews {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+        .review-meta {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<!-- Navigation Fragment -->
+<div th:replace="fragments/navigation :: navigation"></div>
+
+<!-- Page Header -->
+<header class="page-header">
+    <div class="container">
+        <!-- Breadcrumb navigation -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a th:href="@{/}" class="text-white">Home</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}" class="text-white">Admin Dashboard</a></li>
+                <li class="breadcrumb-item active text-white-50" aria-current="page">Reviews Moderation</li>
+            </ol>
+        </nav>
+        <h1 class="mb-0">
+            <i class="bi bi-chat-square-text me-2"></i>Reviews Moderation
+        </h1>
+        <p class="mb-0 mt-2 opacity-75">Moderate and manage customer reviews</p>
+    </div>
+</header>
+
+<div class="container py-4">
+
+
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner">
+        <output class="spinner-border text-primary" aria-live="polite">
+            <span class="visually-hidden">Loading...</span>
+        </output>
+        <p class="mt-2">Loading reviews...</p>
+    </div>
+
+    <!-- Reviews Container -->
+    <div id="reviewsContainer">
+        <!-- Reviews will be loaded here dynamically -->
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Reviews pagination" id="paginationContainer" style="display: none;">
+        <ul class="pagination justify-content-center" id="pagination">
+            <!-- Pagination items will be generated here -->
+        </ul>
+    </nav>
+
+    <!-- No Reviews Message -->
+    <div class="no-reviews" id="noReviewsMessage" style="display: none;">
+        <i class="bi bi-chat-square-text" style="font-size: 3rem; color: #dee2e6;"></i>
+        <h4 class="mt-3">No pending reviews</h4>
+        <p>All reviews have been moderated. Great job!</p>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer">
+    <!-- Toast notifications will be added here -->
+</div>
+
+<!-- Approve Review Modal -->
+<div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="approveModalLabel">
+                    <i class="bi bi-check-circle me-2"></i>Approve Review
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to approve this review?</p>
+                <p class="text-muted small">This action will make the review visible to all users.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="confirmApprove">
+                    <i class="bi bi-check-circle me-1"></i>Approve Review
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Review Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Delete Review
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this review?</p>
+                <p class="text-danger small"><strong>Warning:</strong> This action cannot be undone and the review will be permanently removed.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">
+                    <i class="bi bi-trash me-1"></i>Delete Review
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer Fragment -->
+<div th:replace="fragments/footer :: footer"></div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- User Account Script -->
+<div th:replace="fragments/navigation :: user-account-script"></div>
+
+<script>
+    // Global variables
+    let currentPage = 0;
+    let pageSize = 10;
+    let totalPages = 0;
+    let totalElements = 0;
+    let currentReviewId = null;
+
+    // Initialize page when document is ready
+    $(document).ready(function() {
+        loadPendingReviews(currentPage);
+        
+        // Add event listeners for modal buttons
+        $('#confirmApprove').on('click', confirmApproveReview);
+        $('#confirmDelete').on('click', confirmDeleteReview);
+    });
+
+    // Load pending reviews with pagination
+    function loadPendingReviews(page) {
+        $.ajax({
+            url: `/api/reviews/pending?page=${page}&size=${pageSize}`,
+            method: 'GET',
+            beforeSend: function() {
+                showLoading(true);
+            },
+            success: function(data) {
+                displayReviews(data.content);
+                updatePagination(data);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading reviews:', error);
+                showError('Error loading reviews');
+            },
+            complete: function() {
+                showLoading(false);
+            }
+        });
+    }
+
+    // Display reviews
+    function displayReviews(reviews) {
+        const $container = $('#reviewsContainer');
+        const $noReviewsMessage = $('#noReviewsMessage');
+
+        if (reviews.length === 0) {
+            $container.empty();
+            $noReviewsMessage.show();
+            $('#paginationContainer').hide();
+            return;
+        }
+
+        $noReviewsMessage.hide();
+        const reviewCards = reviews.map(review => createReviewCard(review)).join('');
+        $container.html(reviewCards);
+    }
+
+    // Update pagination
+    function updatePagination(pageData) {
+        currentPage = pageData.number;
+        totalPages = pageData.totalPages;
+        totalElements = pageData.totalElements;
+        
+        const $paginationContainer = $('#paginationContainer');
+        const $pagination = $('#pagination');
+        
+        if (totalPages <= 1) {
+            $paginationContainer.hide();
+            return;
+        }
+        
+        $paginationContainer.show();
+        
+        let paginationHTML = '';
+        
+        // Previous button
+        if (currentPage > 0) {
+            paginationHTML += `
+                <li class="page-item">
+                    <a class="page-link" href="#" data-page="${currentPage - 1}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+            `;
+        } else {
+            paginationHTML += `
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        <i class="bi bi-chevron-left"></i>
+                    </span>
+                </li>
+            `;
+        }
+        
+        // Page numbers
+        const startPage = Math.max(0, currentPage - 2);
+        const endPage = Math.min(totalPages - 1, currentPage + 2);
+        
+        for (let i = startPage; i <= endPage; i++) {
+            if (i === currentPage) {
+                paginationHTML += `
+                    <li class="page-item active">
+                        <span class="page-link">${i + 1}</span>
+                    </li>
+                `;
+            } else {
+                paginationHTML += `
+                    <li class="page-item">
+                        <a class="page-link" href="#" data-page="${i}">${i + 1}</a>
+                    </li>
+                `;
+            }
+        }
+        
+        // Next button
+        if (currentPage < totalPages - 1) {
+            paginationHTML += `
+                <li class="page-item">
+                    <a class="page-link" href="#" data-page="${currentPage + 1}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            `;
+        } else {
+            paginationHTML += `
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        <i class="bi bi-chevron-right"></i>
+                    </span>
+                </li>
+            `;
+        }
+        
+        $pagination.html(paginationHTML);
+        
+        // Add click handlers for pagination links
+        $pagination.find('a[data-page]').on('click', function(e) {
+            e.preventDefault();
+            const page = parseInt($(this).data('page'));
+            loadPendingReviews(page);
+        });
+    }
+
+    // Create review card HTML
+    function createReviewCard(review) {
+        const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+        const createdAt = new Date(review.createdAt).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        return `
+            <div class="card review-card" id="review-${review.reviewId}">
+                <div class="review-header">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h6 class="mb-1">
+                                <i class="bi bi-person-circle me-2"></i>
+                                ${review.userFirstName}
+                            </h6>
+                            <div class="rating-stars mb-1">${stars}</div>
+                            <div class="review-meta">
+                                <i class="bi bi-calendar me-1"></i>${createdAt}
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-approve text-white" data-review-id="${review.reviewId}">
+                                    <i class="bi bi-check-circle me-1"></i>Approve
+                                </button>
+                                <button class="btn btn-sm btn-delete text-white" data-review-id="${review.reviewId}">
+                                    <i class="bi bi-trash me-1"></i>Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="product-info">
+                        <h6 class="mb-1">
+                            <i class="bi bi-box-seam me-2"></i>
+                            Product: ${review.productName}
+                        </h6>
+                    </div>
+                    <div class="review-text">
+                        <p class="mb-0">${review.text}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Approve review - show modal
+    function approveReview(reviewId) {
+        currentReviewId = reviewId;
+        const approveModal = new bootstrap.Modal($('#approveModal')[0]);
+        approveModal.show();
+    }
+
+    // Confirm approve review
+    function confirmApproveReview() {
+        if (!currentReviewId) return;
+
+        $.ajax({
+            url: `/api/reviews/${currentReviewId}/approve`,
+            method: 'PUT',
+            contentType: 'application/json',
+            success: function() {
+                // Hide modal
+                const approveModal = bootstrap.Modal.getInstance($('#approveModal')[0]);
+                approveModal.hide();
+
+                // Reload current page
+                loadPendingReviews(currentPage);
+                
+                // Show success message
+                showSuccess('Review approved successfully');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error approving review:', error);
+                showError('Failed to approve review');
+            },
+            complete: function() {
+                currentReviewId = null;
+            }
+        });
+    }
+
+    // Delete review - show modal
+    function deleteReview(reviewId) {
+        currentReviewId = reviewId;
+        const deleteModal = new bootstrap.Modal($('#deleteModal')[0]);
+        deleteModal.show();
+    }
+
+    // Confirm delete review
+    function confirmDeleteReview() {
+        if (!currentReviewId) return;
+
+        $.ajax({
+            url: `/api/reviews/${currentReviewId}`,
+            method: 'DELETE',
+            success: function() {
+                // Hide modal
+                const deleteModal = bootstrap.Modal.getInstance($('#deleteModal')[0]);
+                deleteModal.hide();
+
+                // Reload current page
+                loadPendingReviews(currentPage);
+                
+                // Show success message
+                showSuccess('Review deleted successfully');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error deleting review:', error);
+                showError('Failed to delete review');
+            },
+            complete: function() {
+                currentReviewId = null;
+            }
+        });
+    }
+
+    // Show/hide loading spinner
+    function showLoading(show) {
+        if (show) {
+            $('#loadingSpinner').show();
+        } else {
+            $('#loadingSpinner').hide();
+        }
+    }
+
+    // Show success message
+    function showSuccess(message) {
+        const toast = $(`
+            <div class="toast align-items-center text-white bg-success border-0" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="bi bi-check-circle me-2"></i>${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        `);
+        
+        // Add to toast container
+        $('#toastContainer').append(toast);
+        
+        // Show toast
+        const bsToast = new bootstrap.Toast(toast[0]);
+        bsToast.show();
+        
+        // Remove after hide
+        toast.on('hidden.bs.toast', function() {
+            $(this).remove();
+        });
+    }
+
+    // Show error message
+    function showError(message) {
+        const toast = $(`
+            <div class="toast align-items-center text-white bg-danger border-0" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="bi bi-exclamation-triangle me-2"></i>${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        `);
+        
+        // Add to toast container
+        $('#toastContainer').append(toast);
+        
+        // Show toast
+        const bsToast = new bootstrap.Toast(toast[0]);
+        bsToast.show();
+        
+        // Remove after hide
+        toast.on('hidden.bs.toast', function() {
+            $(this).remove();
+        });
+    }
+
+    // Event delegation for dynamically created buttons
+    $(document).on('click', '.btn-approve', function() {
+        const reviewId = $(this).data('review-id');
+        approveReview(reviewId);
+    });
+
+    $(document).on('click', '.btn-delete', function() {
+        const reviewId = $(this).data('review-id');
+        deleteReview(reviewId);
+    });
+</script>
+
+</body>
+</html>
