@@ -266,7 +266,6 @@ function loadUsers() {
             return response.json();
         })
         .then(data => {
-            console.log('Received data:', data); // Debug log
             displayUsers(data);
             updatePagination(data);
             updateUserCount(data);

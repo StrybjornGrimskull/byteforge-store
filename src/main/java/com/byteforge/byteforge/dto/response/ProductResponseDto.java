@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 public record ProductResponseDto(
         Integer id,
         String name,
+        Integer discountPercentage,
+        BigDecimal originalPrice,
         BigDecimal price,
         Integer categoryId,
         String categoryName,

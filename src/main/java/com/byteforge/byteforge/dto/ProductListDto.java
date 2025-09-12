@@ -6,6 +6,8 @@ public record ProductListDto(
         Integer id,
         String name,
         String imageUrl,
+        Integer discountPercentage,
+        BigDecimal originalPrice,
         BigDecimal price,
         String brandName,
         Integer categoryId,

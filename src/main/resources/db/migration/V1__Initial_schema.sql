@@ -14,8 +14,10 @@ CREATE TABLE brands (
 
 CREATE TABLE products (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL, 
-    price DECIMAL(10,2) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    discount_percentage INT NOT NULL DEFAULT 0,
+    original_price DECIMAL(10,2) NOT NULL,
+    price DECIMAL(10,2) NOT NULL DEFAULT 0,
     category_id INT NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
     brand_id INT NOT NULL REFERENCES brands(id) ON DELETE CASCADE,
     warranty_months INT NOT NULL DEFAULT 24,

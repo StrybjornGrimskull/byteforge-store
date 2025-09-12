@@ -28,8 +28,14 @@ public class Product {
     @Column(nullable = false, length = 255)
     String name;
 
+    @Column(nullable = false, name = "discount_percentage")
+    Integer discountPercentage = 0;
+
+    @Column(nullable = false, precision = 10, scale = 2, name = "original_price")
+    BigDecimal originalPrice;
+
     @Column(nullable = false, precision = 10, scale = 2)
-    BigDecimal price;
+    BigDecimal price = originalPrice;
 
     @Column(nullable = false)
     Integer warrantyMonths = 24;

@@ -67,6 +67,7 @@ public class ProjectSecurityProdConfig {
                                 "/products/**",
                                 "/uploads/**",
                                 "/uploads/logo/**",
+                                "/static/**",
                                 "/brands",
                                 "/error",
                                 "/auth/**",

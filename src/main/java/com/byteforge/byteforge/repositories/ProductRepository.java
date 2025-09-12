@@ -16,7 +16,7 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
 
     @Query("SELECT new com.byteforge.byteforge.dto.ProductListDto(" +
-           "p.id, p.name, p.imageUrl, p.price, b.name, p.category.id, " +
+           "p.id, p.name, p.imageUrl, p.discountPercentage, p.originalPrice, p.price, b.name, p.category.id, " +
            "sq.quantity) " +
            "FROM Product p " +
            "JOIN p.brand b " +
@@ -37,7 +37,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
             @Param("name") String name);
 
     @Query("SELECT new com.byteforge.byteforge.dto.response.ProductResponseDto(" +
-            "p.id, p.name, p.price, " +
+            "p.id, p.name, p.discountPercentage, p.originalPrice, p.price, " +
             "p.category.id, p.category.name, " +
             "p.brand.name, p.brand.logoUrl, " +
             "p.warrantyMonths, p.releaseYear, " +
