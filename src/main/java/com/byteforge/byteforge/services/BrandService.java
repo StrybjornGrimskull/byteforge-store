@@ -26,25 +26,15 @@ public class BrandService {
     private final BrandRepository brandRepository;
     private final ResourceLoader resourceLoader;
 
-    // Получить бренды по категории (с преобразованием в DTO)
+    // Получить бренды по категории (с проекцией DTO)
     @Transactional(readOnly = true)
     public List<BrandDto> getBrandsByCategory(Integer categoryId) {
         if (categoryId == null) {
-            return convertToDtoList(brandRepository.findAll());
+            return brandRepository.findAll().stream()
+                    .map(brand -> new BrandDto(brand.getId(), brand.getName(), brand.getLogoUrl()))
+                    .toList();
         }
-
-        return convertToDtoList(brandRepository.findByProductsCategoryId(categoryId));
-    }
-
-    // Приватный метод для преобразования списка брендов в DTO
-    private List<BrandDto> convertToDtoList(List<Brand> brands) {
-        return brands.stream()
-                .map(brand -> new BrandDto(
-                        brand.getId(),
-                        brand.getName(),
-                        brand.getLogoUrl()
-                ))
-                .toList();
+        return brandRepository.findBrandDtosByProductsCategoryId(categoryId);
     }
 
     @Transactional

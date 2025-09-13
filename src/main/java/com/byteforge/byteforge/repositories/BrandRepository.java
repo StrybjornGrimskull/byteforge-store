@@ -1,5 +1,6 @@
 package com.byteforge.byteforge.repositories;
 
+import com.byteforge.byteforge.dto.BrandDto;
 import com.byteforge.byteforge.entities.Brand;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,8 +12,9 @@ import java.util.List;
 @Repository
 public interface BrandRepository extends JpaRepository<Brand, Integer> {
 
-    @Query("SELECT DISTINCT b FROM Brand b JOIN b.products p WHERE p.category.id = :categoryId")
-    List<Brand> findByProductsCategoryId(@Param("categoryId") Integer categoryId);
+    @Query("SELECT new com.byteforge.byteforge.dto.BrandDto(b.id, b.name, b.logoUrl) " +
+           "FROM Brand b JOIN b.products p WHERE p.category.id = :categoryId")
+    List<BrandDto> findBrandDtosByProductsCategoryId(@Param("categoryId") Integer categoryId);
     
     boolean existsByNameIgnoreCase(String name);
 }
