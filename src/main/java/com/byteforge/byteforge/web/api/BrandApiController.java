@@ -1,14 +1,14 @@
 package com.byteforge.byteforge.web.api;
 
 import com.byteforge.byteforge.dto.BrandDto;
+import com.byteforge.byteforge.dto.request.BrandCreateRequestDto;
 import com.byteforge.byteforge.services.BrandService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,5 +23,12 @@ public class BrandApiController {
     public ResponseEntity<List<BrandDto>> getBrandsByCategory(@RequestParam(required = false) Integer categoryId) {
         List<BrandDto> brands = brandService.getBrandsByCategory(categoryId);
         return ResponseEntity.status(HttpStatus.OK).body(brands);
+    }
+    
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> createBrand(@Valid BrandCreateRequestDto brandRequest) {
+        brandService.createBrand(brandRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

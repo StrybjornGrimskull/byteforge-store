@@ -61,4 +61,22 @@ public class AdminController {
     public String reviewsModeration() {
         return "admin-reviews-moderation";
     }
+
+    @GetMapping("/products")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String productsManagement() {
+        return "admin-products-management";
+    }
+
+    @GetMapping("/products/add-brand")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String addBrand() {
+        return "admin-add-brand";
+    }
+
+    @GetMapping("/products/add-product")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String addProduct() {
+        return "admin-add-product";
+    }
 }

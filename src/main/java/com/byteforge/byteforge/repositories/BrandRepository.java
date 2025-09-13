@@ -13,4 +13,6 @@ public interface BrandRepository extends JpaRepository<Brand, Integer> {
 
     @Query("SELECT DISTINCT b FROM Brand b JOIN b.products p WHERE p.category.id = :categoryId")
     List<Brand> findByProductsCategoryId(@Param("categoryId") Integer categoryId);
+    
+    boolean existsByNameIgnoreCase(String name);
 }

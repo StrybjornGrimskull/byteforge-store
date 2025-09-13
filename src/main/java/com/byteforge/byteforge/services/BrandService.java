@@ -1,37 +1,44 @@
 package com.byteforge.byteforge.services;
 
 import com.byteforge.byteforge.dto.BrandDto;
+import com.byteforge.byteforge.dto.request.BrandCreateRequestDto;
+import com.byteforge.byteforge.entities.Brand;
 import com.byteforge.byteforge.repositories.BrandRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class BrandService {
     private final BrandRepository brandRepository;
+    private final ResourceLoader resourceLoader;
 
-    @Transactional(readOnly = true)
-    public List<BrandDto> getAllBrands() {
-        return brandRepository.findAll().stream()
-                .map(brand -> new BrandDto(
-                        brand.getId(),
-                        brand.getName(),
-                        brand.getLogoUrl()
-                ))
-                .toList();
-    }
-    
     // Получить бренды по категории (с преобразованием в DTO)
     @Transactional(readOnly = true)
     public List<BrandDto> getBrandsByCategory(Integer categoryId) {
         if (categoryId == null) {
-            return getAllBrands();
+            return convertToDtoList(brandRepository.findAll());
         }
 
-        return brandRepository.findByProductsCategoryId(categoryId).stream()
+        return convertToDtoList(brandRepository.findByProductsCategoryId(categoryId));
+    }
+
+    // Приватный метод для преобразования списка брендов в DTO
+    private List<BrandDto> convertToDtoList(List<Brand> brands) {
+        return brands.stream()
                 .map(brand -> new BrandDto(
                         brand.getId(),
                         brand.getName(),
@@ -39,5 +46,62 @@ public class BrandService {
                 ))
                 .toList();
     }
-}
 
+    @Transactional
+    public void createBrand(BrandCreateRequestDto request) {
+        try {
+            // Проверяем, существует ли бренд с таким именем
+            if (brandRepository.existsByNameIgnoreCase(request.name())) {
+                throw new IllegalArgumentException("Brand with name '" + request.name() + "' already exists");
+            }
+
+            // Сохраняем логотип и получаем путь
+            String logoUrl = saveLogoFile(request.logo());
+
+            // Создаем новый бренд
+            Brand brand = new Brand();
+            brand.setName(request.name());
+            brand.setLogoUrl(logoUrl);
+
+            // Сохраняем в базу данных
+            brandRepository.save(brand);
+
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to save logo file for brand: " + request.name(), e);
+        }
+    }
+
+    private String saveLogoFile(MultipartFile logoFile) throws IOException {
+        if (logoFile == null || logoFile.isEmpty()) {
+            throw new IllegalArgumentException("Logo file is required");
+        }
+
+        // Проверка MIME типа (безопаснее чем проверка имени файла)
+        String contentType = logoFile.getContentType();
+        if (contentType == null || !contentType.equals("image/webp")) {
+            throw new IllegalArgumentException("Only WebP format is allowed");
+        }
+
+        // Современный подход с ResourceLoader
+        String uniqueFileName = UUID.randomUUID() + ".webp";
+
+        // Используем ResourceLoader для получения ресурса директории
+        Resource uploadDirResource = resourceLoader.getResource("classpath:static/uploads/logo/");
+        Path uploadDir = Paths.get(uploadDirResource.getURI()).toAbsolutePath().normalize();
+
+        // Безопасное построение пути
+        Path targetFile = uploadDir.resolve(uniqueFileName).normalize();
+
+        // Проверка безопасности пути
+        if (!targetFile.startsWith(uploadDir)) {
+            throw new SecurityException("Path traversal attack detected");
+        }
+
+        // Читаем содержимое файла и сохраняем
+        try (InputStream inputStream = logoFile.getInputStream()) {
+            Files.write(targetFile, inputStream.readAllBytes());
+        }
+
+        return "logo/" + uniqueFileName;
+    }
+}
