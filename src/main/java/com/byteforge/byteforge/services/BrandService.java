@@ -3,6 +3,7 @@ package com.byteforge.byteforge.services;
 import com.byteforge.byteforge.dto.BrandDto;
 import com.byteforge.byteforge.dto.request.BrandCreateRequestDto;
 import com.byteforge.byteforge.entities.Brand;
+import com.byteforge.byteforge.exceptions.LogoUploadException;
 import com.byteforge.byteforge.repositories.BrandRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -13,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -57,7 +57,7 @@ public class BrandService {
             brandRepository.save(brand);
 
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to save logo file for brand: " + request.name(), e);
+            throw new LogoUploadException("Failed to save logo file for brand: " + request.name(), e);
         }
     }
 

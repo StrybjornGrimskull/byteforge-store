@@ -96,9 +96,12 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="brandLogo" class="form-label fw-semibold">Brand Logo</label>
+                        <label for="brandLogo" class="form-label fw-semibold">Brand Logo *</label>
                         <input type="file" class="form-control" id="brandLogo" name="brandLogo" 
-                               accept=".webp">
+                               accept=".webp" required>
+                        <div class="invalid-feedback">
+                            Please select a logo file.
+                        </div>
                         <div class="form-text">Upload brand logo (WebP format only)</div>
                     </div>
                 </div>
@@ -155,9 +158,7 @@
                     formData.append('name', document.getElementById('brandName').value);
                     
                     const logoFile = document.getElementById('brandLogo').files[0];
-                    if (logoFile) {
-                        formData.append('logo', logoFile);
-                    }
+                    formData.append('logo', logoFile);
                     
                     // Send API request
                     const response = await fetch('/api/brands', {
@@ -166,17 +167,24 @@
                         credentials: 'include'
                     });
                     
-                    const result = await response.json();
-                    
-                    if (result.success) {
+                    if (response.ok) {
                         // Show success message
-                        showAlert('success', result.message);
+                        showAlert('success', 'Brand created successfully!');
                         // Reset form
                         brandForm.reset();
                         brandForm.classList.remove('was-validated');
                     } else {
-                        // Show error message
-                        showAlert('error', result.error);
+                        // Get error message from server
+                        let errorMessage = 'Failed to create brand';
+                        try {
+                            const errorText = await response.text();
+                            if (errorText) {
+                                errorMessage = errorText;
+                            }
+                        } catch (e) {
+                            console.error('Error reading error message:', e);
+                        }
+                        showAlert('error', errorMessage);
                     }
                     
                 } catch (error) {
