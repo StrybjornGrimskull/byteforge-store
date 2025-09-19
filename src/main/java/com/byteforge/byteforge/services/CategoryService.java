@@ -4,6 +4,7 @@ import com.byteforge.byteforge.dto.CategoryDto;
 import com.byteforge.byteforge.repositories.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    @Transactional(readOnly = true)
     public List<CategoryDto> getAllCategories() {
         return categoryRepository.findAll().stream()
                 .map(category -> new CategoryDto(

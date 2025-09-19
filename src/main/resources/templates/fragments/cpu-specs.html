@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CPU Specifications Fragment</title>
+</head>
+<body>
+
+<!-- CPU Specifications Fragment -->
+<div th:fragment="cpu-specs" class="cpu-specs-section">
+    <h5 class="fw-semibold mb-3 text-secondary">CPU Specifications</h5>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="cpuCores" class="form-label fw-semibold">Cores *</label>
+                <input type="number" class="form-control" id="cpuCores" name="cpuCores" 
+                       placeholder="8" min="1" required>
+                <div class="invalid-feedback">
+                    Please provide number of cores.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="cpuThreads" class="form-label fw-semibold">Threads *</label>
+                <input type="number" class="form-control" id="cpuThreads" name="cpuThreads" 
+                       placeholder="16" min="1" required>
+                <div class="invalid-feedback">
+                    Please provide number of threads.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="cpuBaseClock" class="form-label fw-semibold">Base Clock (GHz) *</label>
+                <input type="number" class="form-control" id="cpuBaseClock" name="cpuBaseClock" 
+                       placeholder="3.2" step="0.1" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide base clock speed.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="cpuBoostClock" class="form-label fw-semibold">Boost Clock (GHz) *</label>
+                <input type="number" class="form-control" id="cpuBoostClock" name="cpuBoostClock" 
+                       placeholder="4.7" step="0.1" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide boost clock speed.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="cpuSocket" class="form-label fw-semibold">Socket *</label>
+                <input type="text" class="form-control" id="cpuSocket" name="cpuSocket" 
+                       placeholder="AM4, LGA1700" required>
+                <div class="invalid-feedback">
+                    Please provide socket type.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="cpuCacheSize" class="form-label fw-semibold">Cache Size (MB) *</label>
+                <input type="number" class="form-control" id="cpuCacheSize" name="cpuCacheSize" 
+                       placeholder="32" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide cache size.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="cpuTdp" class="form-label fw-semibold">TDP (W) *</label>
+                <input type="number" class="form-control" id="cpuTdp" name="cpuTdp" 
+                       placeholder="65" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide TDP.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="form-check mt-4">
+                    <input class="form-check-input" type="checkbox" id="cpuIntegratedGpu" name="cpuIntegratedGpu">
+                    <label class="form-check-label" for="cpuIntegratedGpu">
+                        Integrated GPU
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

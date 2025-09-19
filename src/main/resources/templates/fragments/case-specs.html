@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Case Specifications Fragment</title>
+</head>
+<body>
+
+<!-- Case Specifications Fragment -->
+<div th:fragment="case-specs" class="case-specs-section">
+    <h5 class="fw-semibold mb-3 text-secondary">Case Specifications</h5>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="formFactor" class="form-label fw-semibold">Form Factor *</label>
+                <select class="form-select" id="formFactor" name="formFactor" required>
+                    <option value="">Select form factor</option>
+                    <option value="Mini-ITX">Mini-ITX</option>
+                    <option value="Micro-ATX">Micro-ATX</option>
+                    <option value="ATX">ATX</option>
+                    <option value="E-ATX">E-ATX</option>
+                    <option value="XL-ATX">XL-ATX</option>
+                </select>
+                <div class="invalid-feedback">
+                    Please select a form factor.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="motherboardSupport" class="form-label fw-semibold">Motherboard Support *</label>
+                <input type="text" class="form-control" id="motherboardSupport" name="motherboardSupport" 
+                       placeholder="Mini-ITX, Micro-ATX, ATX" required>
+                <div class="invalid-feedback">
+                    Please provide motherboard support information.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="maxGpuLength" class="form-label fw-semibold">Max GPU Length (mm) *</label>
+                <input type="number" class="form-control" id="maxGpuLength" name="maxGpuLength" 
+                       placeholder="350" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide maximum GPU length.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="maxCpuCoolerHeight" class="form-label fw-semibold">Max CPU Cooler Height (mm) *</label>
+                <input type="number" class="form-control" id="maxCpuCoolerHeight" name="maxCpuCoolerHeight" 
+                       placeholder="165" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide maximum CPU cooler height.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fansIncluded" class="form-label fw-semibold">Fans Included *</label>
+                <input type="number" class="form-control" id="fansIncluded" name="fansIncluded" 
+                       placeholder="3" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide number of included fans.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="radiatorSupport" class="form-label fw-semibold">Radiator Support *</label>
+                <input type="text" class="form-control" id="radiatorSupport" name="radiatorSupport" 
+                       placeholder="240mm top, 360mm front" required>
+                <div class="invalid-feedback">
+                    Please provide radiator support information.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

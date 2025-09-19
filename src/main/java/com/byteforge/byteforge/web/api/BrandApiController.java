@@ -20,9 +20,13 @@ public class BrandApiController {
     private final BrandService brandService;
 
     @GetMapping
-    public ResponseEntity<List<BrandDto>> getBrandsByCategory(
-            @RequestParam(required = false)
-            Integer categoryId) {
+    public ResponseEntity<List<BrandDto>> getAllBrands() {
+        List<BrandDto> brands = brandService.getAllBrands();
+        return ResponseEntity.status(HttpStatus.OK).body(brands);
+    }
+    
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<BrandDto>> getBrandsByCategory(@PathVariable Integer categoryId) {
         List<BrandDto> brands = brandService.getBrandsByCategory(categoryId);
         return ResponseEntity.status(HttpStatus.OK).body(brands);
     }

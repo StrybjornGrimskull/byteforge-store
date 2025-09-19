@@ -26,14 +26,15 @@ public class BrandService {
     private final BrandRepository brandRepository;
     private final ResourceLoader resourceLoader;
 
+    // Получить все бренды в алфавитном порядке
+    @Transactional(readOnly = true)
+    public List<BrandDto> getAllBrands() {
+        return brandRepository.findAllBrandDtosOrderedByName();
+    }
+
     // Получить бренды по категории (с проекцией DTO)
     @Transactional(readOnly = true)
     public List<BrandDto> getBrandsByCategory(Integer categoryId) {
-        if (categoryId == null) {
-            return brandRepository.findAll().stream()
-                    .map(brand -> new BrandDto(brand.getId(), brand.getName(), brand.getLogoUrl()))
-                    .toList();
-        }
         return brandRepository.findBrandDtosByProductsCategoryId(categoryId);
     }
 

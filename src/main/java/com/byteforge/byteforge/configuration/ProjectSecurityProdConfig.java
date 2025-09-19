@@ -44,6 +44,7 @@ public class ProjectSecurityProdConfig {
                         .requestMatchers("/admin/users").hasRole("ADMIN")
                         .requestMatchers("/notices").hasRole("USER")
                         .requestMatchers("/api/brands/**").permitAll()
+                        .requestMatchers("/api/categories/**").permitAll()
                         .requestMatchers("/api/specifications/**").permitAll()
                         .requestMatchers("/api/products/**").permitAll()
                         .requestMatchers("/api/reviews/pending/**").hasAnyRole("ADMIN", "MODERATOR")

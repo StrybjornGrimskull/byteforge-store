@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GPU Specifications Fragment</title>
+</head>
+<body>
+
+<!-- GPU Specifications Fragment -->
+<div th:fragment="gpu-specs" class="gpu-specs-section">
+    <h5 class="fw-semibold mb-3 text-secondary">GPU Specifications</h5>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="gpuMemorySize" class="form-label fw-semibold">Memory Size (GB) *</label>
+                <input type="number" class="form-control" id="gpuMemorySize" name="gpuMemorySize" 
+                       placeholder="8" min="1" required>
+                <div class="invalid-feedback">
+                    Please provide memory size.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="gpuMemoryType" class="form-label fw-semibold">Memory Type *</label>
+                <input type="text" class="form-control" id="gpuMemoryType" name="gpuMemoryType" 
+                       placeholder="GDDR6" required>
+                <div class="invalid-feedback">
+                    Please provide memory type.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="gpuBusWidth" class="form-label fw-semibold">Bus Width (bit) *</label>
+                <input type="number" class="form-control" id="gpuBusWidth" name="gpuBusWidth" 
+                       placeholder="256" min="1" required>
+                <div class="invalid-feedback">
+                    Please provide bus width.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="gpuBaseClock" class="form-label fw-semibold">Base Clock (MHz) *</label>
+                <input type="number" class="form-control" id="gpuBaseClock" name="gpuBaseClock" 
+                       placeholder="1500" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide base clock.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="gpuBoostClock" class="form-label fw-semibold">Boost Clock (MHz) *</label>
+                <input type="number" class="form-control" id="gpuBoostClock" name="gpuBoostClock" 
+                       placeholder="1800" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide boost clock.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="gpuTdp" class="form-label fw-semibold">TDP (W) *</label>
+                <input type="number" class="form-control" id="gpuTdp" name="gpuTdp" 
+                       placeholder="220" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide TDP.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="gpuLength" class="form-label fw-semibold">Length (mm) *</label>
+                <input type="number" class="form-control" id="gpuLength" name="gpuLength" 
+                       placeholder="300" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide GPU length.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="gpuDisplayOutputs" class="form-label fw-semibold">Display Outputs *</label>
+                <input type="text" class="form-control" id="gpuDisplayOutputs" name="gpuDisplayOutputs" 
+                       placeholder="3x DP, 1x HDMI" required>
+                <div class="invalid-feedback">
+                    Please provide display outputs.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

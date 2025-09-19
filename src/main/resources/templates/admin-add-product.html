@@ -85,144 +85,179 @@
         <form id="productForm" class="needs-validation" novalidate>
             <!-- Basic Information -->
             <h4 class="fw-semibold mb-3 text-secondary">Basic Information</h4>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="productName" class="form-label fw-semibold">Product Name *</label>
-                        <input type="text" class="form-control" id="productName" name="productName" 
-                               placeholder="Enter product name" required>
-                        <div class="invalid-feedback">
-                            Please provide a valid product name.
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="productSku" class="form-label fw-semibold">SKU</label>
-                        <input type="text" class="form-control" id="productSku" name="productSku" 
-                               placeholder="Product SKU (optional)">
-                        <div class="form-text">Unique product identifier</div>
-                    </div>
-                </div>
-            </div>
             
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="productBrand" class="form-label fw-semibold">Brand *</label>
-                        <select class="form-select" id="productBrand" name="productBrand" required>
-                            <option value="">Select a brand</option>
-                            <option value="asus">ASUS</option>
-                            <option value="msi">MSI</option>
-                            <option value="gigabyte">Gigabyte</option>
-                            <option value="intel">Intel</option>
-                            <option value="amd">AMD</option>
-                            <option value="nvidia">NVIDIA</option>
-                            <option value="corsair">Corsair</option>
-                            <option value="kingston">Kingston</option>
-                            <option value="samsung">Samsung</option>
-                            <option value="western-digital">Western Digital</option>
-                        </select>
-                        <div class="invalid-feedback">
-                            Please select a brand.
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="productCategory" class="form-label fw-semibold">Category *</label>
-                        <select class="form-select" id="productCategory" name="productCategory" required>
-                            <option value="">Select a category</option>
-                            <option value="cpu">CPU</option>
-                            <option value="gpu">GPU</option>
-                            <option value="motherboard">Motherboard</option>
-                            <option value="ram">RAM</option>
-                            <option value="storage">Storage</option>
-                            <option value="psu">Power Supply</option>
-                            <option value="case">Case</option>
-                            <option value="monitor">Monitor</option>
-                            <option value="keyboard">Keyboard</option>
-                            <option value="mouse">Mouse</option>
-                            <option value="cooling">Cooling</option>
-                        </select>
-                        <div class="invalid-feedback">
-                            Please select a category.
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
+            <!-- Product Name -->
             <div class="form-group">
-                <label for="productDescription" class="form-label fw-semibold">Description *</label>
-                <textarea class="form-control" id="productDescription" name="productDescription" 
-                          rows="4" placeholder="Enter detailed product description" required></textarea>
+                <label for="productName" class="form-label fw-semibold">Product Name *</label>
+                <input type="text" class="form-control" id="productName" name="productName" 
+                       placeholder="Intel Core i7-13700K" required>
                 <div class="invalid-feedback">
-                    Please provide a product description.
+                    Please provide a valid product name.
                 </div>
             </div>
             
-            <!-- Pricing and Inventory -->
-            <h4 class="fw-semibold mb-3 text-secondary mt-4">Pricing & Inventory</h4>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="productPrice" class="form-label fw-semibold">Price *</label>
-                        <div class="input-group">
-                            <span class="input-group-text">$</span>
-                            <input type="number" class="form-control" id="productPrice" name="productPrice" 
-                                   placeholder="0.00" step="0.01" min="0" required>
-                        </div>
-                        <div class="invalid-feedback">
-                            Please provide a valid price.
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="productStock" class="form-label fw-semibold">Stock Quantity *</label>
-                        <input type="number" class="form-control" id="productStock" name="productStock" 
-                               placeholder="0" min="0" required>
-                        <div class="invalid-feedback">
-                            Please provide a valid stock quantity.
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="productWeight" class="form-label fw-semibold">Weight (kg)</label>
-                        <input type="number" class="form-control" id="productWeight" name="productWeight" 
-                               placeholder="0.00" step="0.01" min="0">
-                        <div class="form-text">Product weight for shipping</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Images and Specifications -->
-            <h4 class="fw-semibold mb-3 text-secondary mt-4">Images & Specifications</h4>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="productImages" class="form-label fw-semibold">Product Images</label>
-                        <input type="file" class="form-control" id="productImages" name="productImages" 
-                               accept=".webp,.png" multiple>
-                        <div class="form-text">Upload product images (WebP or PNG format)</div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="productDimensions" class="form-label fw-semibold">Dimensions</label>
-                        <input type="text" class="form-control" id="productDimensions" name="productDimensions" 
-                               placeholder="L x W x H (e.g., 200x150x50 mm)">
-                        <div class="form-text">Product dimensions</div>
-                    </div>
-                </div>
-            </div>
-            
+            <!-- Category Selection -->
             <div class="form-group">
-                <label for="productSpecifications" class="form-label fw-semibold">Technical Specifications</label>
-                <textarea class="form-control" id="productSpecifications" name="productSpecifications" 
-                          rows="4" placeholder="Enter technical specifications (optional)"></textarea>
-                <div class="form-text">Detailed technical specifications and features</div>
+                <label for="productCategory" class="form-label fw-semibold">Category *</label>
+                <div class="position-relative">
+                    <select class="form-select" id="productCategory" name="productCategory" required>
+                        <option value="">Loading categories...</option>
+                    </select>
+                    <output class="spinner-border spinner-border-sm position-absolute top-50 end-0 translate-middle-y me-3" 
+                         id="categorySpinner" style="display: none;" aria-live="polite">
+                        <span class="visually-hidden">Loading categories...</span>
+                    </output>
+                </div>
+                <div class="invalid-feedback">
+                    Please select a category.
+                </div>
+            </div>
+            
+            <!-- Brand Selection -->
+            <div class="form-group">
+                <label for="productBrand" class="form-label fw-semibold">Brand *</label>
+                <div class="position-relative">
+                    <select class="form-select" id="productBrand" name="productBrand" required>
+                        <option value="">Loading brands...</option>
+                    </select>
+                    <output class="spinner-border spinner-border-sm position-absolute top-50 end-0 translate-middle-y me-3" 
+                         id="brandSpinner" style="display: none;" aria-live="polite">
+                        <span class="visually-hidden">Loading brands...</span>
+                    </output>
+                </div>
+                <div class="invalid-feedback">
+                    Please select a brand.
+                </div>
+            </div>
+            
+            <!-- Product Basic Information -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="originalPrice" class="form-label fw-semibold">Original Price (₽) *</label>
+                        <input type="number" class="form-control" id="originalPrice" name="originalPrice" 
+                               placeholder="50000" step="0.01" min="0" required>
+                        <div class="invalid-feedback">
+                            Please provide original price.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="warrantyMonths" class="form-label fw-semibold">Warranty (months) *</label>
+                        <input type="number" class="form-control" id="warrantyMonths" name="warrantyMonths" 
+                               placeholder="24" min="0" value="24" required>
+                        <div class="invalid-feedback">
+                            Please provide warranty period.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="releaseYear" class="form-label fw-semibold">Release Year *</label>
+                        <input type="number" class="form-control" id="releaseYear" name="releaseYear" 
+                               placeholder="2023" min="1990" max="2030" required>
+                        <div class="invalid-feedback">
+                            Please provide release year.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="shortDescription" class="form-label fw-semibold">Short Description *</label>
+                        <textarea class="form-control" id="shortDescription" name="shortDescription" 
+                                  placeholder="Brief product description..." rows="3" required></textarea>
+                        <div class="invalid-feedback">
+                            Please provide short description.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Product Image Upload -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="productImage" class="form-label fw-semibold">Product Image *</label>
+                        <input type="file" class="form-control" id="productImage" name="productImage" 
+                               accept="image/*" required>
+                        <div class="invalid-feedback">
+                            Please select a product image.
+                        </div>
+                        <div class="form-text">
+                            Supported formats: JPG, PNG, GIF, WebP. Max size: 5MB
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Image Preview -->
+            <div class="row" id="imagePreviewRow" style="display: none;">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="imagePreview" class="form-label fw-semibold">Image Preview</label>
+                        <div class="text-center">
+                            <img id="imagePreview" src="" alt="Product preview" 
+                                 style="max-width: 300px; max-height: 300px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Specifications Sections -->
+            <div id="caseSpecsSection" style="display: none;">
+                <div th:replace="fragments/case-specs :: case-specs"></div>
+            </div>
+            
+            <div id="cpuSpecsSection" style="display: none;">
+                <div th:replace="fragments/cpu-specs :: cpu-specs"></div>
+            </div>
+            
+            <div id="gpuSpecsSection" style="display: none;">
+                <div th:replace="fragments/gpu-specs :: gpu-specs"></div>
+            </div>
+            
+            <div id="motherboardSpecsSection" style="display: none;">
+                <div th:replace="fragments/motherboard-specs :: motherboard-specs"></div>
+            </div>
+            
+            <div id="monitorSpecsSection" style="display: none;">
+                <div th:replace="fragments/monitor-specs :: monitor-specs"></div>
+            </div>
+            
+            <div id="ssdSpecsSection" style="display: none;">
+                <div th:replace="fragments/ssd-specs :: ssd-specs"></div>
+            </div>
+            
+            <div id="psuSpecsSection" style="display: none;">
+                <div th:replace="fragments/psu-specs :: psu-specs"></div>
+            </div>
+            
+            <div id="ramSpecsSection" style="display: none;">
+                <div th:replace="fragments/ram-specs :: ram-specs"></div>
+            </div>
+            
+            <div id="wiredKeyboardSpecsSection" style="display: none;">
+                <div th:replace="fragments/wired-keyboard-specs :: wired-keyboard-specs"></div>
+            </div>
+            
+            <div id="wirelessKeyboardSpecsSection" style="display: none;">
+                <div th:replace="fragments/wireless-keyboard-specs :: wireless-keyboard-specs"></div>
+            </div>
+            
+            <div id="wiredMouseSpecsSection" style="display: none;">
+                <div th:replace="fragments/wired-mouse-specs :: wired-mouse-specs"></div>
+            </div>
+            
+            <div id="wirelessMouseSpecsSection" style="display: none;">
+                <div th:replace="fragments/wireless-mouse-specs :: wireless-mouse-specs"></div>
             </div>
             
             <div class="d-flex justify-content-between">
@@ -243,15 +278,288 @@
 <div th:replace="fragments/footer :: footer"></div>
 
 <!-- Bootstrap JS and dependencies -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Form Validation Script -->
 <script>
-    // Form validation
+    // Form validation and dynamic loading
     (function() {
         'use strict';
         
         const productForm = document.getElementById('productForm');
+        const categorySelect = document.getElementById('productCategory');
+        const brandSelect = document.getElementById('productBrand');
+        const categorySpinner = document.getElementById('categorySpinner');
+        const brandSpinner = document.getElementById('brandSpinner');
+        
+        
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCategories();
+            loadBrands();
+            
+            // Add category change listener
+            categorySelect.addEventListener('change', function() {
+                showSpecificationsForCategory(this.value);
+            });
+            
+            // Add image preview functionality
+            const imageInput = document.getElementById('productImage');
+            const imagePreview = document.getElementById('imagePreview');
+            const imagePreviewRow = document.getElementById('imagePreviewRow');
+            
+            if (imageInput && imagePreview && imagePreviewRow) {
+                imageInput.addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    
+                    if (file) {
+                        // Validate file size (5MB max)
+                        if (file.size > 5 * 1024 * 1024) {
+                            alert('File size must be less than 5MB');
+                            this.value = '';
+                            imagePreviewRow.style.display = 'none';
+                            return;
+                        }
+                        
+                        // Validate file type
+                        if (!file.type.startsWith('image/')) {
+                            alert('Please select a valid image file');
+                            this.value = '';
+                            imagePreviewRow.style.display = 'none';
+                            return;
+                        }
+                        
+                        // Show preview
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            imagePreview.src = e.target.result;
+                            imagePreviewRow.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        imagePreviewRow.style.display = 'none';
+                    }
+                });
+            }
+            
+        });
+        
+        // Load categories from API
+        function loadCategories() {
+            console.log('Starting to load categories...');
+            showSpinner(categorySpinner);
+            
+            fetch('/api/categories')
+                .then(response => {
+                    console.log('Categories response status:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(categories => {
+                    console.log('Successfully loaded categories:', categories);
+                    populateSelect(categorySelect, categories, 'name');
+                    hideSpinner(categorySpinner);
+                })
+                .catch(error => {
+                    console.error('Failed to load categories:', error);
+                    showError(categorySelect, 'Failed to load categories: ' + error.message);
+                    hideSpinner(categorySpinner);
+                });
+        }
+        
+        // Load brands from API
+        function loadBrands() {
+            console.log('Starting to load brands...');
+            showSpinner(brandSpinner);
+            
+            fetch('/api/brands')
+                .then(response => {
+                    console.log('Brands response status:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(brands => {
+                    console.log('Successfully loaded brands:', brands);
+                    populateSelect(brandSelect, brands, 'name');
+                    hideSpinner(brandSpinner);
+                })
+                .catch(error => {
+                    console.error('Failed to load brands:', error);
+                    showError(brandSelect, 'Failed to load brands: ' + error.message);
+                    hideSpinner(brandSpinner);
+                });
+        }
+        
+        
+        // Generic function to populate select element
+        function populateSelect(selectElement, dataArray, nameField) {
+            // Clear existing options
+            selectElement.innerHTML = '<option value="">Select an option</option>';
+            
+            // Add options from data
+            dataArray.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item[nameField];
+                selectElement.appendChild(option);
+            });
+            
+            console.log(`Populated ${selectElement.id} with ${dataArray.length} options`);
+        }
+        
+        // Show error state in select element
+        function showError(selectElement, errorMessage) {
+            selectElement.innerHTML = `<option value="">${errorMessage}</option>`;
+            selectElement.disabled = true;
+            selectElement.classList.add('is-invalid');
+            
+            // Add error message below select
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'invalid-feedback';
+            errorDiv.textContent = errorMessage;
+            selectElement.parentNode.appendChild(errorDiv);
+        }
+        
+        // Show loading spinner
+        function showSpinner(spinnerElement) {
+            if (spinnerElement) {
+                spinnerElement.style.display = 'block';
+            }
+        }
+        
+        // Hide loading spinner
+        function hideSpinner(spinnerElement) {
+            if (spinnerElement) {
+                spinnerElement.style.display = 'none';
+            }
+        }
+        
+        // Show specifications based on selected category
+        function showSpecificationsForCategory(categoryId) {
+            // Hide all specification sections
+            hideAllSpecifications();
+            
+            if (!categoryId) {
+                return;
+            }
+            
+            // Get category name from select option
+            const categoryOption = categorySelect.querySelector(`option[value="${categoryId}"]`);
+            const categoryName = categoryOption ? categoryOption.textContent : '';
+            
+            console.log('Selected category ID:', categoryId);
+            console.log('Selected category name:', categoryName);
+            console.log('Category name lowercase:', categoryName.toLowerCase());
+            
+            // Show specifications based on category
+            switch (categoryName.toLowerCase()) {
+                case 'pc cases':
+                case 'case':
+                    document.getElementById('caseSpecsSection').style.display = 'block';
+                    console.log('Showing case specifications');
+                    break;
+                case 'central processing unit':
+                case 'cpu':
+                case 'processor':
+                    document.getElementById('cpuSpecsSection').style.display = 'block';
+                    console.log('Showing CPU specifications');
+                    break;
+                case 'graphics cards':
+                case 'gpu':
+                case 'graphics card':
+                case 'video card':
+                    document.getElementById('gpuSpecsSection').style.display = 'block';
+                    console.log('Showing GPU specifications');
+                    break;
+                case 'motherboards':
+                case 'motherboard':
+                case 'mainboard':
+                    document.getElementById('motherboardSpecsSection').style.display = 'block';
+                    console.log('Showing motherboard specifications');
+                    break;
+                case 'monitors':
+                case 'monitor':
+                case 'display':
+                    document.getElementById('monitorSpecsSection').style.display = 'block';
+                    console.log('Showing monitor specifications');
+                    break;
+                case 'solid state drives':
+                case 'ssd':
+                case 'solid state drive':
+                case 'storage':
+                    document.getElementById('ssdSpecsSection').style.display = 'block';
+                    console.log('Showing SSD specifications');
+                    break;
+                case 'power supplies':
+                case 'psu':
+                case 'power supply':
+                case 'power supply unit':
+                    document.getElementById('psuSpecsSection').style.display = 'block';
+                    console.log('Showing PSU specifications');
+                    break;
+                case 'memory':
+                case 'ram':
+                case 'random access memory':
+                case 'memory modules':
+                    document.getElementById('ramSpecsSection').style.display = 'block';
+                    console.log('Showing RAM specifications');
+                    break;
+                case 'wired keyboards':
+                case 'wired keyboard':
+                case 'keyboard':
+                    document.getElementById('wiredKeyboardSpecsSection').style.display = 'block';
+                    console.log('Showing wired keyboard specifications');
+                    break;
+                case 'wireless keyboards':
+                case 'wireless keyboard':
+                    document.getElementById('wirelessKeyboardSpecsSection').style.display = 'block';
+                    console.log('Showing wireless keyboard specifications');
+                    break;
+                case 'wired mice':
+                case 'wired mouse':
+                case 'mouse':
+                    document.getElementById('wiredMouseSpecsSection').style.display = 'block';
+                    console.log('Showing wired mouse specifications');
+                    break;
+                case 'wireless mice':
+                case 'wireless mouse':
+                    document.getElementById('wirelessMouseSpecsSection').style.display = 'block';
+                    console.log('Showing wireless mouse specifications');
+                    break;
+                default:
+                    console.log('No specific specifications for category:', categoryName);
+            }
+        }
+        
+        // Hide all specification sections
+        function hideAllSpecifications() {
+            const specSections = [
+                'caseSpecsSection',
+                'cpuSpecsSection',
+                'gpuSpecsSection',
+                'motherboardSpecsSection',
+                'monitorSpecsSection',
+                'ssdSpecsSection',
+                'psuSpecsSection',
+                'ramSpecsSection',
+                'wiredKeyboardSpecsSection',
+                'wirelessKeyboardSpecsSection',
+                'wiredMouseSpecsSection',
+                'wirelessMouseSpecsSection'
+            ];
+            
+            specSections.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.style.display = 'none';
+                }
+            });
+        }
+        
         if (productForm) {
             productForm.addEventListener('submit', function(event) {
                 if (!productForm.checkValidity()) {
@@ -264,9 +572,19 @@
             // Form submission handler (заглушка)
             productForm.addEventListener('submit', function(event) {
                 event.preventDefault();
+                
+                // Collect form data
+                const formData = {
+                    productName: document.getElementById('productName').value,
+                    category: document.getElementById('productCategory').value,
+                    brand: document.getElementById('productBrand').value
+                };
+                
+                console.log('Form data:', formData);
                 alert('Product created successfully! (This is a placeholder - backend integration needed)');
             });
         }
+        
     })();
 </script>
 

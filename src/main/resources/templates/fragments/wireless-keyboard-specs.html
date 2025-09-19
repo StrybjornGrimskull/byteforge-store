@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wireless Keyboard Specifications Fragment</title>
+</head>
+<body>
+
+<!-- Wireless Keyboard Specifications Fragment -->
+<div th:fragment="wireless-keyboard-specs" class="wireless-keyboard-specs-section">
+    <h5 class="fw-semibold mb-3 text-secondary">Wireless Keyboard Specifications</h5>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessKeyboardLayout" class="form-label fw-semibold">Layout *</label>
+                <select class="form-select" id="wirelessKeyboardLayout" name="wirelessKeyboardLayout" required>
+                    <option value="">Select layout</option>
+                    <option value="Full-size">Full-size</option>
+                    <option value="TKL">TKL (Tenkeyless)</option>
+                    <option value="75%">75%</option>
+                    <option value="65%">65%</option>
+                    <option value="60%">60%</option>
+                    <option value="40%">40%</option>
+                </select>
+                <div class="invalid-feedback">
+                    Please select a layout.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessKeyboardSwitchType" class="form-label fw-semibold">Switch Type *</label>
+                <select class="form-select" id="wirelessKeyboardSwitchType" name="wirelessKeyboardSwitchType" required>
+                    <option value="">Select switch type</option>
+                    <option value="Mechanical">Mechanical</option>
+                    <option value="Membrane">Membrane</option>
+                    <option value="Hybrid">Hybrid</option>
+                </select>
+                <div class="invalid-feedback">
+                    Please select switch type.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessKeyboardSwitchBrand" class="form-label fw-semibold">Switch Brand *</label>
+                <input type="text" class="form-control" id="wirelessKeyboardSwitchBrand" name="wirelessKeyboardSwitchBrand" 
+                       placeholder="Cherry, Gateron" required>
+                <div class="invalid-feedback">
+                    Please provide switch brand.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessKeyboardSwitchModel" class="form-label fw-semibold">Switch Model *</label>
+                <input type="text" class="form-control" id="wirelessKeyboardSwitchModel" name="wirelessKeyboardSwitchModel" 
+                       placeholder="MX Red, Blue" required>
+                <div class="invalid-feedback">
+                    Please provide switch model.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessKeyboardWirelessTech" class="form-label fw-semibold">Wireless Technology *</label>
+                <select class="form-select" id="wirelessKeyboardWirelessTech" name="wirelessKeyboardWirelessTech" required>
+                    <option value="">Select wireless technology</option>
+                    <option value="Bluetooth">Bluetooth</option>
+                    <option value="2.4GHz">2.4GHz</option>
+                    <option value="Bluetooth + 2.4GHz">Bluetooth + 2.4GHz</option>
+                </select>
+                <div class="invalid-feedback">
+                    Please select wireless technology.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessKeyboardActuationForce" class="form-label fw-semibold">Actuation Force (g) *</label>
+                <input type="number" class="form-control" id="wirelessKeyboardActuationForce" name="wirelessKeyboardActuationForce" 
+                       placeholder="45" step="0.1" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide actuation force.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessKeyboardTravelDistance" class="form-label fw-semibold">Travel Distance (mm) *</label>
+                <input type="number" class="form-control" id="wirelessKeyboardTravelDistance" name="wirelessKeyboardTravelDistance" 
+                       placeholder="2.0" step="0.1" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide travel distance.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessKeyboardWeight" class="form-label fw-semibold">Weight (g) *</label>
+                <input type="number" class="form-control" id="wirelessKeyboardWeight" name="wirelessKeyboardWeight" 
+                       placeholder="1200" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide weight.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessKeyboardBatteryLife" class="form-label fw-semibold">Battery Life (hours) *</label>
+                <input type="number" class="form-control" id="wirelessKeyboardBatteryLife" name="wirelessKeyboardBatteryLife" 
+                       placeholder="200" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide battery life.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessKeyboardChargingType" class="form-label fw-semibold">Charging Type *</label>
+                <select class="form-select" id="wirelessKeyboardChargingType" name="wirelessKeyboardChargingType" required>
+                    <option value="">Select charging type</option>
+                    <option value="USB-C">USB-C</option>
+                    <option value="Micro-USB">Micro-USB</option>
+                    <option value="AA Batteries">AA Batteries</option>
+                    <option value="AAA Batteries">AAA Batteries</option>
+                </select>
+                <div class="invalid-feedback">
+                    Please select charging type.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <div class="form-check mt-4">
+                    <input class="form-check-input" type="checkbox" id="wirelessKeyboardRgbLighting" name="wirelessKeyboardRgbLighting">
+                    <label class="form-check-label" for="wirelessKeyboardRgbLighting">
+                        RGB Lighting
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="form-group">
+                <div class="form-check mt-4">
+                    <input class="form-check-input" type="checkbox" id="wirelessKeyboardHotSwappable" name="wirelessKeyboardHotSwappable">
+                    <label class="form-check-label" for="wirelessKeyboardHotSwappable">
+                        Hot Swappable
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="form-group">
+                <div class="form-check mt-4">
+                    <input class="form-check-input" type="checkbox" id="wirelessKeyboardMultiDevicePairing" name="wirelessKeyboardMultiDevicePairing">
+                    <label class="form-check-label" for="wirelessKeyboardMultiDevicePairing">
+                        Multi-device Pairing
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

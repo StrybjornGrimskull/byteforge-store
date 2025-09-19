@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PSU Specifications Fragment</title>
+</head>
+<body>
+
+<!-- PSU Specifications Fragment -->
+<div th:fragment="psu-specs" class="psu-specs-section">
+    <h5 class="fw-semibold mb-3 text-secondary">PSU Specifications</h5>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="psuWattage" class="form-label fw-semibold">Wattage (W) *</label>
+                <input type="number" class="form-control" id="psuWattage" name="psuWattage" 
+                       placeholder="750" min="1" required>
+                <div class="invalid-feedback">
+                    Please provide wattage.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="psuFormFactor" class="form-label fw-semibold">Form Factor *</label>
+                <select class="form-select" id="psuFormFactor" name="psuFormFactor" required>
+                    <option value="">Select form factor</option>
+                    <option value="ATX">ATX</option>
+                    <option value="SFX">SFX</option>
+                    <option value="SFX-L">SFX-L</option>
+                    <option value="TFX">TFX</option>
+                </select>
+                <div class="invalid-feedback">
+                    Please select a form factor.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="psuEfficiencyCert" class="form-label fw-semibold">Efficiency Certification *</label>
+                <select class="form-select" id="psuEfficiencyCert" name="psuEfficiencyCert" required>
+                    <option value="">Select certification</option>
+                    <option value="80+ Bronze">80+ Bronze</option>
+                    <option value="80+ Silver">80+ Silver</option>
+                    <option value="80+ Gold">80+ Gold</option>
+                    <option value="80+ Platinum">80+ Platinum</option>
+                    <option value="80+ Titanium">80+ Titanium</option>
+                </select>
+                <div class="invalid-feedback">
+                    Please select efficiency certification.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="psuModularity" class="form-label fw-semibold">Modularity *</label>
+                <select class="form-select" id="psuModularity" name="psuModularity" required>
+                    <option value="">Select modularity</option>
+                    <option value="Non-modular">Non-modular</option>
+                    <option value="Semi-modular">Semi-modular</option>
+                    <option value="Fully modular">Fully modular</option>
+                </select>
+                <div class="invalid-feedback">
+                    Please select modularity type.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="psuPcie8pinConnectors" class="form-label fw-semibold">PCIe 8-pin Connectors *</label>
+                <input type="number" class="form-control" id="psuPcie8pinConnectors" name="psuPcie8pinConnectors" 
+                       placeholder="2" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide number of PCIe 8-pin connectors.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="psuSataConnectors" class="form-label fw-semibold">SATA Connectors *</label>
+                <input type="number" class="form-control" id="psuSataConnectors" name="psuSataConnectors" 
+                       placeholder="6" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide number of SATA connectors.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

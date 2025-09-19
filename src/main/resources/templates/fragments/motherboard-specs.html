@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Motherboard Specifications Fragment</title>
+</head>
+<body>
+
+<!-- Motherboard Specifications Fragment -->
+<div th:fragment="motherboard-specs" class="motherboard-specs-section">
+    <h5 class="fw-semibold mb-3 text-secondary">Motherboard Specifications</h5>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="motherboardSocket" class="form-label fw-semibold">Socket *</label>
+                <input type="text" class="form-control" id="motherboardSocket" name="motherboardSocket" 
+                       placeholder="AM4, LGA1700" required>
+                <div class="invalid-feedback">
+                    Please provide socket type.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="motherboardChipset" class="form-label fw-semibold">Chipset *</label>
+                <input type="text" class="form-control" id="motherboardChipset" name="motherboardChipset" 
+                       placeholder="B550, Z690" required>
+                <div class="invalid-feedback">
+                    Please provide chipset.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="motherboardFormFactor" class="form-label fw-semibold">Form Factor *</label>
+                <select class="form-select" id="motherboardFormFactor" name="motherboardFormFactor" required>
+                    <option value="">Select form factor</option>
+                    <option value="Mini-ITX">Mini-ITX</option>
+                    <option value="Micro-ATX">Micro-ATX</option>
+                    <option value="ATX">ATX</option>
+                    <option value="E-ATX">E-ATX</option>
+                </select>
+                <div class="invalid-feedback">
+                    Please select a form factor.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="motherboardMemorySlots" class="form-label fw-semibold">Memory Slots *</label>
+                <input type="number" class="form-control" id="motherboardMemorySlots" name="motherboardMemorySlots" 
+                       placeholder="4" min="1" required>
+                <div class="invalid-feedback">
+                    Please provide number of memory slots.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="motherboardMaxMemory" class="form-label fw-semibold">Max Memory (GB) *</label>
+                <input type="number" class="form-control" id="motherboardMaxMemory" name="motherboardMaxMemory" 
+                       placeholder="128" min="1" required>
+                <div class="invalid-feedback">
+                    Please provide maximum memory capacity.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="motherboardMemoryType" class="form-label fw-semibold">Memory Type *</label>
+                <input type="text" class="form-control" id="motherboardMemoryType" name="motherboardMemoryType" 
+                       placeholder="DDR4, DDR5" required>
+                <div class="invalid-feedback">
+                    Please provide memory type.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="motherboardM2Slots" class="form-label fw-semibold">M.2 Slots *</label>
+                <input type="number" class="form-control" id="motherboardM2Slots" name="motherboardM2Slots" 
+                       placeholder="2" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide number of M.2 slots.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="motherboardSataPorts" class="form-label fw-semibold">SATA Ports *</label>
+                <input type="number" class="form-control" id="motherboardSataPorts" name="motherboardSataPorts" 
+                       placeholder="6" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide number of SATA ports.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

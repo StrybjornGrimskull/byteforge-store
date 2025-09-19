@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wireless Mouse Specifications Fragment</title>
+</head>
+<body>
+
+<!-- Wireless Mouse Specifications Fragment -->
+<div th:fragment="wireless-mouse-specs" class="wireless-mouse-specs-section">
+    <h5 class="fw-semibold mb-3 text-secondary">Wireless Mouse Specifications</h5>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessMouseSensorType" class="form-label fw-semibold">Sensor Type *</label>
+                <input type="text" class="form-control" id="wirelessMouseSensorType" name="wirelessMouseSensorType" 
+                       placeholder="Optical, Laser" required>
+                <div class="invalid-feedback">
+                    Please provide sensor type.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessMouseSensorModel" class="form-label fw-semibold">Sensor Model *</label>
+                <input type="text" class="form-control" id="wirelessMouseSensorModel" name="wirelessMouseSensorModel" 
+                       placeholder="PAW3370, Hero 25K" required>
+                <div class="invalid-feedback">
+                    Please provide sensor model.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessMouseMaxDpi" class="form-label fw-semibold">Max DPI *</label>
+                <input type="number" class="form-control" id="wirelessMouseMaxDpi" name="wirelessMouseMaxDpi" 
+                       placeholder="25000" min="1" required>
+                <div class="invalid-feedback">
+                    Please provide maximum DPI.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessMouseButtons" class="form-label fw-semibold">Number of Buttons *</label>
+                <input type="number" class="form-control" id="wirelessMouseButtons" name="wirelessMouseButtons" 
+                       placeholder="6" min="1" required>
+                <div class="invalid-feedback">
+                    Please provide number of buttons.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessMouseWirelessTech" class="form-label fw-semibold">Wireless Technology *</label>
+                <select class="form-select" id="wirelessMouseWirelessTech" name="wirelessMouseWirelessTech" required>
+                    <option value="">Select wireless technology</option>
+                    <option value="Bluetooth">Bluetooth</option>
+                    <option value="2.4GHz">2.4GHz</option>
+                    <option value="Bluetooth + 2.4GHz">Bluetooth + 2.4GHz</option>
+                </select>
+                <div class="invalid-feedback">
+                    Please select wireless technology.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessMousePollingRate" class="form-label fw-semibold">Polling Rate (Hz) *</label>
+                <input type="number" class="form-control" id="wirelessMousePollingRate" name="wirelessMousePollingRate" 
+                       placeholder="1000" min="1" required>
+                <div class="invalid-feedback">
+                    Please provide polling rate.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessMouseWeight" class="form-label fw-semibold">Weight (g) *</label>
+                <input type="number" class="form-control" id="wirelessMouseWeight" name="wirelessMouseWeight" 
+                       placeholder="69" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide weight.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessMouseBatteryType" class="form-label fw-semibold">Battery Type *</label>
+                <select class="form-select" id="wirelessMouseBatteryType" name="wirelessMouseBatteryType" required>
+                    <option value="">Select battery type</option>
+                    <option value="Rechargeable">Rechargeable</option>
+                    <option value="AA Battery">AA Battery</option>
+                    <option value="AAA Battery">AAA Battery</option>
+                </select>
+                <div class="invalid-feedback">
+                    Please select battery type.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessMouseBatteryLife" class="form-label fw-semibold">Battery Life (hours) *</label>
+                <input type="number" class="form-control" id="wirelessMouseBatteryLife" name="wirelessMouseBatteryLife" 
+                       placeholder="70" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide battery life.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessMouseStandbyBatteryLife" class="form-label fw-semibold">Standby Battery Life (hours) *</label>
+                <input type="number" class="form-control" id="wirelessMouseStandbyBatteryLife" name="wirelessMouseStandbyBatteryLife" 
+                       placeholder="180" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide standby battery life.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessMouseChargingTime" class="form-label fw-semibold">Charging Time (hours) *</label>
+                <input type="number" class="form-control" id="wirelessMouseChargingTime" name="wirelessMouseChargingTime" 
+                       placeholder="2" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide charging time.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="wirelessMouseWarrantyMonths" class="form-label fw-semibold">Warranty (months) *</label>
+                <input type="number" class="form-control" id="wirelessMouseWarrantyMonths" name="wirelessMouseWarrantyMonths" 
+                       placeholder="24" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide warranty period.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="form-check mt-4">
+                    <input class="form-check-input" type="checkbox" id="wirelessMouseRgbLighting" name="wirelessMouseRgbLighting">
+                    <label class="form-check-label" for="wirelessMouseRgbLighting">
+                        RGB Lighting
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="form-check mt-4">
+                    <input class="form-check-input" type="checkbox" id="wirelessMouseOnboardMemory" name="wirelessMouseOnboardMemory">
+                    <label class="form-check-label" for="wirelessMouseOnboardMemory">
+                        Onboard Memory
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

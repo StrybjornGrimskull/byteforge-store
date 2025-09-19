@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Monitor Specifications Fragment</title>
+</head>
+<body>
+
+<!-- Monitor Specifications Fragment -->
+<div th:fragment="monitor-specs" class="monitor-specs-section">
+    <h5 class="fw-semibold mb-3 text-secondary">Monitor Specifications</h5>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="monitorScreenSize" class="form-label fw-semibold">Screen Size (inches) *</label>
+                <input type="number" class="form-control" id="monitorScreenSize" name="monitorScreenSize" 
+                       placeholder="27.0" step="0.1" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide screen size.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="monitorResolution" class="form-label fw-semibold">Resolution *</label>
+                <select class="form-select" id="monitorResolution" name="monitorResolution" required>
+                    <option value="">Select resolution</option>
+                    <option value="1920x1080">1920x1080 (Full HD)</option>
+                    <option value="2560x1440">2560x1440 (2K)</option>
+                    <option value="3840x2160">3840x2160 (4K)</option>
+                    <option value="3440x1440">3440x1440 (Ultrawide)</option>
+                    <option value="5120x1440">5120x1440 (Super Ultrawide)</option>
+                </select>
+                <div class="invalid-feedback">
+                    Please select a resolution.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="monitorPanelType" class="form-label fw-semibold">Panel Type *</label>
+                <select class="form-select" id="monitorPanelType" name="monitorPanelType" required>
+                    <option value="">Select panel type</option>
+                    <option value="IPS">IPS</option>
+                    <option value="VA">VA</option>
+                    <option value="TN">TN</option>
+                    <option value="OLED">OLED</option>
+                    <option value="Mini-LED">Mini-LED</option>
+                </select>
+                <div class="invalid-feedback">
+                    Please select a panel type.
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="monitorRefreshRate" class="form-label fw-semibold">Refresh Rate (Hz) *</label>
+                <input type="number" class="form-control" id="monitorRefreshRate" name="monitorRefreshRate" 
+                       placeholder="144" min="1" required>
+                <div class="invalid-feedback">
+                    Please provide refresh rate.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="monitorResponseTime" class="form-label fw-semibold">Response Time (ms) *</label>
+                <input type="number" class="form-control" id="monitorResponseTime" name="monitorResponseTime" 
+                       placeholder="1" min="0" required>
+                <div class="invalid-feedback">
+                    Please provide response time.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
