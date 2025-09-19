@@ -51,7 +51,7 @@
 <body class="bg-light">
 
 <!-- Navigation Fragment -->
-<div th:replace="fragments/navigation :: navigation"></div>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
 
 <div class="container py-4">
     <!-- Breadcrumb -->
@@ -213,51 +213,51 @@
             
             <!-- Specifications Sections -->
             <div id="caseSpecsSection" style="display: none;">
-                <div th:replace="fragments/case-specs :: case-specs"></div>
+                <div th:replace="~{fragments/case-specs :: case-specs}"></div>
             </div>
             
             <div id="cpuSpecsSection" style="display: none;">
-                <div th:replace="fragments/cpu-specs :: cpu-specs"></div>
+                <div th:replace="~{fragments/cpu-specs :: cpu-specs}"></div>
             </div>
             
             <div id="gpuSpecsSection" style="display: none;">
-                <div th:replace="fragments/gpu-specs :: gpu-specs"></div>
+                <div th:replace="~{fragments/gpu-specs :: gpu-specs}"></div>
             </div>
             
             <div id="motherboardSpecsSection" style="display: none;">
-                <div th:replace="fragments/motherboard-specs :: motherboard-specs"></div>
+                <div th:replace="~{fragments/motherboard-specs :: motherboard-specs}"></div>
             </div>
             
             <div id="monitorSpecsSection" style="display: none;">
-                <div th:replace="fragments/monitor-specs :: monitor-specs"></div>
+                <div th:replace="~{fragments/monitor-specs :: monitor-specs}"></div>
             </div>
             
             <div id="ssdSpecsSection" style="display: none;">
-                <div th:replace="fragments/ssd-specs :: ssd-specs"></div>
+                <div th:replace="~{fragments/ssd-specs :: ssd-specs}"></div>
             </div>
             
             <div id="psuSpecsSection" style="display: none;">
-                <div th:replace="fragments/psu-specs :: psu-specs"></div>
+                <div th:replace="~{fragments/psu-specs :: psu-specs}"></div>
             </div>
             
             <div id="ramSpecsSection" style="display: none;">
-                <div th:replace="fragments/ram-specs :: ram-specs"></div>
+                <div th:replace="~{fragments/ram-specs :: ram-specs}"></div>
             </div>
             
             <div id="wiredKeyboardSpecsSection" style="display: none;">
-                <div th:replace="fragments/wired-keyboard-specs :: wired-keyboard-specs"></div>
+                <div th:replace="~{fragments/wired-keyboard-specs :: wired-keyboard-specs}"></div>
             </div>
             
             <div id="wirelessKeyboardSpecsSection" style="display: none;">
-                <div th:replace="fragments/wireless-keyboard-specs :: wireless-keyboard-specs"></div>
+                <div th:replace="~{fragments/wireless-keyboard-specs :: wireless-keyboard-specs}"></div>
             </div>
             
             <div id="wiredMouseSpecsSection" style="display: none;">
-                <div th:replace="fragments/wired-mouse-specs :: wired-mouse-specs"></div>
+                <div th:replace="~{fragments/wired-mouse-specs :: wired-mouse-specs}"></div>
             </div>
             
             <div id="wirelessMouseSpecsSection" style="display: none;">
-                <div th:replace="fragments/wireless-mouse-specs :: wireless-mouse-specs"></div>
+                <div th:replace="~{fragments/wireless-mouse-specs :: wireless-mouse-specs}"></div>
             </div>
             
             <div class="d-flex justify-content-between">
@@ -275,7 +275,7 @@
 </div>
 
 <!-- Footer Fragment -->
-<div th:replace="fragments/footer :: footer"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 <!-- Bootstrap JS and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -589,7 +589,7 @@
 </script>
 
 <!-- User Account Script -->
-<div th:replace="fragments/navigation :: user-account-script"></div>
+<div th:replace="~{fragments/navigation :: user-account-script}"></div>
 
 </body>
 </html>
