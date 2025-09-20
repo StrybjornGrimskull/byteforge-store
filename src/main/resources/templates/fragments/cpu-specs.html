@@ -14,7 +14,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="cpuCores" class="form-label fw-semibold">Cores *</label>
-                <input type="number" class="form-control" id="cpuCores" name="cpuCores" 
+                <input type="number" class="form-control" id="cpuCores" name="cores" 
                        placeholder="8" min="1" required>
                 <div class="invalid-feedback">
                     Please provide number of cores.
@@ -25,7 +25,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="cpuThreads" class="form-label fw-semibold">Threads *</label>
-                <input type="number" class="form-control" id="cpuThreads" name="cpuThreads" 
+                <input type="number" class="form-control" id="cpuThreads" name="threads" 
                        placeholder="16" min="1" required>
                 <div class="invalid-feedback">
                     Please provide number of threads.
@@ -38,7 +38,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="cpuBaseClock" class="form-label fw-semibold">Base Clock (GHz) *</label>
-                <input type="number" class="form-control" id="cpuBaseClock" name="cpuBaseClock" 
+                <input type="number" class="form-control" id="cpuBaseClock" name="baseClock" 
                        placeholder="3.2" step="0.1" min="0" required>
                 <div class="invalid-feedback">
                     Please provide base clock speed.
@@ -49,7 +49,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="cpuBoostClock" class="form-label fw-semibold">Boost Clock (GHz) *</label>
-                <input type="number" class="form-control" id="cpuBoostClock" name="cpuBoostClock" 
+                <input type="number" class="form-control" id="cpuBoostClock" name="boostClock" 
                        placeholder="4.7" step="0.1" min="0" required>
                 <div class="invalid-feedback">
                     Please provide boost clock speed.
@@ -62,7 +62,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="cpuSocket" class="form-label fw-semibold">Socket *</label>
-                <input type="text" class="form-control" id="cpuSocket" name="cpuSocket" 
+                <input type="text" class="form-control" id="cpuSocket" name="socket" 
                        placeholder="AM4, LGA1700" required>
                 <div class="invalid-feedback">
                     Please provide socket type.
@@ -73,7 +73,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="cpuCacheSize" class="form-label fw-semibold">Cache Size (MB) *</label>
-                <input type="number" class="form-control" id="cpuCacheSize" name="cpuCacheSize" 
+                <input type="number" class="form-control" id="cpuCacheSize" name="cache" 
                        placeholder="32" min="0" required>
                 <div class="invalid-feedback">
                     Please provide cache size.
@@ -86,7 +86,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="cpuTdp" class="form-label fw-semibold">TDP (W) *</label>
-                <input type="number" class="form-control" id="cpuTdp" name="cpuTdp" 
+                <input type="number" class="form-control" id="cpuTdp" name="tdp" 
                        placeholder="65" min="0" required>
                 <div class="invalid-feedback">
                     Please provide TDP.
@@ -97,7 +97,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <div class="form-check mt-4">
-                    <input class="form-check-input" type="checkbox" id="cpuIntegratedGpu" name="cpuIntegratedGpu">
+                    <input class="form-check-input" type="checkbox" id="cpuIntegratedGpu" name="integratedGraphics" value="true">
                     <label class="form-check-label" for="cpuIntegratedGpu">
                         Integrated GPU
                     </label>

@@ -17,7 +17,7 @@ public interface BrandRepository extends JpaRepository<Brand, Integer> {
     List<BrandDto> findAllBrandDtosOrderedByName();
     
     @Query("SELECT DISTINCT new com.byteforge.byteforge.dto.BrandDto(b.id, b.name, b.logoUrl) " +
-            "FROM Brand b JOIN b.products p WHERE p.category.id = :categoryId")
+            "FROM Brand b JOIN b.products p WHERE (:categoryId IS NULL OR p.category.id = :categoryId) ORDER BY b.name ASC")
     List<BrandDto> findBrandDtosByProductsCategoryId(@Param("categoryId") Integer categoryId);
     
     boolean existsByNameIgnoreCase(String name);

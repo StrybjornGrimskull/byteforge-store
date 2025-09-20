@@ -14,7 +14,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="motherboardSocket" class="form-label fw-semibold">Socket *</label>
-                <input type="text" class="form-control" id="motherboardSocket" name="motherboardSocket" 
+                <input type="text" class="form-control" id="motherboardSocket" name="socket" 
                        placeholder="AM4, LGA1700" required>
                 <div class="invalid-feedback">
                     Please provide socket type.
@@ -25,7 +25,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="motherboardChipset" class="form-label fw-semibold">Chipset *</label>
-                <input type="text" class="form-control" id="motherboardChipset" name="motherboardChipset" 
+                <input type="text" class="form-control" id="motherboardChipset" name="chipset" 
                        placeholder="B550, Z690" required>
                 <div class="invalid-feedback">
                     Please provide chipset.
@@ -38,7 +38,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="motherboardFormFactor" class="form-label fw-semibold">Form Factor *</label>
-                <select class="form-select" id="motherboardFormFactor" name="motherboardFormFactor" required>
+                <select class="form-select" id="motherboardFormFactor" name="formFactor" required>
                     <option value="">Select form factor</option>
                     <option value="Mini-ITX">Mini-ITX</option>
                     <option value="Micro-ATX">Micro-ATX</option>
@@ -54,7 +54,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="motherboardMemorySlots" class="form-label fw-semibold">Memory Slots *</label>
-                <input type="number" class="form-control" id="motherboardMemorySlots" name="motherboardMemorySlots" 
+                <input type="number" class="form-control" id="motherboardMemorySlots" name="memorySlots" 
                        placeholder="4" min="1" required>
                 <div class="invalid-feedback">
                     Please provide number of memory slots.
@@ -67,7 +67,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="motherboardMaxMemory" class="form-label fw-semibold">Max Memory (GB) *</label>
-                <input type="number" class="form-control" id="motherboardMaxMemory" name="motherboardMaxMemory" 
+                <input type="number" class="form-control" id="motherboardMaxMemory" name="maxMemory" 
                        placeholder="128" min="1" required>
                 <div class="invalid-feedback">
                     Please provide maximum memory capacity.
@@ -78,7 +78,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="motherboardMemoryType" class="form-label fw-semibold">Memory Type *</label>
-                <input type="text" class="form-control" id="motherboardMemoryType" name="motherboardMemoryType" 
+                <input type="text" class="form-control" id="motherboardMemoryType" name="memoryType" 
                        placeholder="DDR4, DDR5" required>
                 <div class="invalid-feedback">
                     Please provide memory type.
@@ -91,7 +91,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="motherboardM2Slots" class="form-label fw-semibold">M.2 Slots *</label>
-                <input type="number" class="form-control" id="motherboardM2Slots" name="motherboardM2Slots" 
+                <input type="number" class="form-control" id="motherboardM2Slots" name="m2Slots" 
                        placeholder="2" min="0" required>
                 <div class="invalid-feedback">
                     Please provide number of M.2 slots.
@@ -102,7 +102,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="motherboardSataPorts" class="form-label fw-semibold">SATA Ports *</label>
-                <input type="number" class="form-control" id="motherboardSataPorts" name="motherboardSataPorts" 
+                <input type="number" class="form-control" id="motherboardSataPorts" name="sataPorts" 
                        placeholder="6" min="0" required>
                 <div class="invalid-feedback">
                     Please provide number of SATA ports.

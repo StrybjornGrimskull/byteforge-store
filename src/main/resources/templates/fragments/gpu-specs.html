@@ -14,7 +14,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="gpuMemorySize" class="form-label fw-semibold">Memory Size (GB) *</label>
-                <input type="number" class="form-control" id="gpuMemorySize" name="gpuMemorySize" 
+                <input type="number" class="form-control" id="gpuMemorySize" name="memorySize" 
                        placeholder="8" min="1" required>
                 <div class="invalid-feedback">
                     Please provide memory size.
@@ -25,7 +25,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="gpuMemoryType" class="form-label fw-semibold">Memory Type *</label>
-                <input type="text" class="form-control" id="gpuMemoryType" name="gpuMemoryType" 
+                <input type="text" class="form-control" id="gpuMemoryType" name="memoryType" 
                        placeholder="GDDR6" required>
                 <div class="invalid-feedback">
                     Please provide memory type.
@@ -38,7 +38,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="gpuBusWidth" class="form-label fw-semibold">Bus Width (bit) *</label>
-                <input type="number" class="form-control" id="gpuBusWidth" name="gpuBusWidth" 
+                <input type="number" class="form-control" id="gpuBusWidth" name="memoryBus" 
                        placeholder="256" min="1" required>
                 <div class="invalid-feedback">
                     Please provide bus width.
@@ -86,7 +86,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="gpuLength" class="form-label fw-semibold">Length (mm) *</label>
-                <input type="number" class="form-control" id="gpuLength" name="gpuLength" 
+                <input type="number" class="form-control" id="gpuLength" name="length" 
                        placeholder="300" min="0" required>
                 <div class="invalid-feedback">
                     Please provide GPU length.
@@ -97,7 +97,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="gpuDisplayOutputs" class="form-label fw-semibold">Display Outputs *</label>
-                <input type="text" class="form-control" id="gpuDisplayOutputs" name="gpuDisplayOutputs" 
+                <input type="text" class="form-control" id="gpuDisplayOutputs" name="outputs" 
                        placeholder="3x DP, 1x HDMI" required>
                 <div class="invalid-feedback">
                     Please provide display outputs.

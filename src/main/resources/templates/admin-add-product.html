@@ -134,7 +134,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="originalPrice" class="form-label fw-semibold">Original Price (₽) *</label>
+                        <label for="originalPrice" class="form-label fw-semibold">Original Price (€) *</label>
                         <input type="number" class="form-control" id="originalPrice" name="originalPrice" 
                                placeholder="50000" step="0.01" min="0" required>
                         <div class="invalid-feedback">
@@ -166,6 +166,19 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="stockQuantity" class="form-label fw-semibold">Stock Quantity *</label>
+                        <input type="number" class="form-control" id="stockQuantity" name="stockQuantity" 
+                               placeholder="10" min="0" required>
+                        <div class="invalid-feedback">
+                            Please provide stock quantity.
+                        </div>
+                        <div class="form-text">
+                            Initial quantity available in stock
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div class="row">
@@ -187,12 +200,12 @@
                     <div class="form-group">
                         <label for="productImage" class="form-label fw-semibold">Product Image *</label>
                         <input type="file" class="form-control" id="productImage" name="productImage" 
-                               accept="image/*" required>
+                               accept=".webp,image/webp" required>
                         <div class="invalid-feedback">
                             Please select a product image.
                         </div>
                         <div class="form-text">
-                            Supported formats: JPG, PNG, GIF, WebP. Max size: 5MB
+                            Supported format: WebP only. Max size: 5MB
                         </div>
                     </div>
                 </div>
@@ -321,9 +334,9 @@
                             return;
                         }
                         
-                        // Validate file type
-                        if (!file.type.startsWith('image/')) {
-                            alert('Please select a valid image file');
+                        // Validate file type - only WebP
+                        if (file.type !== 'image/webp') {
+                            alert('Please select a WebP image file only');
                             this.value = '';
                             imagePreviewRow.style.display = 'none';
                             return;
@@ -569,20 +582,102 @@
                 productForm.classList.add('was-validated');
             });
             
-            // Form submission handler (заглушка)
+            // Form submission handler
             productForm.addEventListener('submit', function(event) {
                 event.preventDefault();
                 
-                // Collect form data
-                const formData = {
-                    productName: document.getElementById('productName').value,
-                    category: document.getElementById('productCategory').value,
-                    brand: document.getElementById('productBrand').value
+                const formData = new FormData();
+                
+                // Основные поля продукта
+                formData.append('productName', document.getElementById('productName').value);
+                formData.append('productCategory', document.getElementById('productCategory').value);
+                formData.append('productBrand', document.getElementById('productBrand').value);
+                formData.append('originalPrice', document.getElementById('originalPrice').value);
+                formData.append('warrantyMonths', document.getElementById('warrantyMonths').value);
+                formData.append('releaseYear', document.getElementById('releaseYear').value);
+                formData.append('stockQuantity', document.getElementById('stockQuantity').value);
+                formData.append('shortDescription', document.getElementById('shortDescription').value);
+                formData.append('productImage', document.getElementById('productImage').files[0]);
+                
+                // Собираем все поля спецификаций из видимой секции
+                const visibleSpecSection = getVisibleSpecificationSection();
+                if (visibleSpecSection) {
+                    const specType = getSpecTypeFromSection(visibleSpecSection);
+                    const specInputs = visibleSpecSection.querySelectorAll('input, select, textarea');
+                    specInputs.forEach(input => {
+                        if (input.name && input.value.trim() !== '') {
+                            formData.append(`${specType}.${input.name}`, input.value.trim());
+                        }
+                    });
+                }
+                
+                console.log('Form data being sent:', Array.from(formData.entries()));
+                
+                fetch('/api/products', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data);
+                    window.location.href = '/admin/dashboard/products';
+                })
+                .catch(error => {
+                    alert('Error: ' + error.message);
+                });
+            });
+            
+            // Функция для получения видимой секции спецификаций
+            function getVisibleSpecificationSection() {
+                const specSections = [
+                    'caseSpecsSection',
+                    'cpuSpecsSection',
+                    'gpuSpecsSection',
+                    'motherboardSpecsSection',
+                    'monitorSpecsSection',
+                    'ssdSpecsSection',
+                    'psuSpecsSection',
+                    'ramSpecsSection',
+                    'wiredKeyboardSpecsSection',
+                    'wirelessKeyboardSpecsSection',
+                    'wiredMouseSpecsSection',
+                    'wirelessMouseSpecsSection'
+                ];
+                
+                for (const sectionId of specSections) {
+                    const section = document.getElementById(sectionId);
+                    if (section && section.style.display !== 'none') {
+                        console.log(`Found visible specification section: ${sectionId}`);
+                        return section;
+                    }
+                }
+                
+                console.log('No visible specification section found');
+                return null;
+            }
+            
+            // Функция для определения типа спецификации по секции
+            function getSpecTypeFromSection(section) {
+                const sectionId = section.id;
+                const specTypeMap = {
+                    'caseSpecsSection': 'caseSpec',
+                    'cpuSpecsSection': 'cpuSpec',
+                    'gpuSpecsSection': 'gpuSpec',
+                    'motherboardSpecsSection': 'motherboardSpec',
+                    'monitorSpecsSection': 'monitorSpec',
+                    'ssdSpecsSection': 'ssdSpec',
+                    'psuSpecsSection': 'psuSpec',
+                    'ramSpecsSection': 'ramSpec',
+                    'wiredKeyboardSpecsSection': 'wiredKeyboardSpec',
+                    'wirelessKeyboardSpecsSection': 'wirelessKeyboardSpec',
+                    'wiredMouseSpecsSection': 'wiredMouseSpec',
+                    'wirelessMouseSpecsSection': 'wirelessMouseSpec'
                 };
                 
-                console.log('Form data:', formData);
-                alert('Product created successfully! (This is a placeholder - backend integration needed)');
-            });
+                const specType = specTypeMap[sectionId];
+                console.log(`Mapped section ${sectionId} to spec type: ${specType}`);
+                return specType;
+            }
         }
         
     })();

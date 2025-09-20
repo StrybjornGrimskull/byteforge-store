@@ -1,6 +1,9 @@
 package com.byteforge.byteforge.services.specifications;
 
+import com.byteforge.byteforge.dto.request.ProductCreateRequestDto;
 import com.byteforge.byteforge.dto.specifications.CaseSpecDTO;
+import com.byteforge.byteforge.entities.Product;
+import com.byteforge.byteforge.entities.specifications.CaseSpec;
 import com.byteforge.byteforge.repositories.CaseSpecRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,5 +25,29 @@ public class CaseSpecService {
                         spec.getRadiatorSupport()
                 ))
                 .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
+    }
+
+    public void createCaseSpec(Product product, ProductCreateRequestDto request) {
+        if (request.caseSpec() == null) return;
+        
+        CaseSpec spec = new CaseSpec();
+        spec.setProduct(product);
+        spec.setFormFactor(request.caseSpec().formFactor());
+        spec.setMotherboardSupport(request.caseSpec().motherboardSupport());
+        spec.setMaxGpuLength(parseInt(request.caseSpec().maxGpuLength()));
+        spec.setMaxCpuCoolerHeight(parseInt(request.caseSpec().maxCpuCoolerHeight()));
+        spec.setFansIncluded(parseInt(request.caseSpec().fansIncluded()));
+        spec.setRadiatorSupport(request.caseSpec().radiatorSupport());
+        
+        caseSpecRepository.save(spec);
+    }
+
+    private Integer parseInt(String value) {
+        if (value == null || value.trim().isEmpty()) return null;
+        try {
+            return Integer.parseInt(value.trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

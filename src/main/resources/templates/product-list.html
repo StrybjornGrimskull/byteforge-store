@@ -261,7 +261,7 @@
         // Обновляем скрытое поле при изменении категории
         document.getElementById('categoryIdHidden').value = categoryId;
 
-        fetch('/api/brands?categoryId=' + categoryId)
+        fetch('/api/brands/by-category?categoryId=' + categoryId)
             .then(response => {
                 if (!response.ok) throw new Error('Network error');
                 return response.json();
@@ -291,7 +291,7 @@
         }
                 <h6 class="mt-2 mb-1 text-center">${product.name}</h6>
                 <div class="mb-1"><strong>Brand:</strong> ${product.brandName || ''}</div>
-                <div class="mb-1"><strong>Price:</strong> $${product.price}</div>
+                <div class="mb-1"><strong>Price:</strong> €${product.price}</div>
                 <div class="mb-2" style="font-weight:bold;${product.stockQuantity > 0 ? 'color:#198754' : 'color:#6c757d'}">
                     ${product.stockQuantity > 0 ? 'In stock' : 'Out of stock'}
                 </div>

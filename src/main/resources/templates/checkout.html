@@ -120,7 +120,7 @@
                                 </div>
                                 <div class="col-md-6 text-end">
                                     <h6 class="fw-bold">Total</h6>
-                                    <h4 id="order-total">$0.00</h4>
+                                    <h4 id="order-total">€0.00</h4>
                                 </div>
                             </div>
                         </div>
@@ -270,12 +270,12 @@
                             <div>${product.name}</div>
                             <small>Qty: ${item.quantity}</small>
                         </div>
-                        <div>$${itemTotal.toFixed(2)}</div>
+                        <div>€${itemTotal.toFixed(2)}</div>
                     </div>`;
                 });
 
                 $('#ordered-items').html(itemsHtml);
-                $('#order-total').text('$' + total.toFixed(2));
+                $('#order-total').text('€' + total.toFixed(2));
             }
         }
 

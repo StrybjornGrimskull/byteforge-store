@@ -28,7 +28,7 @@ CREATE TABLE products (
 
 -- Product-specific tables
 CREATE TABLE gpu_specs (
-    product_id INT PRIMARY KEY REFERENCES products(id),
+    product_id INT PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
     memory_size INT NOT NULL,           -- 24 (GB)
     memory_type VARCHAR(20) NOT NULL,   -- "GDDR6X"
     bus_width INT NOT NULL,             -- 384 (bit)
@@ -40,7 +40,7 @@ CREATE TABLE gpu_specs (
 );
 
 CREATE TABLE cpu_specs (
-    product_id INT PRIMARY KEY REFERENCES products(id),
+    product_id INT PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
     cores INT NOT NULL,                 -- 16
     threads INT NOT NULL,               -- 32
     base_clock DECIMAL(4,2) NOT NULL,   -- 4.5 (GHz)
@@ -52,7 +52,7 @@ CREATE TABLE cpu_specs (
 );
 
 CREATE TABLE motherboard_specs (
-    product_id INT PRIMARY KEY REFERENCES products(id),
+    product_id INT PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
     socket VARCHAR(50) NOT NULL,        -- "LGA 1700"
     chipset VARCHAR(50) NOT NULL,       -- "Z790"
     form_factor VARCHAR(20) NOT NULL,   -- "ATX", "mATX"
@@ -64,7 +64,7 @@ CREATE TABLE motherboard_specs (
 );
 
 CREATE TABLE ram_specs (
-    product_id INT PRIMARY KEY REFERENCES products(id),
+    product_id INT PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
     memory_size INT NOT NULL,           -- 32 (GB)
     modules_count INT NOT NULL,         -- 2 (кита)
     speed INT NOT NULL,                 -- 6000 (MHz)
@@ -74,7 +74,7 @@ CREATE TABLE ram_specs (
 );
 
 CREATE TABLE psu_specs (
-    product_id INT PRIMARY KEY REFERENCES products(id),
+    product_id INT PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
     wattage INT NOT NULL,               -- 850 (W)
     form_factor VARCHAR(20) NOT NULL,   -- "ATX"
     efficiency_cert VARCHAR(20) NOT NULL,        -- "80+ Gold"
@@ -84,7 +84,7 @@ CREATE TABLE psu_specs (
 );
 
 CREATE TABLE case_specs (
-    product_id INT PRIMARY KEY REFERENCES products(id),
+    product_id INT PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
     form_factor VARCHAR(50) NOT NULL,   -- "Mid-Tower"
     motherboard_support VARCHAR(255) NOT NULL,   -- "ATX, mATX, Mini-ITX"
     max_gpu_length INT NOT NULL,                 -- 350 (mm)
@@ -94,7 +94,7 @@ CREATE TABLE case_specs (
 );
 
 CREATE TABLE monitor_specs (
-    product_id INT PRIMARY KEY REFERENCES products(id),
+    product_id INT PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
     screen_size DECIMAL(4,1) NOT NULL,          -- 27.0 (дюймов)
     resolution VARCHAR(20) NOT NULL,            -- "2560x1440"
     panel_type VARCHAR(30) NOT NULL,            -- "IPS", "VA", "OLED"
@@ -103,7 +103,7 @@ CREATE TABLE monitor_specs (
 );
 
 CREATE TABLE ssd_specs (
-    product_id INT PRIMARY KEY REFERENCES products(id),
+    product_id INT PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
     capacity INT NOT NULL,               -- 1000 (GB)
     form_factor VARCHAR(20) NOT NULL,    -- "M.2", "2.5""
     interface VARCHAR(20) NOT NULL,      -- "NVMe PCIe 4.0", "SATA III"
@@ -117,7 +117,7 @@ CREATE TABLE ssd_specs (
 );
 
 CREATE TABLE wireless_mice_specs (
-    product_id INT PRIMARY KEY REFERENCES products(id),
+    product_id INT PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
     sensor_type VARCHAR(50) NOT NULL,      -- "Optical", "Laser"
     sensor_model VARCHAR(50),              -- "PixArt PAW3370", "Hero 25K"
     max_dpi INT NOT NULL,                  -- 16000 (максимальный DPI)
@@ -135,7 +135,7 @@ CREATE TABLE wireless_mice_specs (
 );
 
 CREATE TABLE wired_mice_specs (
-    product_id INT PRIMARY KEY REFERENCES products(id),
+    product_id INT PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
     sensor_type VARCHAR(50) NOT NULL,      -- "Optical", "Laser"
     sensor_model VARCHAR(50),              -- "PixArt PMW3389", "TrueMove Core"
     max_dpi INT NOT NULL,                  -- 16000
@@ -151,7 +151,7 @@ CREATE TABLE wired_mice_specs (
 );
 
 CREATE TABLE wireless_keyboards_spec (
-    product_id INT PRIMARY KEY REFERENCES products(id),
+    product_id INT PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
     layout VARCHAR(20) NOT NULL,           -- "Full-size", "TKL", "60%"
     switch_type VARCHAR(30) NOT NULL,      -- "Mechanical", "Membrane"
     switch_brand VARCHAR(30) NOT NULL,              -- "Cherry MX", "Gateron", "Razer"
@@ -168,7 +168,7 @@ CREATE TABLE wireless_keyboards_spec (
 );
 
 CREATE TABLE wired_keyboards_spec (
-    product_id INT PRIMARY KEY REFERENCES products(id),
+    product_id INT PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
     layout VARCHAR(20) NOT NULL,           -- "Full-size", "TKL", "60%"
     switch_type VARCHAR(30) NOT NULL,      -- "Mechanical", "Membrane"
     switch_brand VARCHAR(30) NOT NULL,              -- "Cherry MX", "Gateron", "Razer"
@@ -184,7 +184,7 @@ CREATE TABLE wired_keyboards_spec (
 );
 
 CREATE TABLE stock_quantity(
-    product_id INT PRIMARY KEY REFERENCES products(id),
+    product_id INT PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
     quantity INT DEFAULT 0
 );
  

@@ -1,9 +1,14 @@
 package com.byteforge.byteforge.services.specifications;
 
+import com.byteforge.byteforge.dto.request.ProductCreateRequestDto;
 import com.byteforge.byteforge.dto.specifications.SsdSpecDTO;
+import com.byteforge.byteforge.entities.Product;
+import com.byteforge.byteforge.entities.specifications.SsdSpec;
 import com.byteforge.byteforge.repositories.SsdSpecRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -26,5 +31,42 @@ public class SsdSpecService {
                         spec.getThickness()
                 ))
                 .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
+    }
+
+    public void createSsdSpec(Product product, ProductCreateRequestDto request) {
+        if (request.ssdSpec() == null) return;
+        
+        SsdSpec spec = new SsdSpec();
+        spec.setProduct(product);
+        spec.setCapacity(parseInt(request.ssdSpec().capacity()));
+        spec.setFormFactor(request.ssdSpec().interfaceType());
+        spec.setInterfaceType(request.ssdSpec().interfaceType());
+        spec.setReadSpeed(parseInt(request.ssdSpec().readSpeed()));
+        spec.setWriteSpeed(parseInt(request.ssdSpec().writeSpeed()));
+        spec.setMemoryType(request.ssdSpec().interfaceType());
+        spec.setEnduranceTbw(parseInt(request.ssdSpec().enduranceTbw()));
+        spec.setDramCache(Boolean.parseBoolean(request.ssdSpec().dramCache()));
+        spec.setEncryption(request.ssdSpec().encryption());
+        spec.setThickness(parseBigDecimal(request.ssdSpec().thickness()));
+        
+        ssdSpecRepository.save(spec);
+    }
+
+    private Integer parseInt(String value) {
+        if (value == null || value.trim().isEmpty()) return null;
+        try {
+            return Integer.parseInt(value.trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private BigDecimal parseBigDecimal(String value) {
+        if (value == null || value.trim().isEmpty()) return null;
+        try {
+            return new BigDecimal(value.trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 } 
