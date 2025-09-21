@@ -7,8 +7,149 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* Фоновое изображение для страницы */
+        body {
+            background-image: url('/uploads/icons/opoy7.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            font-family: 'Ubuntu', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        
+        /* Белый текст для описания */
+        .product-description {
+            color: white;
+        }
+        
+        /* Белый цвет для цены */
+        .price-section {
+            color: white;
+        }
+        
+        /* Белый цвет для статуса товара */
+        .stock-status {
+            color: white;
+        }
+        
+        /* Белый цвет для сердца в любом состоянии */
+        .wishlist-heart {
+            color: white !important;
+        }
+        
+        /* Стили для кнопки добавления в корзину */
+        .btn-cart {
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border: none;
+            font-weight: 500;
+        }
+        
+        .btn-cart:hover {
+            background-color: white;
+            color: #333;
+        }
+        
+        .btn-cart:disabled {
+            background-color: rgba(255, 255, 255, 0.5);
+            color: #666;
+        }
+        
+        /* Современные карточки спецификаций */
+        .spec-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .spec-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .spec-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .spec-card:hover::before {
+            opacity: 1;
+        }
+        
+        .spec-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .spec-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            margin: 0;
+        }
+        
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .specs-header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .specs-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .specs-title i {
+            margin-right: 0.75rem;
+            font-size: 1.3rem;
+        }
+        
+        /* Стили для логотипа бренда в заголовке */
+        .brand-logo {
+            height: 50px !important;
+            width: auto;
+            filter: brightness(0) invert(1);
+            opacity: 0.9;
+        }
 
         .product-image-container {
             min-height: 400px;
@@ -22,21 +163,9 @@
             object-fit: contain;
             display: block;
         }
-        .specs-card {
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
         .nav-tabs .nav-link.active {
             font-weight: 600;
             border-bottom: 3px solid var(--primary-color);
-        }
-        .brand-logo {
-            height: 40px;
-            max-width: 120px;
-            object-fit: contain;
-        }
-        .price-section {
-            min-width: 200px;
         }
         .price-section .badge {
             font-size: 0.9rem;
@@ -47,36 +176,38 @@
         }
 
         /* Стили для выпадающей секции */
-        #techSpecsHeader:hover {
-            background-color: #f8f9fa !important;
+        .tech-specs-button {
+            text-decoration: none !important;
+            color: white !important;
         }
-
-        #techSpecsHeader .d-flex:hover {
-            background-color: #e9ecef;
-            border-radius: 4px;
-            transition: background-color 0.2s ease;
+        
+        .tech-specs-button:hover {
+            text-decoration: none !important;
+            color: white !important;
         }
-
-        #techSpecsContent {
-            background-color: #f8f9fa;
-        }
-
+        
         #techSpecsIcon {
             transition: transform 0.3s ease;
         }
 
-        #techSpecsIcon.rotated {
-            transform: rotate(180deg);
-        }
-
         .product-header {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            background: transparent;
             color: white;
             padding: 1.5rem 0;
             margin-bottom: 1.5rem;
         }
         .breadcrumb a {
             text-decoration: none;
+        }
+        
+        /* Стили для хлебных крошек */
+        .breadcrumb-item + .breadcrumb-item::before {
+            color: rgba(255, 255, 255, 0.7);
+            content: "/";
+        }
+        
+        .breadcrumb-item.active {
+            color: rgba(255, 255, 255, 0.5);
         }
     </style>
 </head>
@@ -99,7 +230,14 @@
                 <li class="breadcrumb-item active text-white-50" aria-current="page" th:text="${product.name}"></li>
             </ol>
         </nav>
-        <h1 class="mb-0" th:text="${product.name} ?: 'Product Details'">Product Details</h1>
+        <div class="mt-3">
+            <h1 class="mb-0 d-flex align-items-center">
+            <img th:src="@{'/uploads/' + ${product.brandLogo}}" 
+                 th:alt="${product.brandName}" 
+                 class="brand-logo me-3">
+            <span th:text="${#strings.isEmpty(#strings.substringAfter(product.name, product.brandName + ' ')) ? product.name : #strings.substringAfter(product.name, product.brandName + ' ')}">Product Name</span>
+            </h1>
+        </div>
     </div>
 </header>
 
@@ -125,38 +263,34 @@
                     th:attr="data-product-id=${product.id}"
                     class="position-absolute"
                     style="right: 16px; top: 16px; z-index: 2; background: none; border: none; padding: 0; cursor: pointer;">
-                <i class="bi bi-heart" style="font-size: 1.7rem; color: #dc3545;"></i>
+                <i class="bi bi-heart wishlist-heart" style="font-size: 1.7rem;"></i>
             </button>
         </div>
         <div class="col-lg-6">
-            <div class="d-flex align-items-center mb-3">
-                <img th:src="@{'/uploads/' + ${product.brandLogo}}"
-                     class="brand-logo me-3">
-            </div>
 
             <div class="d-flex align-items-center mb-4">
                 <!-- Цена с учетом скидки -->
                 <div class="price-section me-3">
                     <div th:if="${product.discountPercentage > 0}" class="d-flex flex-column">
                         <!-- Оригинальная цена (зачеркнутая) -->
-                        <span class="text-muted text-decoration-line-through fs-6 mb-1" 
+                        <span class="text-decoration-line-through fs-6 mb-1" 
                               th:text="'€' + ${#numbers.formatDecimal(product.originalPrice, 1, 2)}"></span>
                         <!-- Финальная цена -->
-                        <span class="text-success fw-bold fs-3" 
+                        <span class="fw-bold fs-3" 
                               th:text="'€' + ${#numbers.formatDecimal(product.price, 1, 2)}"></span>
                     </div>
                     <!-- Если скидки нет, показываем только оригинальную цену -->
                     <span th:if="${product.discountPercentage == 0}" 
-                          class="text-success fw-bold fs-3" 
+                          class="fw-bold fs-3" 
                           th:text="'€' + ${#numbers.formatDecimal(product.originalPrice, 1, 2)}"></span>
                 </div>
             </div>
 
-            <p class="lead mb-4" th:text="${product.shortDescription}"></p>
+            <p class="lead mb-4 product-description" th:text="${product.shortDescription}"></p>
             
             <div class="mb-3">
-                <span th:class="${product.stockQuantity > 0} ? 'text-success fw-bold' : 'text-danger fw-bold'"
-                      th:text="${product.stockQuantity > 0} ? '✓ In Stock' : '✗ Out of Stock'">
+                <span class="stock-status fw-bold"
+                      th:text="${product.stockQuantity > 0} ? 'In stock' : 'Out of stock'">
                 </span>
             </div>
             
@@ -164,83 +298,63 @@
                 <span th:if="${averageRating != null}" class="fs-5 text-warning">
                     <i class="bi bi-star-fill"></i>
                     <span th:text="${#numbers.formatDecimal(averageRating, 1, 1)}"></span>
-                    <span th:if="${reviewCount > 0}" class="text-secondary ms-2" style="font-size:1rem;">
-                        (<span th:text="${reviewCount}"></span> reviews)
-                        <a th:href="@{/reviews/product/{productId}(productId=${product.id})}" class="ms-2">
-                            <i class="bi bi-chat-square-text"></i> View all reviews
-                        </a>
+                    <span th:if="${reviewCount > 0}" class="text-white ms-2" style="font-size:1rem;">
+                        (<a th:href="@{/reviews/product/{productId}(productId=${product.id})}" 
+                            class="text-white text-decoration-none"
+                            th:text="${reviewCount} + ' reviews'"></a>)
                     </span>
                 </span>
-                <span th:if="${averageRating == null}" class="text-muted">No ratings yet</span>
+                <span th:if="${averageRating == null}" class="text-white">No ratings yet</span>
             </div>
 
             <div class="d-flex gap-3 mb-5">
                 <button id="cartBtn"
                         th:attr="data-product-id=${product.id}, data-stock-quantity=${product.stockQuantity}"
-                        class="btn btn-primary btn-lg px-4"
+                        class="btn btn-cart btn-lg px-4"
                         th:disabled="${product.stockQuantity <= 0}">
-                    <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                    Add to Cart
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Product specifications - улучшенная версия -->
-    <div class="card mb-5 border-0 shadow-sm">
-        <div class="card-header bg-primary bg-gradient text-white py-3">
-            <h3 class="mb-0 fs-4 fw-semibold">
-                <i class="bi bi-list-check me-2"></i>Specifications
-            </h3>
+    <!-- Product specifications - современные карточки -->
+    <div class="specs-header">
+        <h3 class="specs-title">
+            <i class="bi bi-list-check"></i>Specifications
+        </h3>
+        
+        <!-- Основная информация о продукте -->
+        <div class="specs-grid">
+            <div class="spec-card">
+                <div class="spec-label">Category</div>
+                <div class="spec-value" th:text="${product.categoryName}"></div>
+            </div>
+            <div class="spec-card">
+                <div class="spec-label">Brand</div>
+                <div class="spec-value" th:text="${product.brandName}"></div>
+            </div>
+            <div class="spec-card">
+                <div class="spec-label">Release Year</div>
+                <div class="spec-value" th:text="${product.releaseYear}"></div>
+            </div>
+            <div class="spec-card">
+                <div class="spec-label">Warranty</div>
+                <div class="spec-value" th:text="${product.warrantyMonths} + ' months'"></div>
+            </div>
         </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0" id="specsTable">
-                    <tbody>
-                    <tr class="border-bottom">
-                        <th class="ps-4 py-3 text-muted" style="width: 35%; min-width: 200px;">Category</th>
-                        <td class="pe-4 py-3 fw-medium" th:text="${product.categoryName}"></td>
-                    </tr>
-                    <tr class="border-bottom">
-                        <th class="ps-4 py-3 text-muted">Brand</th>
-                        <td class="pe-4 py-3 fw-medium" th:text="${product.brandName}"></td>
-                    </tr>
-                    <tr class="border-bottom">
-                        <th class="ps-4 py-3 text-muted">Release Year</th>
-                        <td class="pe-4 py-3 fw-medium" th:text="${product.releaseYear}"></td>
-                    </tr>
-                    <tr class="border-bottom">
-                        <th class="ps-4 py-3 text-muted">Warranty</th>
-                        <td class="pe-4 py-3 fw-medium" th:text="${product.warrantyMonths} + ' months'"></td>
-                    </tr>
-
-                    <!-- Выпадающая секция для технических характеристик -->
-                    <tr class="bg-light" id="techSpecsHeader">
-                        <td colspan="2" class="px-4 py-2">
-                            <button type="button" class="btn btn-link p-0 border-0 bg-transparent text-start w-100 d-flex align-items-center justify-content-between" onclick="toggleTechSpecs()" aria-expanded="false" aria-controls="techSpecsContent">
-                                <span class="text-primary fw-semibold small me-2">TECHNICAL SPECIFICATIONS</span>
-                                <i class="bi bi-chevron-down text-primary" id="techSpecsIcon"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr id="techSpecsContent" style="display: none;">
-                        <td colspan="2" class="p-0">
-                            <div class="table-responsive">
-                                <table class="table table-hover mb-0" id="techSpecsTable">
-                                    <thead>
-                                        <tr>
-                                            <th class="ps-4 py-2 text-muted" style="width: 40%;">Specification</th>
-                                            <th class="pe-4 py-2 text-muted">Value</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    <!-- Динамические технические характеристики будут добавлены здесь -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+        
+        <!-- Выпадающая секция для технических характеристик -->
+        <div class="mt-4">
+            <button type="button" class="btn btn-link tech-specs-button p-0 border-0 bg-transparent text-start w-100 d-flex align-items-center justify-content-between" onclick="toggleTechSpecs()" aria-expanded="false" aria-controls="techSpecsContent">
+                <span class="fw-semibold">TECHNICAL SPECIFICATIONS</span>
+                <i class="bi bi-chevron-down" id="techSpecsIcon"></i>
+            </button>
+        </div>
+        
+        <div id="techSpecsContent" style="display: none;">
+            <div class="specs-grid" id="techSpecsGrid">
+                <!-- Динамические технические характеристики будут добавлены здесь -->
             </div>
         </div>
     </div>
@@ -271,164 +385,164 @@
 </script>
 <script>
     function renderSpecifications(spec, categoryId) {
-        const table = document.getElementById('techSpecsTable');
+        const grid = document.getElementById('techSpecsGrid');
 
-        // Очищаем таблицу перед добавлением новых данных
-        table.innerHTML = '';
+        // Очищаем сетку перед добавлением новых данных
+        grid.innerHTML = '';
 
         switch (categoryId) {
             case 1: // GPU
-                appendSpecRow(table, 'Memory Size', spec.memorySize, ' GB');
-                appendSpecRow(table, 'Memory Type', spec.memoryType);
-                appendSpecRow(table, 'Bus Width', spec.busWidth, ' bit');
-                appendSpecRow(table, 'Base Clock', spec.baseClock, ' MHz');
-                appendSpecRow(table, 'Boost Clock', spec.boostClock, ' MHz');
-                appendSpecRow(table, 'TDP', spec.tdp, ' W');
-                appendSpecRow(table, 'Length', spec.length, ' mm');
-                appendSpecRow(table, 'Display Outputs', spec.displayOutputs);
+                appendSpecCard(grid, 'Memory Size', spec.memorySize, ' GB');
+                appendSpecCard(grid, 'Memory Type', spec.memoryType);
+                appendSpecCard(grid, 'Bus Width', spec.busWidth, ' bit');
+                appendSpecCard(grid, 'Base Clock', spec.baseClock, ' MHz');
+                appendSpecCard(grid, 'Boost Clock', spec.boostClock, ' MHz');
+                appendSpecCard(grid, 'TDP', spec.tdp, ' W');
+                appendSpecCard(grid, 'Length', spec.length, ' mm');
+                appendSpecCard(grid, 'Display Outputs', spec.displayOutputs);
                 break;
 
             case 2: // CPU
-                appendSpecRow(table, 'Cores', spec.cores);
-                appendSpecRow(table, 'Threads', spec.threads);
-                appendSpecRow(table, 'Base Clock', spec.baseClock, ' GHz');
-                appendSpecRow(table, 'Boost Clock', spec.boostClock, ' GHz');
-                appendSpecRow(table, 'Socket', spec.socket);
-                appendSpecRow(table, 'Cache Size', spec.cacheSize, ' MB');
-                appendSpecRow(table, 'TDP', spec.tdp, ' W');
-                appendSpecRow(table, 'Integrated GPU', spec.integratedGpu);
+                appendSpecCard(grid, 'Cores', spec.cores);
+                appendSpecCard(grid, 'Threads', spec.threads);
+                appendSpecCard(grid, 'Base Clock', spec.baseClock, ' GHz');
+                appendSpecCard(grid, 'Boost Clock', spec.boostClock, ' GHz');
+                appendSpecCard(grid, 'Socket', spec.socket);
+                appendSpecCard(grid, 'Cache Size', spec.cacheSize, ' MB');
+                appendSpecCard(grid, 'TDP', spec.tdp, ' W');
+                appendSpecCard(grid, 'Integrated GPU', spec.integratedGpu);
                 break;
 
             case 3: // Motherboard
-                appendSpecRow(table, 'Socket', spec.socket);
-                appendSpecRow(table, 'Chipset', spec.chipset);
-                appendSpecRow(table, 'Form Factor', spec.formFactor);
-                appendSpecRow(table, 'Memory Slots', spec.memorySlots);
-                appendSpecRow(table, 'Max Memory', spec.maxMemory, ' GB');
-                appendSpecRow(table, 'Memory Type', spec.memoryType);
-                appendSpecRow(table, 'M.2 Slots', spec.m2Slots);
-                appendSpecRow(table, 'SATA Ports', spec.sataPorts);
+                appendSpecCard(grid, 'Socket', spec.socket);
+                appendSpecCard(grid, 'Chipset', spec.chipset);
+                appendSpecCard(grid, 'Form Factor', spec.formFactor);
+                appendSpecCard(grid, 'Memory Slots', spec.memorySlots);
+                appendSpecCard(grid, 'Max Memory', spec.maxMemory, ' GB');
+                appendSpecCard(grid, 'Memory Type', spec.memoryType);
+                appendSpecCard(grid, 'M.2 Slots', spec.m2Slots);
+                appendSpecCard(grid, 'SATA Ports', spec.sataPorts);
                 break;
 
             case 4: // RAM
-                appendSpecRow(table, 'Memory Size', spec.memorySize, ' GB');
-                appendSpecRow(table, 'Modules Count', spec.modulesCount);
-                appendSpecRow(table, 'Speed', spec.speed, ' MHz');
-                appendSpecRow(table, 'Type', spec.type);
-                appendSpecRow(table, 'Timings', spec.timings);
-                appendSpecRow(table, 'Voltage', spec.voltage, ' V');
+                appendSpecCard(grid, 'Memory Size', spec.memorySize, ' GB');
+                appendSpecCard(grid, 'Modules Count', spec.modulesCount);
+                appendSpecCard(grid, 'Speed', spec.speed, ' MHz');
+                appendSpecCard(grid, 'Type', spec.type);
+                appendSpecCard(grid, 'Timings', spec.timings);
+                appendSpecCard(grid, 'Voltage', spec.voltage, ' V');
                 break;
 
             case 5: // PSU
-                appendSpecRow(table, 'Wattage', spec.wattage, ' W');
-                appendSpecRow(table, 'Form Factor', spec.formFactor);
-                appendSpecRow(table, 'Efficiency Certification', spec.efficiencyCert);
-                appendSpecRow(table, 'Modularity', spec.modularity);
-                appendSpecRow(table, 'PCIe 8-pin Connectors', spec.pcie8pinConnectors);
-                appendSpecRow(table, 'SATA Connectors', spec.sataConnectors);
+                appendSpecCard(grid, 'Wattage', spec.wattage, ' W');
+                appendSpecCard(grid, 'Form Factor', spec.formFactor);
+                appendSpecCard(grid, 'Efficiency Certification', spec.efficiencyCert);
+                appendSpecCard(grid, 'Modularity', spec.modularity);
+                appendSpecCard(grid, 'PCIe 8-pin Connectors', spec.pcie8pinConnectors);
+                appendSpecCard(grid, 'SATA Connectors', spec.sataConnectors);
                 break;
 
             case 6: // Case
-                appendSpecRow(table, 'Form Factor', spec.formFactor);
-                appendSpecRow(table, 'Motherboard Support', spec.motherboardSupport);
-                appendSpecRow(table, 'Max GPU Length', spec.maxGpuLength, ' mm');
-                appendSpecRow(table, 'Max CPU Cooler Height', spec.maxCpuCoolerHeight, ' mm');
-                appendSpecRow(table, 'Included Fans', spec.fansIncluded);
-                appendSpecRow(table, 'Radiator Support', spec.radiatorSupport);
+                appendSpecCard(grid, 'Form Factor', spec.formFactor);
+                appendSpecCard(grid, 'Motherboard Support', spec.motherboardSupport);
+                appendSpecCard(grid, 'Max GPU Length', spec.maxGpuLength, ' mm');
+                appendSpecCard(grid, 'Max CPU Cooler Height', spec.maxCpuCoolerHeight, ' mm');
+                appendSpecCard(grid, 'Included Fans', spec.fansIncluded);
+                appendSpecCard(grid, 'Radiator Support', spec.radiatorSupport);
                 break;
 
             case 7: // Monitor
-                appendSpecRow(table, 'Screen Size', spec.screenSize, ' inches');
-                appendSpecRow(table, 'Resolution', spec.resolution);
-                appendSpecRow(table, 'Panel Type', spec.panelType);
-                appendSpecRow(table, 'Refresh Rate', spec.refreshRate, ' Hz');
-                appendSpecRow(table, 'Response Time', spec.responseTime, ' ms');
+                appendSpecCard(grid, 'Screen Size', spec.screenSize, ' inches');
+                appendSpecCard(grid, 'Resolution', spec.resolution);
+                appendSpecCard(grid, 'Panel Type', spec.panelType);
+                appendSpecCard(grid, 'Refresh Rate', spec.refreshRate, ' Hz');
+                appendSpecCard(grid, 'Response Time', spec.responseTime, ' ms');
                 break;
 
             case 8: // SSD
-                appendSpecRow(table, 'Capacity', spec.capacity, ' GB');
-                appendSpecRow(table, 'Form Factor', spec.formFactor);
-                appendSpecRow(table, 'Interface', spec.interfaceType);
-                appendSpecRow(table, 'Read Speed', spec.readSpeed, ' MB/s');
-                appendSpecRow(table, 'Write Speed', spec.writeSpeed, ' MB/s');
-                appendSpecRow(table, 'Memory Type', spec.memoryType);
-                appendSpecRow(table, 'Endurance', spec.enduranceTbw, ' TBW');
-                appendSpecRow(table, 'DRAM Cache', spec.dramCache);
-                appendSpecRow(table, 'Encryption', spec.encryption);
-                appendSpecRow(table, 'Thickness', spec.thickness, ' mm');
+                appendSpecCard(grid, 'Capacity', spec.capacity, ' GB');
+                appendSpecCard(grid, 'Form Factor', spec.formFactor);
+                appendSpecCard(grid, 'Interface', spec.interfaceType);
+                appendSpecCard(grid, 'Read Speed', spec.readSpeed, ' MB/s');
+                appendSpecCard(grid, 'Write Speed', spec.writeSpeed, ' MB/s');
+                appendSpecCard(grid, 'Memory Type', spec.memoryType);
+                appendSpecCard(grid, 'Endurance', spec.enduranceTbw, ' TBW');
+                appendSpecCard(grid, 'DRAM Cache', spec.dramCache);
+                appendSpecCard(grid, 'Encryption', spec.encryption);
+                appendSpecCard(grid, 'Thickness', spec.thickness, ' mm');
                 break;
 
             case 9: // Wired Keyboard
-                appendSpecRow(table, 'Layout', spec.layout);
-                appendSpecRow(table, 'Switch Type', spec.switchType);
-                appendSpecRow(table, 'Switch Brand', spec.switchBrand);
-                appendSpecRow(table, 'Switch Model', spec.switchModel);
-                appendSpecRow(table, 'RGB Lighting', spec.rgbLighting);
-                appendSpecRow(table, 'Hot Swappable', spec.hotSwappable);
-                appendSpecRow(table, 'Actuation Force', spec.actuationForce, ' g');
-                appendSpecRow(table, 'Travel Distance', spec.travelDistance, ' mm');
-                appendSpecRow(table, 'Weight', spec.weight, ' g');
-                appendSpecRow(table, 'Cable Length', spec.cableLength, ' m');
-                appendSpecRow(table, 'USB Passthrough', spec.usbPassthrough);
-                appendSpecRow(table, 'Detachable Cable', spec.detachableCable);
+                appendSpecCard(grid, 'Layout', spec.layout);
+                appendSpecCard(grid, 'Switch Type', spec.switchType);
+                appendSpecCard(grid, 'Switch Brand', spec.switchBrand);
+                appendSpecCard(grid, 'Switch Model', spec.switchModel);
+                appendSpecCard(grid, 'RGB Lighting', spec.rgbLighting);
+                appendSpecCard(grid, 'Hot Swappable', spec.hotSwappable);
+                appendSpecCard(grid, 'Actuation Force', spec.actuationForce, ' g');
+                appendSpecCard(grid, 'Travel Distance', spec.travelDistance, ' mm');
+                appendSpecCard(grid, 'Weight', spec.weight, ' g');
+                appendSpecCard(grid, 'Cable Length', spec.cableLength, ' m');
+                appendSpecCard(grid, 'USB Passthrough', spec.usbPassthrough);
+                appendSpecCard(grid, 'Detachable Cable', spec.detachableCable);
                 break;
 
             case 10: // Wireless Keyboard
-                appendSpecRow(table, 'Layout', spec.layout);
-                appendSpecRow(table, 'Switch Type', spec.switchType);
-                appendSpecRow(table, 'Switch Brand', spec.switchBrand);
-                appendSpecRow(table, 'Switch Model', spec.switchModel);
-                appendSpecRow(table, 'Wireless Technology', spec.wirelessTech);
-                appendSpecRow(table, 'RGB Lighting', spec.rgbLighting);
-                appendSpecRow(table, 'Hot Swappable', spec.hotSwappable);
-                appendSpecRow(table, 'Actuation Force', spec.actuationForce, ' g');
-                appendSpecRow(table, 'Travel Distance', spec.travelDistance, ' mm');
-                appendSpecRow(table, 'Weight', spec.weight, ' g');
-                appendSpecRow(table, 'Battery Life', spec.batteryLife, ' hours');
-                appendSpecRow(table, 'Charging Type', spec.chargingType);
-                appendSpecRow(table, 'Multi-device Pairing', spec.multiDevicePairing);
+                appendSpecCard(grid, 'Layout', spec.layout);
+                appendSpecCard(grid, 'Switch Type', spec.switchType);
+                appendSpecCard(grid, 'Switch Brand', spec.switchBrand);
+                appendSpecCard(grid, 'Switch Model', spec.switchModel);
+                appendSpecCard(grid, 'Wireless Technology', spec.wirelessTech);
+                appendSpecCard(grid, 'RGB Lighting', spec.rgbLighting);
+                appendSpecCard(grid, 'Hot Swappable', spec.hotSwappable);
+                appendSpecCard(grid, 'Actuation Force', spec.actuationForce, ' g');
+                appendSpecCard(grid, 'Travel Distance', spec.travelDistance, ' mm');
+                appendSpecCard(grid, 'Weight', spec.weight, ' g');
+                appendSpecCard(grid, 'Battery Life', spec.batteryLife, ' hours');
+                appendSpecCard(grid, 'Charging Type', spec.chargingType);
+                appendSpecCard(grid, 'Multi-device Pairing', spec.multiDevicePairing);
                 break;
 
             case 11: // Wired Mouse
-                appendSpecRow(table, 'Sensor Type', spec.sensorType);
-                appendSpecRow(table, 'Sensor Model', spec.sensorModel);
-                appendSpecRow(table, 'Max DPI', spec.maxDpi);
-                appendSpecRow(table, 'Adjustable DPI', spec.adjustableDpi);
-                appendSpecRow(table, 'Buttons', spec.buttons);
-                appendSpecRow(table, 'Cable Length', spec.cableLength, ' m');
-                appendSpecRow(table, 'Cable Type', spec.cableType);
-                appendSpecRow(table, 'USB Connector', spec.usbConnector);
-                appendSpecRow(table, 'Weight', spec.weight, ' g');
-                appendSpecRow(table, 'RGB Lighting', spec.rgbLighting);
-                appendSpecRow(table, 'Onboard Memory', spec.onboardMemory);
+                appendSpecCard(grid, 'Sensor Type', spec.sensorType);
+                appendSpecCard(grid, 'Sensor Model', spec.sensorModel);
+                appendSpecCard(grid, 'Max DPI', spec.maxDpi);
+                appendSpecCard(grid, 'Adjustable DPI', spec.adjustableDpi);
+                appendSpecCard(grid, 'Buttons', spec.buttons);
+                appendSpecCard(grid, 'Cable Length', spec.cableLength, ' m');
+                appendSpecCard(grid, 'Cable Type', spec.cableType);
+                appendSpecCard(grid, 'USB Connector', spec.usbConnector);
+                appendSpecCard(grid, 'Weight', spec.weight, ' g');
+                appendSpecCard(grid, 'RGB Lighting', spec.rgbLighting);
+                appendSpecCard(grid, 'Onboard Memory', spec.onboardMemory);
                 break;
 
             case 12: // Wireless Mouse
-                appendSpecRow(table, 'Sensor Type', spec.sensorType);
-                appendSpecRow(table, 'Sensor Model', spec.sensorModel);
-                appendSpecRow(table, 'Max DPI', spec.maxDpi);
-                appendSpecRow(table, 'Buttons', spec.buttons);
-                appendSpecRow(table, 'Wireless Technology', spec.wirelessTech);
-                appendSpecRow(table, 'Polling Rate', spec.pollingRate, ' Hz');
-                appendSpecRow(table, 'Weight', spec.weight, ' g');
-                appendSpecRow(table, 'RGB Lighting', spec.rgbLighting);
-                appendSpecRow(table, 'Battery Type', spec.batteryType);
-                appendSpecRow(table, 'Battery Life', spec.batteryLife, ' hours');
-                appendSpecRow(table, 'Standby Battery Life', spec.standbyBatteryLife, ' hours');
-                appendSpecRow(table, 'Charging Time', spec.chargingTime, ' hours');
-                appendSpecRow(table, 'Onboard Memory', spec.onboardMemory);
+                appendSpecCard(grid, 'Sensor Type', spec.sensorType);
+                appendSpecCard(grid, 'Sensor Model', spec.sensorModel);
+                appendSpecCard(grid, 'Max DPI', spec.maxDpi);
+                appendSpecCard(grid, 'Buttons', spec.buttons);
+                appendSpecCard(grid, 'Wireless Technology', spec.wirelessTech);
+                appendSpecCard(grid, 'Polling Rate', spec.pollingRate, ' Hz');
+                appendSpecCard(grid, 'Weight', spec.weight, ' g');
+                appendSpecCard(grid, 'RGB Lighting', spec.rgbLighting);
+                appendSpecCard(grid, 'Battery Type', spec.batteryType);
+                appendSpecCard(grid, 'Battery Life', spec.batteryLife, ' hours');
+                appendSpecCard(grid, 'Standby Battery Life', spec.standbyBatteryLife, ' hours');
+                appendSpecCard(grid, 'Charging Time', spec.chargingTime, ' hours');
+                appendSpecCard(grid, 'Onboard Memory', spec.onboardMemory);
                 break;
 
             default:
                 for (const [key, value] of Object.entries(spec)) {
                     if (value !== null && value !== undefined) {
-                        appendSpecRow(table, key, value);
+                        appendSpecCard(grid, key, value);
                     }
                 }
         }
     }
 
-    function appendSpecRow(table, label, value, suffix = '') {
+    function appendSpecCard(grid, label, value, suffix = '') {
         if (value == null || value === '') return;
 
         let displayValue;
@@ -456,21 +570,20 @@
         }
 
         if (displayValue !== undefined && displayValue !== '') {
-            const row = table.insertRow();
-            row.className = 'border-bottom';
+            const card = document.createElement('div');
+            card.className = 'spec-card';
 
-            const th = document.createElement('th');
-            th.className = 'ps-4 py-3 text-muted';
-            th.style.width = '35%';
-            th.style.minWidth = '200px';
-            th.textContent = formatLabel(label);
+            const labelDiv = document.createElement('div');
+            labelDiv.className = 'spec-label';
+            labelDiv.textContent = formatLabel(label);
 
-            const td = document.createElement('td');
-            td.className = 'pe-4 py-3 fw-medium';
-            td.textContent = displayValue;
+            const valueDiv = document.createElement('div');
+            valueDiv.className = 'spec-value';
+            valueDiv.textContent = displayValue;
 
-            row.appendChild(th);
-            row.appendChild(td);
+            card.appendChild(labelDiv);
+            card.appendChild(valueDiv);
+            grid.appendChild(card);
         }
     }
 
@@ -492,10 +605,10 @@
         const icon = document.getElementById('techSpecsIcon');
 
         if (content.style.display === 'none') {
-            // Show content
-            content.style.display = 'table-row';
+            // Show content - стрелка вверх
+            content.style.display = 'block';
             icon.classList.remove('bi-chevron-down');
-            icon.classList.add('bi-chevron-up', 'rotated');
+            icon.classList.add('bi-chevron-up');
 
             // Always load specifications
             const productId = window.location.pathname.split('/').pop();
@@ -510,9 +623,9 @@
                 }
             }
         } else {
-            // Hide content
+            // Hide content - стрелка вниз
             content.style.display = 'none';
-            icon.classList.remove('bi-chevron-up', 'rotated');
+            icon.classList.remove('bi-chevron-up');
             icon.classList.add('bi-chevron-down');
         }
     }
@@ -538,6 +651,20 @@
                 renderSpecifications(specData, categoryId);
             })
             .catch(() => fallbackToGeneralApi(productId));
+    }
+    
+    // Fallback function for general API
+    function fallbackToGeneralApi(productId) {
+        fetch(`/api/products/${productId}/specifications`)
+            .then(response => response.json())
+            .then(specData => {
+                if (!window.productData) window.productData = {};
+                window.productData.spec = specData;
+                renderSpecifications(specData, window.productData.categoryId);
+            })
+            .catch(error => {
+                console.error('Error loading specifications:', error);
+            });
     }
 </script>
 <script>
@@ -600,21 +727,14 @@
     }
 
     function updateCartButton(isInCart) {
-        const icon = cartBtn.querySelector('i');
         const stockQuantity = parseInt(cartBtn.dataset.stockQuantity);
 
         cartBtn.disabled = isInCart || stockQuantity <= 0;
 
         if (isInCart || stockQuantity <= 0) {
-            cartBtn.classList.remove('btn-primary');
-            cartBtn.classList.add('btn-secondary');
-            icon.classList.remove('bi-cart-plus');
-            icon.classList.add('bi-cart-check');
+            cartBtn.classList.add('btn-cart-disabled');
         } else {
-            cartBtn.classList.remove('btn-secondary');
-            cartBtn.classList.add('btn-primary');
-            icon.classList.remove('bi-cart-check');
-            icon.classList.add('bi-cart-plus');
+            cartBtn.classList.remove('btn-cart-disabled');
         }
     }
 
@@ -694,13 +814,9 @@
         function updateWishlistButton(isInWishlist) {
             const icon = wishlistBtn.querySelector('i');
             if (isInWishlist) {
-                wishlistBtn.classList.remove('btn-outline-secondary');
-                wishlistBtn.classList.add('btn-danger');
                 icon.classList.remove('bi-heart');
                 icon.classList.add('bi-heart-fill');
             } else {
-                wishlistBtn.classList.remove('btn-danger');
-                wishlistBtn.classList.add('btn-outline-secondary');
                 icon.classList.remove('bi-heart-fill');
                 icon.classList.add('bi-heart');
             }
