@@ -397,7 +397,7 @@
                 appendSpecCard(grid, 'Bus Width', spec.busWidth, ' bit');
                 appendSpecCard(grid, 'Base Clock', spec.baseClock, ' MHz');
                 appendSpecCard(grid, 'Boost Clock', spec.boostClock, ' MHz');
-                appendSpecCard(grid, 'TDP', spec.tdp, ' W');
+                appendSpecCard(grid, 'Thermal Design Power', spec.tdp, ' W');
                 appendSpecCard(grid, 'Length', spec.length, ' mm');
                 appendSpecCard(grid, 'Display Outputs', spec.displayOutputs);
                 break;
@@ -409,7 +409,7 @@
                 appendSpecCard(grid, 'Boost Clock', spec.boostClock, ' GHz');
                 appendSpecCard(grid, 'Socket', spec.socket);
                 appendSpecCard(grid, 'Cache Size', spec.cacheSize, ' MB');
-                appendSpecCard(grid, 'TDP', spec.tdp, ' W');
+                appendSpecCard(grid, 'Thermal Design Power', spec.tdp, ' W');
                 appendSpecCard(grid, 'Integrated GPU', spec.integratedGpu);
                 break;
 
@@ -591,7 +591,7 @@
         return label
             .replace(/^./, str => str.toUpperCase())
             .replace(/Id$/i, 'ID')
-            .replace(/Tdp/i, 'TDP')
+            // Сохраняем полное написание, если уже передано
             .replace(/Dpi/i, 'DPI')
             .replace(/Rgb/i, 'RGB')
             .replace(/Usb/i, 'USB')
@@ -689,6 +689,11 @@
                 method: 'POST',
                 credentials: 'include'
             });
+            if (response.status === 401) {
+                const current = window.location.pathname + window.location.search;
+                window.location.href = `/login?redirect=${encodeURIComponent(current)}`;
+                return false;
+            }
             if (!response.ok) {
                 const text = await response.text();
                 throw new Error(text);
@@ -697,10 +702,15 @@
         },
 
         removeFromCart: async (productId) => {
-            await fetch(`/api/shopping-cart/${productId}`, {
+            const response = await fetch(`/api/shopping-cart/${productId}`, {
                 method: 'DELETE',
                 credentials: 'include'
             });
+            if (response.status === 401) {
+                const current = window.location.pathname + window.location.search;
+                window.location.href = `/login?redirect=${encodeURIComponent(current)}`;
+                return false;
+            }
             return true;
         }
     };
@@ -715,9 +725,11 @@
             const isInCart = await cartApi.checkCartStatus(productId);
 
             if (isInCart) {
-                await cartApi.removeFromCart(productId);
+                const ok = await cartApi.removeFromCart(productId);
+                if (ok === false) return; // redirected to login
             } else {
-                await cartApi.addToCart(productId);
+                const ok = await cartApi.addToCart(productId);
+                if (ok === false) return; // redirected to login
             }
 
             updateCartButton(!isInCart);
@@ -774,6 +786,11 @@
                     method: 'POST',
                     credentials: 'include'
                 });
+                if (response.status === 401) {
+                    const current = window.location.pathname + window.location.search;
+                    window.location.href = `/login?redirect=${encodeURIComponent(current)}`;
+                    return false;
+                }
                 if (!response.ok) {
                     const text = await response.text();
                     throw new Error(text);
@@ -782,10 +799,15 @@
             },
 
             removeFromWishlist: async (productId) => {
-                await fetch(`/api/wishlist/${productId}`, {
+                const response = await fetch(`/api/wishlist/${productId}`, {
                     method: 'DELETE',
                     credentials: 'include'
                 });
+                if (response.status === 401) {
+                    const current = window.location.pathname + window.location.search;
+                    window.location.href = `/login?redirect=${encodeURIComponent(current)}`;
+                    return false;
+                }
                 return true;
             }
         };
@@ -795,11 +817,11 @@
                 const isInWishlist = await wishlistApi.checkStatus(productId);
 
                 if (isInWishlist) {
-                    await wishlistApi.removeFromWishlist(productId);
-                    updateWishlistButton(false);
+                    const ok = await wishlistApi.removeFromWishlist(productId);
+                    if (ok !== false) updateWishlistButton(false);
                 } else {
-                    await wishlistApi.addToWishlist(productId);
-                    updateWishlistButton(true);
+                    const ok = await wishlistApi.addToWishlist(productId);
+                    if (ok !== false) updateWishlistButton(true);
                 }
             } catch (error) {
                 alert('Не удалось обновить вишлист: ' + error.message);
