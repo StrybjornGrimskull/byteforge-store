@@ -58,6 +58,25 @@ public class WirelessKeyboardSpecService {
         wirelessKeyboardSpecRepository.save(spec);
     }
 
+    public void updateWirelessKeyboardSpec(Integer productId, WirelessKeyboardSpecDTO dto) {
+        WirelessKeyboardSpec spec = wirelessKeyboardSpecRepository.findByProductId(productId)
+                .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
+        if (dto.layout() != null) spec.setLayout(dto.layout());
+        if (dto.switchType() != null) spec.setSwitchType(dto.switchType());
+        if (dto.switchBrand() != null) spec.setSwitchBrand(dto.switchBrand());
+        if (dto.switchModel() != null) spec.setSwitchModel(dto.switchModel());
+        if (dto.wirelessTech() != null) spec.setWirelessTech(dto.wirelessTech());
+        if (dto.rgbLighting() != null) spec.setRgbLighting(dto.rgbLighting());
+        if (dto.hotSwappable() != null) spec.setHotSwappable(dto.hotSwappable());
+        if (dto.actuationForce() != null) spec.setActuationForce(dto.actuationForce());
+        if (dto.travelDistance() != null) spec.setTravelDistance(dto.travelDistance());
+        if (dto.weight() != null) spec.setWeight(dto.weight());
+        if (dto.batteryLife() != null) spec.setBatteryLife(dto.batteryLife());
+        if (dto.chargingType() != null) spec.setChargingType(dto.chargingType());
+        if (dto.multiDevicePairing() != null) spec.setMultiDevicePairing(dto.multiDevicePairing());
+        wirelessKeyboardSpecRepository.save(spec);
+    }
+
     private Integer parseInt(String value) {
         if (value == null || value.trim().isEmpty()) return null;
         try {

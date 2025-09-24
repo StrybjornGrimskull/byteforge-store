@@ -42,6 +42,18 @@ public class CaseSpecService {
         caseSpecRepository.save(spec);
     }
 
+    public void updateCaseSpec(Integer productId, CaseSpecDTO dto) {
+        CaseSpec spec = caseSpecRepository.findByProductId(productId)
+                .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
+        if (dto.formFactor() != null) spec.setFormFactor(dto.formFactor());
+        if (dto.motherboardSupport() != null) spec.setMotherboardSupport(dto.motherboardSupport());
+        if (dto.maxGpuLength() != null) spec.setMaxGpuLength(dto.maxGpuLength());
+        if (dto.maxCpuCoolerHeight() != null) spec.setMaxCpuCoolerHeight(dto.maxCpuCoolerHeight());
+        if (dto.fansIncluded() != null) spec.setFansIncluded(dto.fansIncluded());
+        if (dto.radiatorSupport() != null) spec.setRadiatorSupport(dto.radiatorSupport());
+        caseSpecRepository.save(spec);
+    }
+
     private Integer parseInt(String value) {
         if (value == null || value.trim().isEmpty()) return null;
         try {

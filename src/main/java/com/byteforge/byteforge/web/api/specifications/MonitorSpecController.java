@@ -2,13 +2,11 @@ package com.byteforge.byteforge.web.api.specifications;
 
 import com.byteforge.byteforge.dto.specifications.MonitorSpecDTO;
 import com.byteforge.byteforge.services.specifications.MonitorSpecService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/specifications/monitor")
@@ -21,5 +19,12 @@ public class MonitorSpecController {
     public ResponseEntity<MonitorSpecDTO> getMonitorSpecByProductId(@PathVariable Integer productId) {
         var monitorSpecDTO = monitorSpecService.getMonitorSpecByProductId(productId);
         return ResponseEntity.status(HttpStatus.OK).body(monitorSpecDTO);
+    }
+
+    @PutMapping("/{productId}")
+    public ResponseEntity<Void> updateMonitorSpec(@PathVariable Integer productId,
+                                                  @Valid @RequestBody MonitorSpecDTO dto) {
+        monitorSpecService.updateMonitorSpec(productId, dto);
+        return ResponseEntity.ok().build();
     }
 } 

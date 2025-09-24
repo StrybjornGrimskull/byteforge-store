@@ -46,6 +46,20 @@ public class GpuSpecService {
         gpuSpecRepository.save(spec);
     }
 
+    public void updateGpuSpec(Integer productId, GpuSpecDTO dto) {
+        GpuSpec spec = gpuSpecRepository.findByProductId(productId)
+                .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
+        if (dto.memorySize() != null) spec.setMemorySize(dto.memorySize());
+        if (dto.memoryType() != null) spec.setMemoryType(dto.memoryType());
+        if (dto.busWidth() != null) spec.setBusWidth(dto.busWidth());
+        if (dto.baseClock() != null) spec.setBaseClock(dto.baseClock());
+        if (dto.boostClock() != null) spec.setBoostClock(dto.boostClock());
+        if (dto.tdp() != null) spec.setTdp(dto.tdp());
+        if (dto.length() != null) spec.setLength(dto.length());
+        if (dto.displayOutputs() != null) spec.setDisplayOutputs(dto.displayOutputs());
+        gpuSpecRepository.save(spec);
+    }
+
     private Integer parseInt(String value) {
         if (value == null || value.trim().isEmpty()) return null;
         try {

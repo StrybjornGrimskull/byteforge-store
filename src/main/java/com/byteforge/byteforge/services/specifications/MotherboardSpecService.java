@@ -46,6 +46,20 @@ public class MotherboardSpecService {
         motherboardSpecRepository.save(spec);
     }
 
+    public void updateMotherboardSpec(Integer productId, MotherboardSpecDTO dto) {
+        MotherboardSpec spec = motherboardSpecRepository.findByProductId(productId)
+                .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
+        if (dto.socket() != null) spec.setSocket(dto.socket());
+        if (dto.chipset() != null) spec.setChipset(dto.chipset());
+        if (dto.formFactor() != null) spec.setFormFactor(dto.formFactor());
+        if (dto.memorySlots() != null) spec.setMemorySlots(dto.memorySlots());
+        if (dto.maxMemory() != null) spec.setMaxMemory(dto.maxMemory());
+        if (dto.memoryType() != null) spec.setMemoryType(dto.memoryType());
+        if (dto.m2Slots() != null) spec.setM2Slots(dto.m2Slots());
+        if (dto.sataPorts() != null) spec.setSataPorts(dto.sataPorts());
+        motherboardSpecRepository.save(spec);
+    }
+
     private Integer parseInt(String value) {
         if (value == null || value.trim().isEmpty()) return null;
         try {

@@ -11,7 +11,7 @@ INSERT INTO case_specs (product_id, form_factor, motherboard_support, max_gpu_le
 (236, 'Test Bench', 'ATX, mATX, Mini-ITX', 400, 150, 0, '360mm (Side)'),
 (237, 'Super-Tower', 'Dual System', 500, 180, 4, '480mm (Front), 360mm (Top)'),
 (238, 'Mid-Tower', 'ATX, mATX, Mini-ITX', 350, 160, 3, '360mm (Top)'),
-(239, 'Full-Tower', 'E-ATX, ATX, mATX, Mini-ITX', 400, 180, 0, '360mm (Bottom)'),
+(239, 'Full-Tower', 'E-ATX, ATX, mATX, Mini-ITX', 400, 180, 9, '360mm (Bottom)'),
 (240, 'Mid-Tower', 'ATX, mATX, Mini-ITX', 370, 160, 2, '360mm (Front)'),
 (241, 'Full-Tower', 'E-ATX, ATX, mATX, Mini-ITX', 400, 190, 0, '360mm (Front/Top)'),
 (242, 'Mid-Tower', 'ATX, mATX, Mini-ITX', 350, 165, 3, '360mm (Front)'),

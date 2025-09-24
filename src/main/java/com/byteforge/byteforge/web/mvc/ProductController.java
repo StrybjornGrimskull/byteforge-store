@@ -36,8 +36,8 @@ public class ProductController {
         model.addAttribute("minPrice", minPrice);
         model.addAttribute("maxPrice", maxPrice);
 
-        // Передаем бренды для выбранной категории
-        model.addAttribute("brands", brandService.getBrandsByCategory(categoryId));
+        // Передаем все бренды
+        model.addAttribute("brands", brandService.getAllBrands());
         model.addAttribute("categories", categoryService.getAllCategories());
 
         return "product-list";

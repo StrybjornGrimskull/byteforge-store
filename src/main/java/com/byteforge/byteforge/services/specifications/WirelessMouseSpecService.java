@@ -58,6 +58,26 @@ public class WirelessMouseSpecService {
         wirelessMouseSpecRepository.save(spec);
     }
 
+    public void updateWirelessMouseSpec(Integer productId, WirelessMouseSpecDTO dto) {
+        WirelessMouseSpec spec = wirelessMouseSpecRepository.findByProductId(productId)
+                .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
+        if (dto.sensorType() != null) spec.setSensorType(dto.sensorType());
+        if (dto.sensorModel() != null) spec.setSensorModel(dto.sensorModel());
+        if (dto.maxDpi() != null) spec.setMaxDpi(dto.maxDpi());
+        if (dto.buttons() != null) spec.setButtons(dto.buttons());
+        if (dto.wirelessTech() != null) spec.setWirelessTech(dto.wirelessTech());
+        if (dto.pollingRate() != null) spec.setPollingRate(dto.pollingRate());
+        if (dto.weight() != null) spec.setWeight(dto.weight());
+        if (dto.rgbLighting() != null) spec.setRgbLighting(dto.rgbLighting());
+        if (dto.batteryType() != null) spec.setBatteryType(dto.batteryType());
+        if (dto.batteryLife() != null) spec.setBatteryLife(dto.batteryLife());
+        if (dto.standbyBatteryLife() != null) spec.setStandbyBatteryLife(dto.standbyBatteryLife());
+        if (dto.chargingTime() != null) spec.setChargingTime(dto.chargingTime());
+        if (dto.onboardMemory() != null) spec.setOnboardMemory(dto.onboardMemory());
+        if (dto.warrantyMonths() != null) spec.setWarrantyMonths(dto.warrantyMonths());
+        wirelessMouseSpecRepository.save(spec);
+    }
+
     private Integer parseInt(String value) {
         if (value == null || value.trim().isEmpty()) return null;
         try {

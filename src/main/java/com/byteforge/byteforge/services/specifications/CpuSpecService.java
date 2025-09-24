@@ -48,6 +48,20 @@ public class CpuSpecService {
         cpuSpecRepository.save(spec);
     }
 
+    public void updateCpuSpec(Integer productId, CpuSpecDTO dto) {
+        CpuSpec spec = cpuSpecRepository.findByProductId(productId)
+                .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
+        if (dto.socket() != null) spec.setSocket(dto.socket());
+        if (dto.cores() != null) spec.setCores(dto.cores());
+        if (dto.threads() != null) spec.setThreads(dto.threads());
+        if (dto.baseClock() != null) spec.setBaseClock(dto.baseClock());
+        if (dto.boostClock() != null) spec.setBoostClock(dto.boostClock());
+        if (dto.cacheSize() != null) spec.setCacheSize(dto.cacheSize());
+        if (dto.tdp() != null) spec.setTdp(dto.tdp());
+        if (dto.integratedGpu() != null) spec.setIntegratedGpu(dto.integratedGpu());
+        cpuSpecRepository.save(spec);
+    }
+
     private Integer parseInt(String value) {
         if (value == null || value.trim().isEmpty()) return null;
         try {

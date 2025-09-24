@@ -2,13 +2,11 @@ package com.byteforge.byteforge.web.api.specifications;
 
 import com.byteforge.byteforge.dto.specifications.MotherboardSpecDTO;
 import com.byteforge.byteforge.services.specifications.MotherboardSpecService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/specifications/motherboard")
@@ -21,5 +19,12 @@ public class MotherboardSpecController {
     public ResponseEntity<MotherboardSpecDTO> getMotherboardSpecByProductId(@PathVariable Integer productId) {
         var motherboardSpecDTO = motherboardSpecService.getMotherboardSpecByProductId(productId);
         return ResponseEntity.status(HttpStatus.OK).body(motherboardSpecDTO);
+    }
+
+    @PutMapping("/{productId}")
+    public ResponseEntity<Void> updateMotherboardSpec(@PathVariable Integer productId,
+                                                      @Valid @RequestBody MotherboardSpecDTO dto) {
+        motherboardSpecService.updateMotherboardSpec(productId, dto);
+        return ResponseEntity.ok().build();
     }
 } 

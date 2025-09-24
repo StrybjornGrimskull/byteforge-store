@@ -33,11 +33,9 @@ public record ProductCreateRequestDto(
     @NotBlank(message = "Short description is required")
     String shortDescription,
     
-    @NotNull(message = "Product image is required")
+    @NotNull(message = "Please select a product image file")
     MultipartFile productImage,
     
-    @NotNull(message = "Stock quantity is required")
-    @Min(value = 0, message = "Stock quantity must be non-negative")
     Integer stockQuantity,
     
     // Спецификации продуктов - все Request DTO для каждого типа

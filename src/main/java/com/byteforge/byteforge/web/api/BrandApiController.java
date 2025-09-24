@@ -27,7 +27,7 @@ public class BrandApiController {
     
     @GetMapping("/by-category")
     public ResponseEntity<List<BrandDto>> getBrandsByCategory(@RequestParam(required = false) Integer categoryId) {
-        List<BrandDto> brands = brandService.getBrandsByCategory(categoryId);
+        List<BrandDto> brands = brandService.getAllBrands();
         return ResponseEntity.status(HttpStatus.OK).body(brands);
     }
     

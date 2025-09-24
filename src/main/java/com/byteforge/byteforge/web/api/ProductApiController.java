@@ -2,6 +2,7 @@ package com.byteforge.byteforge.web.api;
 
 import com.byteforge.byteforge.dto.ProductListDto;
 import com.byteforge.byteforge.dto.request.ProductCreateRequestDto;
+import com.byteforge.byteforge.dto.request.ProductUpdateRequestDto;
 import com.byteforge.byteforge.entities.Product;
 import com.byteforge.byteforge.services.ProductService;
 import jakarta.validation.Valid;
@@ -22,15 +23,10 @@ public class ProductApiController {
     
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> createProduct(@Valid @ModelAttribute ProductCreateRequestDto request) {
-        try {
-            Product product = productService.createProduct(request);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body("Product created successfully with ID: " + product.getId());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                    .body("Error: " + e.getMessage());
-        }
+    public ResponseEntity<String> createProduct(@Valid @ModelAttribute ProductCreateRequestDto request) {
+        Product product = productService.createProduct(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("Product created successfully with ID: " + product.getId());
     }
     
     @GetMapping("/lazy")
@@ -47,5 +43,13 @@ public class ProductApiController {
                 lastId, categoryId, brandId, minPrice, maxPrice, name, limit);
         
         return ResponseEntity.ok(products);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','PRODUCT_MANAGER')")
+    public ResponseEntity<Void> updateProduct(@PathVariable Integer id,
+                                           @Valid @ModelAttribute ProductUpdateRequestDto request) {
+        productService.updateProduct(id, request);
+        return ResponseEntity.ok().build();
     }
 }

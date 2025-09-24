@@ -52,6 +52,22 @@ public class SsdSpecService {
         ssdSpecRepository.save(spec);
     }
 
+    public void updateSsdSpec(Integer productId, SsdSpecDTO dto) {
+        SsdSpec spec = ssdSpecRepository.findByProductId(productId)
+                .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
+        if (dto.capacity() != null) spec.setCapacity(dto.capacity());
+        if (dto.formFactor() != null) spec.setFormFactor(dto.formFactor());
+        if (dto.interfaceType() != null) spec.setInterfaceType(dto.interfaceType());
+        if (dto.readSpeed() != null) spec.setReadSpeed(dto.readSpeed());
+        if (dto.writeSpeed() != null) spec.setWriteSpeed(dto.writeSpeed());
+        if (dto.memoryType() != null) spec.setMemoryType(dto.memoryType());
+        if (dto.enduranceTbw() != null) spec.setEnduranceTbw(dto.enduranceTbw());
+        if (dto.dramCache() != null) spec.setDramCache(dto.dramCache());
+        if (dto.encryption() != null) spec.setEncryption(dto.encryption());
+        if (dto.thickness() != null) spec.setThickness(dto.thickness());
+        ssdSpecRepository.save(spec);
+    }
+
     private Integer parseInt(String value) {
         if (value == null || value.trim().isEmpty()) return null;
         try {

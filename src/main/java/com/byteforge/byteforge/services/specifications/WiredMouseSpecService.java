@@ -54,6 +54,24 @@ public class WiredMouseSpecService {
         wiredMouseSpecRepository.save(spec);
     }
 
+    public void updateWiredMouseSpec(Integer productId, WiredMouseSpecDTO dto) {
+        WiredMouseSpec spec = wiredMouseSpecRepository.findByProductId(productId)
+                .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
+        if (dto.sensorType() != null) spec.setSensorType(dto.sensorType());
+        if (dto.sensorModel() != null) spec.setSensorModel(dto.sensorModel());
+        if (dto.maxDpi() != null) spec.setMaxDpi(dto.maxDpi());
+        if (dto.adjustableDpi() != null) spec.setAdjustableDpi(dto.adjustableDpi());
+        if (dto.buttons() != null) spec.setButtons(dto.buttons());
+        if (dto.cableLength() != null) spec.setCableLength(dto.cableLength());
+        if (dto.cableType() != null) spec.setCableType(dto.cableType());
+        if (dto.usbConnector() != null) spec.setUsbConnector(dto.usbConnector());
+        if (dto.weight() != null) spec.setWeight(dto.weight());
+        if (dto.rgbLighting() != null) spec.setRgbLighting(dto.rgbLighting());
+        if (dto.onboardMemory() != null) spec.setOnboardMemory(dto.onboardMemory());
+        if (dto.warrantyMonths() != null) spec.setWarrantyMonths(dto.warrantyMonths());
+        wiredMouseSpecRepository.save(spec);
+    }
+
     private Integer parseInt(String value) {
         if (value == null || value.trim().isEmpty()) return null;
         try {

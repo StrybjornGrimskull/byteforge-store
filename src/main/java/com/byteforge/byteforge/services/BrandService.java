@@ -32,12 +32,6 @@ public class BrandService {
         return brandRepository.findAllBrandDtosOrderedByName();
     }
 
-    // Получить бренды по категории (с проекцией DTO)
-    @Transactional(readOnly = true)
-    public List<BrandDto> getBrandsByCategory(Integer categoryId) {
-        return brandRepository.findBrandDtosByProductsCategoryId(categoryId);
-    }
-
     @Transactional
     public void createBrand(BrandCreateRequestDto request) {
         try {

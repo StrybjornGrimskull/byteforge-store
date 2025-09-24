@@ -42,6 +42,18 @@ public class PsuSpecService {
         psuSpecRepository.save(spec);
     }
 
+    public void updatePsuSpec(Integer productId, PsuSpecDTO dto) {
+        PsuSpec spec = psuSpecRepository.findByProductId(productId)
+                .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
+        if (dto.wattage() != null) spec.setWattage(dto.wattage());
+        if (dto.formFactor() != null) spec.setFormFactor(dto.formFactor());
+        if (dto.efficiencyCert() != null) spec.setEfficiencyCert(dto.efficiencyCert());
+        if (dto.modularity() != null) spec.setModularity(dto.modularity());
+        if (dto.pcie8pinConnectors() != null) spec.setPcie8pinConnectors(dto.pcie8pinConnectors());
+        if (dto.sataConnectors() != null) spec.setSataConnectors(dto.sataConnectors());
+        psuSpecRepository.save(spec);
+    }
+
     private Integer parseInt(String value) {
         if (value == null || value.trim().isEmpty()) return null;
         try {

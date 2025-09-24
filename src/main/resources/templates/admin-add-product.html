@@ -168,9 +168,9 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="stockQuantity" class="form-label fw-semibold">Stock Quantity *</label>
+                        <label for="stockQuantity" class="form-label fw-semibold">Stock Quantity</label>
                         <input type="number" class="form-control" id="stockQuantity" name="stockQuantity" 
-                               placeholder="10" min="0" required>
+                               placeholder="10" min="0">
                         <div class="invalid-feedback">
                             Please provide stock quantity.
                         </div>
@@ -198,11 +198,11 @@
             <div class="row">
                 <div class="col-12">
                     <div class="form-group">
-                        <label for="productImage" class="form-label fw-semibold">Product Image *</label>
+                        <label for="productImage" class="form-label fw-semibold">Product Image</label>
                         <input type="file" class="form-control" id="productImage" name="productImage" 
-                               accept=".webp,image/webp" required>
+                               accept=".webp,image/webp">
                         <div class="invalid-feedback">
-                            Please select a product image.
+                            Please select a product image file.
                         </div>
                         <div class="form-text">
                             Supported format: WebP only. Max size: 5MB
@@ -312,6 +312,30 @@
             loadBrands();
             
             // Add category change listener
+            // Add event listeners to clear validation errors when user starts typing/selecting
+            const basicFields = [
+                'productName', 'productCategory', 'productBrand', 'originalPrice', 
+                'warrantyMonths', 'releaseYear', 'shortDescription', 'productImage'
+            ];
+            
+            basicFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', clearFieldError);
+                    field.addEventListener('change', clearFieldError);
+                }
+            });
+            
+            // Function to clear validation error for a specific field
+            function clearFieldError(event) {
+                const field = event.target;
+                field.classList.remove('is-invalid');
+                const errorDiv = field.parentNode.querySelector('.invalid-feedback');
+                if (errorDiv) {
+                    errorDiv.textContent = '';
+                }
+            }
+            
             categorySelect.addEventListener('change', function() {
                 showSpecificationsForCategory(this.value);
             });
@@ -546,6 +570,18 @@
                 default:
                     console.log('No specific specifications for category:', categoryName);
             }
+            
+            // Add event listeners to clear validation errors for specification fields
+            setTimeout(() => {
+                const visibleSpecSection = getVisibleSpecificationSection();
+                if (visibleSpecSection) {
+                    const specInputs = visibleSpecSection.querySelectorAll('input, select, textarea');
+                    specInputs.forEach(input => {
+                        input.addEventListener('input', clearFieldError);
+                        input.addEventListener('change', clearFieldError);
+                    });
+                }
+            }, 100);
         }
         
         // Hide all specification sections
@@ -586,6 +622,9 @@
             productForm.addEventListener('submit', function(event) {
                 event.preventDefault();
                 
+                // Очищаем предыдущие ошибки валидации
+                clearValidationErrors();
+                
                 const formData = new FormData();
                 
                 // Основные поля продукта
@@ -595,9 +634,20 @@
                 formData.append('originalPrice', document.getElementById('originalPrice').value);
                 formData.append('warrantyMonths', document.getElementById('warrantyMonths').value);
                 formData.append('releaseYear', document.getElementById('releaseYear').value);
-                formData.append('stockQuantity', document.getElementById('stockQuantity').value);
+                
+                // Добавляем stockQuantity только если заполнено
+                const stockQuantity = document.getElementById('stockQuantity').value;
+                if (stockQuantity && stockQuantity.trim() !== '') {
+                    formData.append('stockQuantity', stockQuantity);
+                }
+                
                 formData.append('shortDescription', document.getElementById('shortDescription').value);
-                formData.append('productImage', document.getElementById('productImage').files[0]);
+                
+                // Добавляем productImage только если выбрано
+                const productImageInput = document.getElementById('productImage');
+                if (productImageInput.files.length > 0) {
+                    formData.append('productImage', productImageInput.files[0]);
+                }
                 
                 // Собираем все поля спецификаций из видимой секции
                 const visibleSpecSection = getVisibleSpecificationSection();
@@ -605,7 +655,7 @@
                     const specType = getSpecTypeFromSection(visibleSpecSection);
                     const specInputs = visibleSpecSection.querySelectorAll('input, select, textarea');
                     specInputs.forEach(input => {
-                        if (input.name && input.value.trim() !== '') {
+                        if (input.name) {
                             formData.append(`${specType}.${input.name}`, input.value.trim());
                         }
                     });
@@ -617,15 +667,84 @@
                     method: 'POST',
                     body: formData
                 })
-                .then(response => response.text())
+                .then(response => {
+                    if (!response.ok) {
+                        // Пытаемся получить JSON ошибки
+                        return response.text().then(text => {
+                            try {
+                                const errors = JSON.parse(text);
+                                throw new Error(JSON.stringify(errors));
+                            } catch {
+                                // Если не JSON, то это обычная текстовая ошибка
+                                throw new Error(text);
+                            }
+                        });
+                    }
+                    return response.text();
+                })
                 .then(data => {
                     alert(data);
                     window.location.href = '/admin/dashboard/products';
                 })
                 .catch(error => {
-                    alert('Error: ' + error.message);
+                    try {
+                        const errors = JSON.parse(error.message);
+                        if (Array.isArray(errors)) {
+                            showValidationErrors(errors);
+                        } else {
+                            alert('Error: ' + error.message);
+                        }
+                    } catch {
+                        alert('Error: ' + error.message);
+                    }
                 });
             });
+            
+            // Функция для отображения ошибок валидации под полями
+            function showValidationErrors(errors) {
+                // Сначала очищаем все предыдущие ошибки
+                clearValidationErrors();
+                
+                errors.forEach(error => {
+                    const field = error.field;
+                    const message = error.message || 'Invalid value';
+                    
+                    // Ищем поле по имени
+                    let input = document.querySelector(`[name="${field}"]`);
+                    
+                    // Если не найдено, ищем по ID
+                    if (!input) {
+                        input = document.getElementById(field);
+                    }
+                    
+                    // Если поле найдено, показываем ошибку
+                    if (input) {
+                        input.classList.add('is-invalid');
+                        
+                        // Находим или создаем div для ошибки
+                        let errorDiv = input.parentNode.querySelector('.invalid-feedback');
+                        if (!errorDiv) {
+                            errorDiv = document.createElement('div');
+                            errorDiv.className = 'invalid-feedback';
+                            input.parentNode.appendChild(errorDiv);
+                        }
+                        errorDiv.textContent = message;
+                    }
+                });
+            }
+            
+            // Функция для очистки ошибок валидации
+            function clearValidationErrors() {
+                const inputs = document.querySelectorAll('.is-invalid');
+                inputs.forEach(input => {
+                    input.classList.remove('is-invalid');
+                });
+                
+                const errorDivs = document.querySelectorAll('.invalid-feedback');
+                errorDivs.forEach(div => {
+                    div.textContent = '';
+                });
+            }
             
             // Функция для получения видимой секции спецификаций
             function getVisibleSpecificationSection() {

@@ -42,6 +42,17 @@ public class MonitorSpecService {
         monitorSpecRepository.save(spec);
     }
 
+    public void updateMonitorSpec(Integer productId, MonitorSpecDTO dto) {
+        MonitorSpec spec = monitorSpecRepository.findByProductId(productId)
+                .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
+        if (dto.screenSize() != null) spec.setScreenSize(dto.screenSize());
+        if (dto.resolution() != null) spec.setResolution(dto.resolution());
+        if (dto.panelType() != null) spec.setPanelType(dto.panelType());
+        if (dto.refreshRate() != null) spec.setRefreshRate(dto.refreshRate());
+        if (dto.responseTime() != null) spec.setResponseTime(dto.responseTime());
+        monitorSpecRepository.save(spec);
+    }
+
     private Integer parseInt(String value) {
         if (value == null || value.trim().isEmpty()) return null;
         try {

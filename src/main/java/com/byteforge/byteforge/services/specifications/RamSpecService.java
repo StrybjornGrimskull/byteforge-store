@@ -44,6 +44,18 @@ public class RamSpecService {
         ramSpecRepository.save(spec);
     }
 
+    public void updateRamSpec(Integer productId, RamSpecDTO dto) {
+        RamSpec spec = ramSpecRepository.findByProductId(productId)
+                .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
+        if (dto.memorySize() != null) spec.setMemorySize(dto.memorySize());
+        if (dto.modulesCount() != null) spec.setModulesCount(dto.modulesCount());
+        if (dto.speed() != null) spec.setSpeed(dto.speed());
+        if (dto.type() != null) spec.setType(dto.type());
+        if (dto.timings() != null) spec.setTimings(dto.timings());
+        if (dto.voltage() != null) spec.setVoltage(dto.voltage());
+        ramSpecRepository.save(spec);
+    }
+
     private Integer parseInt(String value) {
         if (value == null || value.trim().isEmpty()) return null;
         try {

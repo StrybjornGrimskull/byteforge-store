@@ -51,14 +51,22 @@
             font-weight: 500;
         }
         
-        .btn-cart:hover {
-            background-color: white;
-            color: #333;
-        }
         
         .btn-cart:disabled {
             background-color: rgba(255, 255, 255, 0.5);
             color: #666;
+        }
+        
+        /* Remove hover effects for cart button */
+        .btn-cart:hover,
+        .btn-cart:focus,
+        .btn-cart:active,
+        .btn-cart:focus-visible,
+        .btn-cart:active:focus {
+            background-color: rgba(255, 255, 255, 0.9) !important;
+            color: #333 !important;
+            border: none !important;
+            box-shadow: none !important;
         }
         
         /* Современные карточки спецификаций */
@@ -87,15 +95,6 @@
             transition: opacity 0.3s ease;
         }
         
-        .spec-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-        
-        .spec-card:hover::before {
-            opacity: 1;
-        }
         
         .spec-label {
             font-size: 0.9rem;
@@ -181,10 +180,6 @@
             color: white !important;
         }
         
-        .tech-specs-button:hover {
-            text-decoration: none !important;
-            color: white !important;
-        }
         
         #techSpecsIcon {
             transition: transform 0.3s ease;
@@ -382,9 +377,18 @@
       <div class="modal-body">
         <form id="editProductForm">
           <div class="row g-3">
+            <div class="col-md-12">
+              <label class="form-label" for="editImage">Product image (WebP)</label>
+              <input type="file" accept="image/webp" class="form-control" id="editImage">
+              <div class="form-text">Загрузите .webp — файл будет сохранён в /uploads</div>
+              <div class="mt-2">
+                <img id="editImagePreview" src="" alt="Preview" style="max-width: 220px; max-height: 160px; display:none; border-radius:6px;"/>
+              </div>
+            </div>
             <div class="col-md-8">
               <label class="form-label" for="editName">Name</label>
               <input type="text" class="form-control" id="editName">
+              <div class="invalid-feedback" id="err-editName"></div>
             </div>
             <div class="col-md-4">
               <label class="form-label" for="editPrice">Price (€)</label>
@@ -393,26 +397,42 @@
             <div class="col-md-4">
               <label class="form-label" for="editOriginalPrice">Original price (€)</label>
               <input type="number" step="0.01" class="form-control" id="editOriginalPrice">
+              <div class="invalid-feedback" id="err-editOriginalPrice"></div>
             </div>
             <div class="col-md-4">
               <label class="form-label" for="editDiscountPercentage">Discount (%)</label>
               <input type="number" step="1" min="0" max="100" class="form-control" id="editDiscountPercentage">
+              <div class="invalid-feedback" id="err-editDiscountPercentage"></div>
             </div>
             <div class="col-md-12">
               <label class="form-label" for="editShortDescription">Short description</label>
               <textarea class="form-control" id="editShortDescription" rows="3"></textarea>
+              <div class="invalid-feedback" id="err-editShortDescription"></div>
             </div>
             <div class="col-md-4">
               <label class="form-label" for="editStockQuantity">Stock quantity</label>
               <input type="number" class="form-control" id="editStockQuantity">
+              <div class="invalid-feedback" id="err-editStockQuantity"></div>
             </div>
             <div class="col-md-4">
-              <label class="form-label" for="editCategory">Category</label>
-              <input type="text" class="form-control" id="editCategory" disabled>
+              <label class="form-label" for="editCategoryId">Category</label>
+              <select id="editCategoryId" class="form-select"></select>
+              <div class="invalid-feedback" id="err-editCategoryId"></div>
             </div>
             <div class="col-md-4">
-              <label class="form-label" for="editBrand">Brand</label>
-              <input type="text" class="form-control" id="editBrand" disabled>
+              <label class="form-label" for="editBrandId">Brand</label>
+              <select id="editBrandId" class="form-select"></select>
+              <div class="invalid-feedback" id="err-editBrandId"></div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="editReleaseYear">Release year</label>
+              <input type="number" min="1990" max="2030" class="form-control" id="editReleaseYear">
+              <div class="invalid-feedback" id="err-editReleaseYear"></div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="editWarrantyMonths">Warranty (months)</label>
+              <input type="number" min="1" max="120" class="form-control" id="editWarrantyMonths">
+              <div class="invalid-feedback" id="err-editWarrantyMonths"></div>
             </div>
           </div>
 
@@ -424,12 +444,13 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <!-- Save can be wired later -->
-        <button type="button" class="btn btn-primary" id="saveEditBtn" disabled>Save</button>
+        <button type="button" class="btn btn-primary" id="saveEditBtn">Save</button>
       </div>
     </div>
   </div>
   </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script th:inline="javascript">
     // Инициализируем глобальную переменную с данными о продукте
@@ -748,30 +769,34 @@
     }
 
     function updateCalculatedPrice(){
-        const original = parseFloat(document.getElementById('editOriginalPrice').value);
-        let discount = parseFloat(document.getElementById('editDiscountPercentage').value);
+        const original = parseFloat($('#editOriginalPrice').val());
+        let discount = parseFloat($('#editDiscountPercentage').val());
         discount = clamp(discount, 0, 100);
         if (!isNaN(discount)) {
-            document.getElementById('editDiscountPercentage').value = String(Math.round(discount));
+            $('#editDiscountPercentage').val(String(Math.round(discount)));
         }
         if (isNaN(original)) {
-            document.getElementById('editPrice').value = '';
+            $('#editPrice').val('');
             return;
         }
         const price = original * (1 - (isNaN(discount) ? 0 : discount) / 100);
-        document.getElementById('editPrice').value = toMoney(price);
+        $('#editPrice').val(toMoney(price));
     }
 
     function prefillEditModal() {
         const p = window.productData || {};
-        document.getElementById('editName').value = p.name || '';
-        document.getElementById('editPrice').value = (p.price ?? '')
-        document.getElementById('editOriginalPrice').value = (p.originalPrice ?? '')
-        document.getElementById('editDiscountPercentage').value = (p.discountPercentage ?? '')
-        document.getElementById('editShortDescription').value = p.shortDescription || '';
-        document.getElementById('editStockQuantity').value = p.stockQuantity ?? '';
-        document.getElementById('editCategory').value = p.categoryName || '';
-        document.getElementById('editBrand').value = p.brandName || '';
+        $('#editName').val(p.name || '');
+        $('#editPrice').val(p.price ?? '');
+        $('#editOriginalPrice').val(p.originalPrice ?? '');
+        $('#editDiscountPercentage').val(p.discountPercentage ?? '');
+        $('#editShortDescription').val(p.shortDescription || '');
+        $('#editStockQuantity').val(p.stockQuantity ?? '');
+        $('#editReleaseYear').val(p.releaseYear || '');
+        $('#editWarrantyMonths').val(p.warrantyMonths || '');
+        $('#editImageUrl').val(p.imageUrl || '');
+        
+        // Populate Category and Brand selects (derive IDs from productData)
+        populateCategoriesAndBrands();
 
         // Calculate current price from original and discount
         updateCalculatedPrice();
@@ -816,9 +841,31 @@
             const val = Array.isArray(value) ? value.join(', ') : (value ?? '');
             const block = document.createElement('div');
             block.className = 'col-md-6';
+            const inputId = `spec_${key}`.replace(/[^a-zA-Z0-9_-]/g, '_');
+            let inputHtml = '';
+            if (typeof value === 'boolean') {
+                const checked = value ? 'checked' : '';
+                inputHtml = `
+                    <div class="form-check mt-1">
+                        <input id="${inputId}" type="checkbox" class="form-check-input" ${checked}>
+                        <label class="form-check-label" for="${inputId}">Enabled</label>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                `;
+            } else if (typeof value === 'number') {
+                inputHtml = `
+                    <input id="${inputId}" type="number" step="0.01" class="form-control" value="${String(value)}">
+                    <div class="invalid-feedback"></div>
+                `;
+            } else {
+                inputHtml = `
+                    <input id="${inputId}" type="text" class="form-control" value="${String(val)}">
+                    <div class="invalid-feedback"></div>
+                `;
+            }
             block.innerHTML = `
-                <label class="form-label">${pretty}</label>
-                <input type="text" class="form-control" value="${String(val)}" disabled>
+                <label class="form-label" for="${inputId}">${pretty}</label>
+                ${inputHtml}
             `;
             container.appendChild(block);
         }
@@ -833,7 +880,233 @@
         const discountEl = document.getElementById('editDiscountPercentage');
         if (originalEl) originalEl.addEventListener('input', updateCalculatedPrice);
         if (discountEl) discountEl.addEventListener('input', updateCalculatedPrice);
+        const saveBtn = document.getElementById('saveEditBtn');
+        if (saveBtn) saveBtn.addEventListener('click', handleSaveEdit);
     });
+
+    async function handleSaveEdit(){
+        const productId = getProductId();
+        const formData = buildFormData();
+        
+        const prodRes = await updateProduct(productId, formData);
+        if (!prodRes.ok) {
+            await handleProductError(prodRes);
+            return;
+        }
+
+        await updateSpecs(productId);
+        closeModalAndReload();
+    }
+
+    function getProductId() {
+        const p = window.productData || {};
+        return p.id || window.location.pathname.split('/').pop();
+    }
+
+    function buildFormData() {
+        const formData = new FormData();
+        const p = window.productData || {};
+        
+        formData.append('name', $('#editName').val() || '');
+        formData.append('shortDescription', $('#editShortDescription').val() || '');
+        formData.append('stockQuantity', String(parseInt($('#editStockQuantity').val() || '0', 10)));
+        formData.append('releaseYear', String(parseInt($('#editReleaseYear').val() || '0', 10)));
+        formData.append('warrantyMonths', String(parseInt($('#editWarrantyMonths').val() || '0', 10)));
+        
+        const op = parseNumber($('#editOriginalPrice').val());
+        if (op != null) formData.append('originalPrice', String(op));
+        formData.append('discountPercentage', String(parseInt($('#editDiscountPercentage').val() || '0', 10)));
+        
+        const imageInput = $('#editImage')[0];
+        if (imageInput && imageInput.files && imageInput.files[0]) {
+            formData.append('productImage', imageInput.files[0]);
+        }
+        
+        formData.append('categoryId', String(parseInt($('#editCategoryId').val() || p.categoryId, 10)));
+        formData.append('brandId', String(parseInt($('#editBrandId').val() || p.brandId, 10)));
+        
+        return formData;
+    }
+
+    async function updateProduct(productId, formData) {
+        return await fetch(`/api/products/${productId}`, {
+            method: 'PUT',
+            credentials: 'include',
+            body: formData
+        });
+    }
+
+    async function handleProductError(prodRes) {
+        resetErrors();
+        
+        try {
+            const errors = await prodRes.json();
+            if (Array.isArray(errors)) {
+                showErrors(errors);
+                return;
+            }
+        } catch {
+            // fall through
+        }
+        
+        const text = await prodRes.text();
+        alert('Failed to save product: ' + text);
+    }
+
+    function resetErrors() {
+        const errIds = ['editName','editOriginalPrice','editDiscountPercentage','editShortDescription','editStockQuantity','editCategoryId','editBrandId','editReleaseYear','editWarrantyMonths'];
+        errIds.forEach(id => { 
+            $('#' + id).removeClass('is-invalid'); 
+            $('#err-' + id).text(''); 
+        });
+    }
+
+    function showErrors(errors) {
+        const map = {
+            name: 'editName',
+            originalPrice: 'editOriginalPrice',
+            discountPercentage: 'editDiscountPercentage',
+            shortDescription: 'editShortDescription',
+            stockQuantity: 'editStockQuantity',
+            categoryId: 'editCategoryId',
+            brandId: 'editBrandId',
+            releaseYear: 'editReleaseYear',
+            warrantyMonths: 'editWarrantyMonths'
+        };
+        
+        errors.forEach(e => {
+            const inputId = map[e.field];
+            if (inputId) {
+                $('#' + inputId).addClass('is-invalid');
+                $('#err-' + inputId).text(e.message || 'Invalid value');
+            }
+        });
+    }
+
+    async function updateSpecs(productId) {
+        const p = window.productData || {};
+        const categoryId = parseInt($('#editCategoryId').val() || p.categoryId, 10);
+        const specType = getSpecType(categoryId);
+        
+        if (!specType) return;
+        
+        const specPayload = collectSpecFormValues();
+        const specRes = await fetch(`/api/specifications/${specType}/${productId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(specPayload)
+        });
+        
+        if (!specRes.ok) {
+            await handleSpecError(specRes);
+        }
+    }
+
+    async function handleSpecError(specRes) {
+        resetSpecErrors();
+        
+        try {
+            const errors = await specRes.json();
+            if (Array.isArray(errors)) {
+                showSpecErrors(errors);
+                return;
+            }
+        } catch {
+            // fall through
+        }
+        
+        const text = await specRes.text();
+        alert('Failed to save specifications: ' + text);
+    }
+
+    function resetSpecErrors() {
+        const $specContainer = $('#editSpecsContainer');
+        $specContainer.find('input').removeClass('is-invalid');
+        $specContainer.find('.invalid-feedback').text('');
+    }
+
+    function showSpecErrors(errors) {
+        errors.forEach(e => {
+            const inputId = `spec_${e.field}`.replace(/[^a-zA-Z0-9_-]/g, '_');
+            if (inputId) {
+                $('#' + inputId).addClass('is-invalid');
+                $('#err-' + inputId).text(e.message || 'Invalid value');
+            }
+        });
+    }
+
+    function closeModalAndReload() {
+        $('#editProductModal').modal('hide');
+        setTimeout(() => { window.location.reload(); }, 1000);
+    }
+
+
+    function parseNumber(v){
+        const n = parseFloat(v);
+        return isNaN(n) ? null : n;
+    }
+
+    function collectSpecFormValues(){
+        const container = document.getElementById('editSpecsContainer');
+        const inputs = container.querySelectorAll('input');
+        const result = {};
+        inputs.forEach(inp => {
+            const key = inp.id.replace(/^spec_/, '');
+            if (inp.type === 'checkbox') {
+                result[key] = inp.checked;
+            } else if (inp.type === 'number') {
+                const n = parseFloat(inp.value);
+                if (!isNaN(n)) result[key] = n; else result[key] = null;
+            } else {
+                result[key] = inp.value;
+            }
+        });
+        return result;
+    }
+
+    async function populateCategoriesAndBrands(){
+        const p = window.productData || {};
+        const [cats, brands] = await Promise.all([
+            $.get('/api/categories').catch(()=>[]),
+            $.get('/api/brands').catch(()=>[])
+        ]);
+        
+        populateSelect('#editCategoryId', cats, p.categoryId, p.categoryName);
+        populateSelect('#editBrandId', brands, p.brandId, p.brandName);
+    }
+
+    function populateSelect(selector, items, selectedId, selectedName) {
+        const $sel = $(selector);
+        if (!$sel.length) return;
+        
+        $sel.empty();
+        items.forEach(item => {
+            $sel.append($('<option>').val(item.id).text(item.name));
+        });
+        
+        // Try to select by ID first
+        if (selectedId && $sel.find(`option[value="${selectedId}"]`).length) {
+            $sel.val(selectedId);
+            return;
+        }
+        
+        // Try to select by name
+        if (selectedName) {
+            const match = $sel.find('option').filter((i, el) => 
+                $(el).text().toLowerCase() === selectedName.toLowerCase()
+            );
+            if (match.length) {
+                $sel.val(match.val());
+                return;
+            }
+        }
+        
+        // Select first item
+        if (items.length > 0) {
+            $sel.val(items[0].id);
+        }
+    }
 </script>
 <script>
     // Cart functionality

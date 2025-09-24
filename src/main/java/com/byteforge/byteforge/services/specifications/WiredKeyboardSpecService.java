@@ -56,6 +56,24 @@ public class WiredKeyboardSpecService {
         wiredKeyboardSpecRepository.save(spec);
     }
 
+    public void updateWiredKeyboardSpec(Integer productId, WiredKeyboardSpecDTO dto) {
+        WiredKeyboardSpec spec = wiredKeyboardSpecRepository.findByProductId(productId)
+                .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
+        if (dto.layout() != null) spec.setLayout(dto.layout());
+        if (dto.switchType() != null) spec.setSwitchType(dto.switchType());
+        if (dto.switchBrand() != null) spec.setSwitchBrand(dto.switchBrand());
+        if (dto.switchModel() != null) spec.setSwitchModel(dto.switchModel());
+        if (dto.rgbLighting() != null) spec.setRgbLighting(dto.rgbLighting());
+        if (dto.hotSwappable() != null) spec.setHotSwappable(dto.hotSwappable());
+        if (dto.actuationForce() != null) spec.setActuationForce(dto.actuationForce());
+        if (dto.travelDistance() != null) spec.setTravelDistance(dto.travelDistance());
+        if (dto.weight() != null) spec.setWeight(dto.weight());
+        if (dto.cableLength() != null) spec.setCableLength(dto.cableLength());
+        if (dto.usbPassthrough() != null) spec.setUsbPassthrough(dto.usbPassthrough());
+        if (dto.detachableCable() != null) spec.setDetachableCable(dto.detachableCable());
+        wiredKeyboardSpecRepository.save(spec);
+    }
+
     private Integer parseInt(String value) {
         if (value == null || value.trim().isEmpty()) return null;
         try {
