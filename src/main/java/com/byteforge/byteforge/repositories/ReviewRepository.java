@@ -1,5 +1,6 @@
 package com.byteforge.byteforge.repositories;
 
+import com.byteforge.byteforge.dto.response.ReviewDto;
 import com.byteforge.byteforge.dto.response.ReviewModerationDto;
 import com.byteforge.byteforge.entities.Customer;
 import com.byteforge.byteforge.entities.Product;
@@ -17,11 +18,20 @@ import java.util.Optional;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    List<Review> findByProductAndActiveTrue(Product product);
-
-    List<Review> findByCustomer(Customer customer);
-
     Optional<Review> findByProductAndCustomer(Product product, Customer customer);
+
+    // DTO методы для оптимизации
+    @Query("SELECT new com.byteforge.byteforge.dto.response.ReviewDto(" +
+           "r.id, r.userFirstName, r.rating, r.text, r.createdAt, r.active) " +
+           "FROM Review r " +
+           "WHERE r.product.id = :productId AND r.active = true")
+    List<ReviewDto> findActiveReviewDtosByProductId(@Param("productId") Integer productId);
+
+    @Query("SELECT new com.byteforge.byteforge.dto.response.ReviewDto(" +
+           "r.id, r.userFirstName, r.rating, r.text, r.createdAt, r.active) " +
+           "FROM Review r " +
+           "WHERE r.product.id = :productId AND r.customer.id = :customerId")
+    Optional<ReviewDto> findReviewDtoByProductAndCustomer(@Param("productId") Integer productId, @Param("customerId") Integer customerId);
 
     @Query("SELECT AVG(r.rating) FROM Review r WHERE r.product.id = :productId AND r.active = true")
     Double findAverageRatingByProductId(@Param("productId") Integer productId);
@@ -29,7 +39,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT COUNT(r) FROM Review r WHERE r.product.id = :productId AND r.active = true")
     long countByProductIdAndActiveTrue(@Param("productId") Integer productId);
 
-    boolean existsByProductAndCustomer(Product product, Customer customer);
 
     // Методы для модерации отзывов
     @Query("SELECT new com.byteforge.byteforge.dto.response.ReviewModerationDto(" +

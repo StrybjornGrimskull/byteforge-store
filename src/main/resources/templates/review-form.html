@@ -173,25 +173,21 @@
             })
             .then(response => {
                 if (!response.ok) {
-                    return response.json().then(err => {
-                        throw new Error(err.message || 'Error submitting review');
+                    return response.text().then(err => {
+                        throw new Error(err || 'Error submitting review');
                     });
                 }
-                return response.json();
+                return response.text();
             })
-            .then(data => {
-                // Show success message
+            .then(message => {
+                // Show success message briefly
                 successMessage.classList.remove('d-none');
-                form.reset();
-                form.classList.remove('was-validated');
-                
-                // Scroll to success message
                 successMessage.scrollIntoView({ behavior: 'smooth' });
                 
-                // Hide success message after 5 seconds
+                // Redirect to my-orders page after 2 seconds
                 setTimeout(() => {
-                    successMessage.classList.add('d-none');
-                }, 5000);
+                    window.location.href = '/reviews/my-orders';
+                }, 2000);
             })
             .catch(error => {
                 // Show error message

@@ -1,5 +1,6 @@
 package com.byteforge.byteforge.web.api;
 
+import com.byteforge.byteforge.dto.response.ReviewDto;
 import com.byteforge.byteforge.dto.response.ReviewModerationDto;
 import com.byteforge.byteforge.entities.Review;
 import com.byteforge.byteforge.services.ReviewService;
@@ -21,16 +22,16 @@ public class ReviewApiController {
     private final ReviewService reviewService;
 
     @PostMapping
-    public ResponseEntity<Review> createReview(
+    public ResponseEntity<String> createReview(
             @RequestBody Review review,
             Authentication authentication) {
-             Review savedReview = reviewService.createReview(authentication.getName(), review.getProduct().getId(), review);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedReview);
+             reviewService.createReview(authentication.getName(), review.getProduct().getId(), review);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Review submitted successfully");
            }
 
     @GetMapping("/product/{productId}")
-    public ResponseEntity<List<Review>> getProductReviews(@PathVariable Integer productId) {
-        List<Review> reviews = reviewService.getActiveReviewsByProductId(productId);
+    public ResponseEntity<List<ReviewDto>> getProductReviews(@PathVariable Integer productId) {
+        List<ReviewDto> reviews = reviewService.getActiveReviewsByProductId(productId);
         return ResponseEntity.ok(reviews);
     }
 

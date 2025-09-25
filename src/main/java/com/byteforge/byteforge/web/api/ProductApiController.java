@@ -3,6 +3,7 @@ package com.byteforge.byteforge.web.api;
 import com.byteforge.byteforge.dto.ProductListDto;
 import com.byteforge.byteforge.dto.request.ProductCreateRequestDto;
 import com.byteforge.byteforge.dto.request.ProductUpdateRequestDto;
+import com.byteforge.byteforge.dto.response.ProductResponseDto;
 import com.byteforge.byteforge.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,12 @@ public class ProductApiController {
                 lastId, categoryId, brandId, minPrice, maxPrice, name, limit);
         
         return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Integer id) {
+        ProductResponseDto product = productService.getProductById(id);
+        return ResponseEntity.ok(product);
     }
 
     @PutMapping("/{id}")

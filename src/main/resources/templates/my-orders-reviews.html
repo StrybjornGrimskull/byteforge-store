@@ -71,34 +71,43 @@
 
     <div class="container">
         <!-- Если есть товары для отзыва -->
-        <div th:if="${products != null and !products.isEmpty()}" class="card shadow-sm mb-4">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Product Name</th>
-                                <th class="text-end">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="product : ${products}">
-                                <td class="align-middle fw-medium" th:text="${product.name}"></td>
-                                <td class="text-end">
-                                    <span th:if="${!reviewedProductIds.contains(product.id)}">
-                                        <a class="btn btn-primary btn-sm" th:href="@{'/reviews/create/' + ${product.id}}">
-                                            <i class="bi bi-chat-dots me-1"></i>Leave a Review
-                                        </a>
-                                    </span>
-                                    <span th:if="${reviewedProductIds.contains(product.id)}">
-                                        <span class="badge bg-secondary">
-                                            <i class="bi bi-check-circle me-1"></i>Reviewed
+        <div th:if="${products != null and !products.isEmpty()}" class="row g-4">
+            <div th:each="product : ${products}" class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h2 class="card-title fw-bold h5" th:text="${product.name}" th:if="${product.name != null and !#strings.isEmpty(product.name)}">Product Name</h2>
+                        <h2 class="card-title fw-bold h5" th:unless="${product.name != null and !#strings.isEmpty(product.name)}">Product</h2>
+                        
+                        <!-- Если отзыв уже оставлен -->
+                        <div th:if="${reviewedProductIds.contains(product.id)}" th:with="review=${userReviews[product.id]}">
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="rating me-2">
+                                        <span th:each="i : ${#numbers.sequence(1, 5)}">
+                                            <i th:class="${i <= review.rating} ? 'bi bi-star-fill text-warning' : 'bi bi-star text-muted'"></i>
                                         </span>
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    </div>
+                                    <small class="text-muted" th:text="${#temporals.format(review.createdAt, 'dd.MM.yyyy')}"></small>
+                                </div>
+                                <p class="card-text text-muted small" th:text="${review.text}"></p>
+                            </div>
+                            <div class="text-center">
+                                <span class="badge bg-success fs-6">
+                                    <i class="bi bi-check-circle me-1"></i>Reviewed
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Если отзыв не оставлен -->
+                        <div th:if="${!reviewedProductIds.contains(product.id)}">
+                            <p class="card-text text-muted">No review yet</p>
+                            <div class="text-center">
+                                <a class="btn btn-primary" th:href="@{'/reviews/create/' + ${product.id}}">
+                                    <i class="bi bi-chat-dots me-1"></i>Leave a Review
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -108,7 +117,7 @@
             <div class="card shadow-sm">
                 <div class="card-body p-5">
                     <i class="bi bi-bag-x display-1 text-muted mb-3"></i>
-                    <h3 class="text-muted mb-3">No Products to Review</h3>
+                    <h2 class="text-muted mb-3">No Products to Review</h2>
                     <p class="text-muted mb-4">
                         You haven't purchased any products yet. Start shopping to leave reviews for your purchases!
                     </p>

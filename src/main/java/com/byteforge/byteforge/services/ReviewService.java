@@ -1,6 +1,8 @@
 package com.byteforge.byteforge.services;
 
 import com.byteforge.byteforge.constants.ApplicationConstants;
+import com.byteforge.byteforge.dto.response.ProductResponseDto;
+import com.byteforge.byteforge.dto.response.ReviewDto;
 import com.byteforge.byteforge.dto.response.ReviewModerationDto;
 import com.byteforge.byteforge.entities.Customer;
 import com.byteforge.byteforge.entities.Product;
@@ -36,15 +38,20 @@ public class ReviewService {
         List<Product> products = productRepository.findAllById(uniqueProductIds);
 
         Set<Integer> reviewedProductIds = new HashSet<>();
+        Map<Integer, Review> userReviews = new HashMap<>();
+        
         for (Product product : products) {
-            if (reviewRepository.existsByProductAndCustomer(product, customer)) {
+            Optional<Review> existingReview = reviewRepository.findByProductAndCustomer(product, customer);
+            if (existingReview.isPresent()) {
                 reviewedProductIds.add(product.getId());
+                userReviews.put(product.getId(), existingReview.get());
             }
         }
 
         model.put("products", products);
         model.put("customer", customer);
         model.put("reviewedProductIds", reviewedProductIds);
+        model.put("userReviews", userReviews);
         return model;
     }
 
@@ -52,22 +59,20 @@ public class ReviewService {
     public boolean canCustomerReviewProduct(String email, Integer productId) {
         Customer customer = customerRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException(ApplicationConstants.CUSTOMER_NOT_FOUND));
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException(ApplicationConstants.PRODUCT_NOT_FOUND));
-
-        // Check if customer has purchased the product (убираем дублирование)
+        
+        // Check if customer has purchased the product
         List<Integer> uniquePurchasedProductIds = orderProductRepository.findUniqueProductIdsByCustomerId(customer.getId());
         boolean hasPurchased = uniquePurchasedProductIds.contains(productId);
+        
         // Check if customer already reviewed the product
-        boolean hasReviewed = reviewRepository.findByProductAndCustomer(product, customer).isPresent();
+        boolean hasReviewed = reviewRepository.findReviewDtoByProductAndCustomer(productId, customer.getId()).isPresent();
 
         return hasPurchased && !hasReviewed;
     }
 
     @Transactional(readOnly = true)
-    public Product getProductById(Integer productId) {
-        return productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException(ApplicationConstants.PRODUCT_NOT_FOUND));
+    public ProductResponseDto getProductBasicInfo(Integer productId) {
+        return productRepository.findProductResponseDtoById(productId);
     }
 
     @Transactional
@@ -87,42 +92,10 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<Review> getActiveReviewsByProductId(Integer productId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException(ApplicationConstants.PRODUCT_NOT_FOUND));
-        return reviewRepository.findByProductAndActiveTrue(product);
+    public List<ReviewDto> getActiveReviewsByProductId(Integer productId) {
+        return reviewRepository.findActiveReviewDtosByProductId(productId);
     }
 
-    @Transactional(readOnly = true)
-    public List<Review> getActiveReviewsByProduct(Product product) {
-        return reviewRepository.findByProductAndActiveTrue(product);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Review> getReviewsByCustomer(Customer customer) {
-        return reviewRepository.findByCustomer(customer);
-    }
-
-    @Transactional
-    public Review createReview(Review review) {
-        // Check if user already reviewed this product
-        if (reviewRepository.findByProductAndCustomer(review.getProduct(), review.getCustomer()).isPresent()) {
-            throw new IllegalStateException("User already reviewed this product");
-        }
-        return reviewRepository.save(review);
-    }
-
-    @Transactional(readOnly = true)
-    public Set<Integer> getReviewedProductIds(List<Product> products, Customer customer) {
-        Set<Integer> reviewedIds = new HashSet<>();
-        for (Product product : products) {
-            boolean reviewed = reviewRepository.existsByProductAndCustomer(product, customer);
-            if (reviewed) {
-                reviewedIds.add(product.getId());
-            }
-        }
-        return reviewedIds;
-    }
 
     @Transactional(readOnly = true)
     public Double getAverageRatingByProductId(Integer productId) {

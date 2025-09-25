@@ -25,17 +25,15 @@ public class ReviewController {
     // Страница: форма создания отзыва
     @GetMapping("/create/{productId}")
     public String createReviewForm(@PathVariable Integer productId, Model model, Authentication authentication) {
-            model.addAttribute("product", reviewService.getProductById(productId));
+            model.addAttribute("product", reviewService.getProductBasicInfo(productId));
             model.addAttribute("productId", productId);
             return "review-form";
     }
 
-    // Страница: отзывы по продукту
+    // Страница: отзывы по продукту (теперь загружается через API)
     @GetMapping("/product/{productId}")
     public String productReviews(@PathVariable Integer productId, Model model) {
-        model.addAttribute("product", reviewService.getProductById(productId));
         model.addAttribute("productId", productId);
-        model.addAttribute("reviews", reviewService.getActiveReviewsByProductId(productId));
         return "product-reviews";
     }
 }
