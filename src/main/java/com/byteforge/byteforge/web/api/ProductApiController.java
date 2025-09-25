@@ -3,7 +3,6 @@ package com.byteforge.byteforge.web.api;
 import com.byteforge.byteforge.dto.ProductListDto;
 import com.byteforge.byteforge.dto.request.ProductCreateRequestDto;
 import com.byteforge.byteforge.dto.request.ProductUpdateRequestDto;
-import com.byteforge.byteforge.entities.Product;
 import com.byteforge.byteforge.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +22,9 @@ public class ProductApiController {
     
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> createProduct(@Valid @ModelAttribute ProductCreateRequestDto request) {
-        Product product = productService.createProduct(request);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body("Product created successfully with ID: " + product.getId());
+    public ResponseEntity<Void> createProduct(@Valid @ModelAttribute ProductCreateRequestDto request) {
+        productService.createProduct(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     
     @GetMapping("/lazy")

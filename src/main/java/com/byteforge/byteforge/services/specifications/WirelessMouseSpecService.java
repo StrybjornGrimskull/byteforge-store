@@ -29,8 +29,7 @@ public class WirelessMouseSpecService {
                         spec.getBatteryLife(),
                         spec.getStandbyBatteryLife(),
                         spec.getChargingTime(),
-                        spec.getOnboardMemory(),
-                        spec.getWarrantyMonths()
+                        spec.getOnboardMemory()
                 ))
                 .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
     }
@@ -47,13 +46,12 @@ public class WirelessMouseSpecService {
         spec.setWirelessTech(request.wirelessMouseSpec().wirelessTech());
         spec.setPollingRate(parseInt(request.wirelessMouseSpec().pollingRate()));
         spec.setWeight(parseInt(request.wirelessMouseSpec().weight()));
-        spec.setRgbLighting(Boolean.parseBoolean(request.wirelessMouseSpec().rgbLightingMouse()));
+        spec.setRgbLighting(Boolean.parseBoolean(request.wirelessMouseSpec().rgbLighting()));
         spec.setBatteryType(request.wirelessMouseSpec().batteryType());
         spec.setBatteryLife(parseInt(request.wirelessMouseSpec().batteryLife()));
         spec.setStandbyBatteryLife(parseInt(request.wirelessMouseSpec().standbyBatteryLife()));
         spec.setChargingTime(parseInt(request.wirelessMouseSpec().chargingTime()));
         spec.setOnboardMemory(Boolean.parseBoolean(request.wirelessMouseSpec().onboardMemory()));
-        spec.setWarrantyMonths(parseInt(request.wirelessMouseSpec().pollingRate()));
         
         wirelessMouseSpecRepository.save(spec);
     }
@@ -74,7 +72,6 @@ public class WirelessMouseSpecService {
         if (dto.standbyBatteryLife() != null) spec.setStandbyBatteryLife(dto.standbyBatteryLife());
         if (dto.chargingTime() != null) spec.setChargingTime(dto.chargingTime());
         if (dto.onboardMemory() != null) spec.setOnboardMemory(dto.onboardMemory());
-        if (dto.warrantyMonths() != null) spec.setWarrantyMonths(dto.warrantyMonths());
         wirelessMouseSpecRepository.save(spec);
     }
 

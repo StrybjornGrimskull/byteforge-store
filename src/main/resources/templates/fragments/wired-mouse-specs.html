@@ -14,8 +14,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="wiredMouseSensorType" class="form-label fw-semibold">Sensor Type *</label>
-                <input type="text" class="form-control" id="wiredMouseSensorType" name="wiredMouseSensorType" 
-                       placeholder="Optical, Laser" required>
+                <input type="text" class="form-control" id="wiredMouseSensorType" name="wiredMouseSpec.sensorType" 
+                       placeholder="Optical, Laser">
                 <div class="invalid-feedback">
                     Please provide sensor type.
                 </div>
@@ -25,8 +25,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="wiredMouseSensorModel" class="form-label fw-semibold">Sensor Model *</label>
-                <input type="text" class="form-control" id="wiredMouseSensorModel" name="wiredMouseSensorModel" 
-                       placeholder="PAW3370, Hero 25K" required>
+                <input type="text" class="form-control" id="wiredMouseSensorModel" name="wiredMouseSpec.sensorModel" 
+                       placeholder="PAW3370, Hero 25K">
                 <div class="invalid-feedback">
                     Please provide sensor model.
                 </div>
@@ -38,8 +38,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="wiredMouseMaxDpi" class="form-label fw-semibold">Max DPI *</label>
-                <input type="number" class="form-control" id="wiredMouseMaxDpi" name="wiredMouseMaxDpi" 
-                       placeholder="25000" min="1" required>
+                <input type="number" class="form-control" id="wiredMouseMaxDpi" name="wiredMouseSpec.maxDpi" 
+                       placeholder="25000" min="1">
                 <div class="invalid-feedback">
                     Please provide maximum DPI.
                 </div>
@@ -49,8 +49,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="wiredMouseButtons" class="form-label fw-semibold">Number of Buttons *</label>
-                <input type="number" class="form-control" id="wiredMouseButtons" name="wiredMouseButtons" 
-                       placeholder="6" min="1" required>
+                <input type="number" class="form-control" id="wiredMouseButtons" name="wiredMouseSpec.buttons" 
+                       placeholder="6" min="1">
                 <div class="invalid-feedback">
                     Please provide number of buttons.
                 </div>
@@ -62,8 +62,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="wiredMouseCableLength" class="form-label fw-semibold">Cable Length (cm) *</label>
-                <input type="number" class="form-control" id="wiredMouseCableLength" name="wiredMouseCableLength" 
-                       placeholder="200" min="0" required>
+                <input type="number" class="form-control" id="wiredMouseCableLength" name="wiredMouseSpec.cableLength" 
+                       placeholder="200" min="0">
                 <div class="invalid-feedback">
                     Please provide cable length.
                 </div>
@@ -73,7 +73,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="wiredMouseCableType" class="form-label fw-semibold">Cable Type *</label>
-                <select class="form-select" id="wiredMouseCableType" name="wiredMouseCableType" required>
+                <select class="form-select" id="wiredMouseCableType" name="wiredMouseSpec.cableType">
                     <option value="">Select cable type</option>
                     <option value="Paracord">Paracord</option>
                     <option value="Braided">Braided</option>
@@ -91,7 +91,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="wiredMouseUsbConnector" class="form-label fw-semibold">USB Connector *</label>
-                <select class="form-select" id="wiredMouseUsbConnector" name="wiredMouseUsbConnector" required>
+                <select class="form-select" id="wiredMouseUsbConnector" name="wiredMouseSpec.usbConnector">
                     <option value="">Select USB connector</option>
                     <option value="USB-A">USB-A</option>
                     <option value="USB-C">USB-C</option>
@@ -106,23 +106,10 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="wiredMouseWeight" class="form-label fw-semibold">Weight (g) *</label>
-                <input type="number" class="form-control" id="wiredMouseWeight" name="wiredMouseWeight" 
-                       placeholder="69" min="0" required>
+                <input type="number" class="form-control" id="wiredMouseWeight" name="wiredMouseSpec.weight" 
+                       placeholder="69" min="0">
                 <div class="invalid-feedback">
                     Please provide weight.
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="wiredMouseWarrantyMonths" class="form-label fw-semibold">Warranty (months) *</label>
-                <input type="number" class="form-control" id="wiredMouseWarrantyMonths" name="wiredMouseWarrantyMonths" 
-                       placeholder="24" min="0" required>
-                <div class="invalid-feedback">
-                    Please provide warranty period.
                 </div>
             </div>
         </div>
@@ -132,7 +119,7 @@
         <div class="col-md-4">
             <div class="form-group">
                 <div class="form-check mt-4">
-                    <input class="form-check-input" type="checkbox" id="wiredMouseAdjustableDpi" name="wiredMouseAdjustableDpi">
+                    <input class="form-check-input" type="checkbox" id="wiredMouseAdjustableDpi" name="wiredMouseSpec.adjustableDpi">
                     <label class="form-check-label" for="wiredMouseAdjustableDpi">
                         Adjustable DPI
                     </label>
@@ -143,7 +130,7 @@
         <div class="col-md-4">
             <div class="form-group">
                 <div class="form-check mt-4">
-                    <input class="form-check-input" type="checkbox" id="wiredMouseRgbLighting" name="wiredMouseRgbLighting">
+                    <input class="form-check-input" type="checkbox" id="wiredMouseRgbLighting" name="wiredMouseSpec.rgbLighting">
                     <label class="form-check-label" for="wiredMouseRgbLighting">
                         RGB Lighting
                     </label>
@@ -154,7 +141,7 @@
         <div class="col-md-4">
             <div class="form-group">
                 <div class="form-check mt-4">
-                    <input class="form-check-input" type="checkbox" id="wiredMouseOnboardMemory" name="wiredMouseOnboardMemory">
+                    <input class="form-check-input" type="checkbox" id="wiredMouseOnboardMemory" name="wiredMouseSpec.onboardMemory">
                     <label class="form-check-label" for="wiredMouseOnboardMemory">
                         Onboard Memory
                     </label>

@@ -1,6 +1,7 @@
 package com.byteforge.byteforge.dto.request;
 
 import com.byteforge.byteforge.dto.request.specifications.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,16 +40,16 @@ public record ProductCreateRequestDto(
     Integer stockQuantity,
     
     // Спецификации продуктов - все Request DTO для каждого типа
-    CaseSpecRequestDto caseSpec,
-    CpuSpecRequestDto cpuSpec,
-    GpuSpecRequestDto gpuSpec,
-    MonitorSpecRequestDto monitorSpec,
-    MotherboardSpecRequestDto motherboardSpec,
-    PsuSpecRequestDto psuSpec,
-    RamSpecRequestDto ramSpec,
-    SsdSpecRequestDto ssdSpec,
-    WiredKeyboardSpecRequestDto wiredKeyboardSpec,
-    WirelessKeyboardSpecRequestDto wirelessKeyboardSpec,
-    WiredMouseSpecRequestDto wiredMouseSpec,
-    WirelessMouseSpecRequestDto wirelessMouseSpec
+    @Valid CaseSpecRequestDto caseSpec,
+    @Valid CpuSpecRequestDto cpuSpec,
+    @Valid GpuSpecRequestDto gpuSpec,
+    @Valid MonitorSpecRequestDto monitorSpec,
+    @Valid MotherboardSpecRequestDto motherboardSpec,
+    @Valid PsuSpecRequestDto psuSpec,
+    @Valid RamSpecRequestDto ramSpec,
+    @Valid SsdSpecRequestDto ssdSpec,
+    @Valid WiredKeyboardSpecRequestDto wiredKeyboardSpec,
+    @Valid WirelessKeyboardSpecRequestDto wirelessKeyboardSpec,
+    @Valid WiredMouseSpecRequestDto wiredMouseSpec,
+    @Valid WirelessMouseSpecRequestDto wirelessMouseSpec
 ) {}

@@ -130,8 +130,7 @@ CREATE TABLE wireless_mice_specs (
     battery_life INT NOT NULL,                      -- 70 (hours) в активном режиме
     standby_battery_life INT NOT NULL,              -- 300 (hours) в режиме ожидания
     charging_time INT NOT NULL,                     -- 2 (hours) время зарядки
-    onboard_memory BOOLEAN DEFAULT FALSE,                -- Наличие памяти для профилей
-    warranty_months INT NOT NULL                    -- 24 (месяцев гарантии)
+    onboard_memory BOOLEAN DEFAULT FALSE                -- Наличие памяти для профилей
 );
 
 CREATE TABLE wired_mice_specs (
@@ -146,8 +145,7 @@ CREATE TABLE wired_mice_specs (
     usb_connector VARCHAR(20) NOT NULL,             -- "USB-A", "USB-C", "Micro-USB"
     weight INT NOT NULL,                            -- 85 (грамм)
     rgb_lighting BOOLEAN DEFAULT FALSE,                  -- TRUE/FALSE
-    onboard_memory BOOLEAN DEFAULT FALSE,                -- TRUE/FALSE (память для профилей)
-    warranty_months INT NOT NULL                    -- 24 (месяцев)
+    onboard_memory BOOLEAN DEFAULT FALSE                -- TRUE/FALSE (память для профилей)
 );
 
 CREATE TABLE wireless_keyboards_spec (

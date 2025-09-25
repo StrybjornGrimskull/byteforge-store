@@ -62,7 +62,4 @@ public class WirelessMouseSpec {
     Integer chargingTime;
 
     Boolean onboardMemory = false;
-
-    @Column(nullable = false)
-    Integer warrantyMonths;
 }

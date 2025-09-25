@@ -85,7 +85,7 @@ public class OrderService {
 
         // 8. Отправка письма с подтверждением заказа
         List<String> productNames = orderProducts.stream()
-                .map(op -> op.getProduct().getName())
+                .map(op -> op.getProduct().getName() + " x" + op.getQuantity())
                 .toList();
         emailService.sendOrderConfirmationEmail(
                 order.getEmail(),

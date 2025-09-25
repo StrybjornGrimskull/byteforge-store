@@ -55,7 +55,4 @@ public class WiredMouseSpec {
     private Boolean rgbLighting = false;
 
     private Boolean onboardMemory = false;
-
-    @Column(nullable = false)
-    private Integer warrantyMonths;
 }

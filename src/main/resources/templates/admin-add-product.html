@@ -81,8 +81,9 @@
             </h2>
             <p class="text-muted mb-0">Fill in the details to create a new product</p>
         </div>
+        <div id="formGeneralError" class="alert alert-danger" style="display: none;"></div>
         
-        <form id="productForm" class="needs-validation" novalidate>
+        <form id="productForm" novalidate>
             <!-- Basic Information -->
             <h4 class="fw-semibold mb-3 text-secondary">Basic Information</h4>
             
@@ -326,16 +327,6 @@
                 }
             });
             
-            // Function to clear validation error for a specific field
-            function clearFieldError(event) {
-                const field = event.target;
-                field.classList.remove('is-invalid');
-                const errorDiv = field.parentNode.querySelector('.invalid-feedback');
-                if (errorDiv) {
-                    errorDiv.textContent = '';
-                }
-            }
-            
             categorySelect.addEventListener('change', function() {
                 showSpecificationsForCategory(this.value);
             });
@@ -345,14 +336,28 @@
             const imagePreview = document.getElementById('imagePreview');
             const imagePreviewRow = document.getElementById('imagePreviewRow');
             
-            if (imageInput && imagePreview && imagePreviewRow) {
+                if (imageInput && imagePreview && imagePreviewRow) {
                 imageInput.addEventListener('change', function(event) {
                     const file = event.target.files[0];
+                    
+                    // Очищаем ошибки при выборе файла
+                    this.classList.remove('is-invalid');
+                    const errorDiv = this.parentNode.querySelector('.invalid-feedback');
+                    if (errorDiv) {
+                        errorDiv.textContent = '';
+                    }
                     
                     if (file) {
                         // Validate file size (5MB max)
                         if (file.size > 5 * 1024 * 1024) {
-                            alert('File size must be less than 5MB');
+                            this.classList.add('is-invalid');
+                            let errorDiv = this.parentNode.querySelector('.invalid-feedback');
+                            if (!errorDiv) {
+                                errorDiv = document.createElement('div');
+                                errorDiv.className = 'invalid-feedback';
+                                this.parentNode.appendChild(errorDiv);
+                            }
+                            errorDiv.textContent = 'File size must be less than 5MB';
                             this.value = '';
                             imagePreviewRow.style.display = 'none';
                             return;
@@ -360,7 +365,14 @@
                         
                         // Validate file type - only WebP
                         if (file.type !== 'image/webp') {
-                            alert('Please select a WebP image file only');
+                            this.classList.add('is-invalid');
+                            let errorDiv = this.parentNode.querySelector('.invalid-feedback');
+                            if (!errorDiv) {
+                                errorDiv = document.createElement('div');
+                                errorDiv.className = 'invalid-feedback';
+                                this.parentNode.appendChild(errorDiv);
+                            }
+                            errorDiv.textContent = 'Please select a WebP image file only';
                             this.value = '';
                             imagePreviewRow.style.display = 'none';
                             return;
@@ -381,26 +393,59 @@
             
         });
         
+        // Function to clear validation error for a specific field (глобальная область видимости)
+        function clearFieldError(event) {
+            const field = event.target;
+            field.classList.remove('is-invalid');
+            const errorDiv = field.parentNode.querySelector('.invalid-feedback');
+            if (errorDiv) {
+                errorDiv.textContent = '';
+            }
+        }
+        
+        // Функция для получения видимой секции спецификаций (глобальная область видимости)
+        function getVisibleSpecificationSection() {
+            const specSections = [
+                'caseSpecsSection',
+                'cpuSpecsSection',
+                'gpuSpecsSection',
+                'motherboardSpecsSection',
+                'monitorSpecsSection',
+                'ssdSpecsSection',
+                'psuSpecsSection',
+                'ramSpecsSection',
+                'wiredKeyboardSpecsSection',
+                'wirelessKeyboardSpecsSection',
+                'wiredMouseSpecsSection',
+                'wirelessMouseSpecsSection'
+            ];
+            
+            for (const sectionId of specSections) {
+                const section = document.getElementById(sectionId);
+                if (section && section.style.display !== 'none') {
+                    return section;
+                }
+            }
+            
+            return null;
+        }
+        
         // Load categories from API
         function loadCategories() {
-            console.log('Starting to load categories...');
             showSpinner(categorySpinner);
             
             fetch('/api/categories')
                 .then(response => {
-                    console.log('Categories response status:', response.status);
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     return response.json();
                 })
                 .then(categories => {
-                    console.log('Successfully loaded categories:', categories);
                     populateSelect(categorySelect, categories, 'name');
                     hideSpinner(categorySpinner);
                 })
                 .catch(error => {
-                    console.error('Failed to load categories:', error);
                     showError(categorySelect, 'Failed to load categories: ' + error.message);
                     hideSpinner(categorySpinner);
                 });
@@ -408,24 +453,20 @@
         
         // Load brands from API
         function loadBrands() {
-            console.log('Starting to load brands...');
             showSpinner(brandSpinner);
             
             fetch('/api/brands')
                 .then(response => {
-                    console.log('Brands response status:', response.status);
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     return response.json();
                 })
                 .then(brands => {
-                    console.log('Successfully loaded brands:', brands);
                     populateSelect(brandSelect, brands, 'name');
                     hideSpinner(brandSpinner);
                 })
                 .catch(error => {
-                    console.error('Failed to load brands:', error);
                     showError(brandSelect, 'Failed to load brands: ' + error.message);
                     hideSpinner(brandSpinner);
                 });
@@ -444,8 +485,6 @@
                 option.textContent = item[nameField];
                 selectElement.appendChild(option);
             });
-            
-            console.log(`Populated ${selectElement.id} with ${dataArray.length} options`);
         }
         
         // Show error state in select element
@@ -488,87 +527,69 @@
             const categoryOption = categorySelect.querySelector(`option[value="${categoryId}"]`);
             const categoryName = categoryOption ? categoryOption.textContent : '';
             
-            console.log('Selected category ID:', categoryId);
-            console.log('Selected category name:', categoryName);
-            console.log('Category name lowercase:', categoryName.toLowerCase());
-            
             // Show specifications based on category
             switch (categoryName.toLowerCase()) {
                 case 'pc cases':
                 case 'case':
                     document.getElementById('caseSpecsSection').style.display = 'block';
-                    console.log('Showing case specifications');
                     break;
                 case 'central processing unit':
                 case 'cpu':
                 case 'processor':
                     document.getElementById('cpuSpecsSection').style.display = 'block';
-                    console.log('Showing CPU specifications');
                     break;
                 case 'graphics cards':
                 case 'gpu':
                 case 'graphics card':
                 case 'video card':
                     document.getElementById('gpuSpecsSection').style.display = 'block';
-                    console.log('Showing GPU specifications');
                     break;
                 case 'motherboards':
                 case 'motherboard':
                 case 'mainboard':
                     document.getElementById('motherboardSpecsSection').style.display = 'block';
-                    console.log('Showing motherboard specifications');
                     break;
                 case 'monitors':
                 case 'monitor':
                 case 'display':
                     document.getElementById('monitorSpecsSection').style.display = 'block';
-                    console.log('Showing monitor specifications');
                     break;
                 case 'solid state drives':
                 case 'ssd':
                 case 'solid state drive':
                 case 'storage':
                     document.getElementById('ssdSpecsSection').style.display = 'block';
-                    console.log('Showing SSD specifications');
                     break;
                 case 'power supplies':
                 case 'psu':
                 case 'power supply':
                 case 'power supply unit':
                     document.getElementById('psuSpecsSection').style.display = 'block';
-                    console.log('Showing PSU specifications');
                     break;
                 case 'memory':
                 case 'ram':
                 case 'random access memory':
                 case 'memory modules':
                     document.getElementById('ramSpecsSection').style.display = 'block';
-                    console.log('Showing RAM specifications');
                     break;
                 case 'wired keyboards':
                 case 'wired keyboard':
                 case 'keyboard':
                     document.getElementById('wiredKeyboardSpecsSection').style.display = 'block';
-                    console.log('Showing wired keyboard specifications');
                     break;
                 case 'wireless keyboards':
                 case 'wireless keyboard':
                     document.getElementById('wirelessKeyboardSpecsSection').style.display = 'block';
-                    console.log('Showing wireless keyboard specifications');
                     break;
                 case 'wired mice':
                 case 'wired mouse':
                 case 'mouse':
                     document.getElementById('wiredMouseSpecsSection').style.display = 'block';
-                    console.log('Showing wired mouse specifications');
                     break;
                 case 'wireless mice':
                 case 'wireless mouse':
                     document.getElementById('wirelessMouseSpecsSection').style.display = 'block';
-                    console.log('Showing wireless mouse specifications');
                     break;
-                default:
-                    console.log('No specific specifications for category:', categoryName);
             }
             
             // Add event listeners to clear validation errors for specification fields
@@ -610,14 +631,6 @@
         }
         
         if (productForm) {
-            productForm.addEventListener('submit', function(event) {
-                if (!productForm.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                productForm.classList.add('was-validated');
-            });
-            
             // Form submission handler
             productForm.addEventListener('submit', function(event) {
                 event.preventDefault();
@@ -652,11 +665,10 @@
                 // Собираем все поля спецификаций из видимой секции
                 const visibleSpecSection = getVisibleSpecificationSection();
                 if (visibleSpecSection) {
-                    const specType = getSpecTypeFromSection(visibleSpecSection);
                     const specInputs = visibleSpecSection.querySelectorAll('input, select, textarea');
                     specInputs.forEach(input => {
                         if (input.name) {
-                            formData.append(`${specType}.${input.name}`, input.value.trim());
+                            formData.append(input.name, input.value.trim());
                         }
                     });
                 }
@@ -673,44 +685,60 @@
                         return response.text().then(text => {
                             try {
                                 const errors = JSON.parse(text);
-                                throw new Error(JSON.stringify(errors));
+                                return Promise.reject(new Error(JSON.stringify(errors)));
                             } catch {
                                 // Если не JSON, то это обычная текстовая ошибка
-                                throw new Error(text);
+                                return Promise.reject(new Error(text));
                             }
                         });
                     }
                     return response.text();
                 })
-                .then(data => {
-                    alert(data);
+                .then(() => {
+                    // Success: redirect without alert
                     window.location.href = '/admin/dashboard/products';
                 })
                 .catch(error => {
+                    hideGeneralError();
                     try {
                         const errors = JSON.parse(error.message);
                         if (Array.isArray(errors)) {
                             showValidationErrors(errors);
+                        } else if (errors && errors.message) {
+                            showGeneralError(errors.message);
                         } else {
-                            alert('Error: ' + error.message);
+                            showGeneralError(String(error.message || 'Unexpected error'));
                         }
                     } catch {
-                        alert('Error: ' + error.message);
+                        showGeneralError(String(error.message || 'Unexpected error'));
                     }
                 });
             });
             
-            // Функция для отображения ошибок валидации под полями
+            /**
+             * @param {Array<{field: string, message: string}>} errors
+             */
             function showValidationErrors(errors) {
                 // Сначала очищаем все предыдущие ошибки
                 clearValidationErrors();
                 
+                console.log('Validation errors received:', errors);
+                
                 errors.forEach(error => {
-                    const field = error.field;
-                    const message = error.message || 'Invalid value';
+                    if (!error || typeof error !== 'object') return;
                     
-                    // Ищем поле по имени
+                    const { field = '', message = 'Invalid value' } = error;
+                    
+                    if (!field) return; // Пропускаем ошибки без поля
+                    
+                    // Ищем поле по имени (включая вложенные поля спецификаций)
                     let input = document.querySelector(`[name="${field}"]`);
+                    
+                    // Если не найдено, пробуем найти по частичному имени (для вложенных полей)
+                    if (!input && field.includes('.')) {
+                        const fieldName = field.split('.').pop(); // Берем последнюю часть после точки
+                        input = document.querySelector(`[name*="${fieldName}"]`);
+                    }
                     
                     // Если не найдено, ищем по ID
                     if (!input) {
@@ -719,6 +747,7 @@
                     
                     // Если поле найдено, показываем ошибку
                     if (input) {
+                        console.log(`Found field for error: ${field} -> ${input.name}`);
                         input.classList.add('is-invalid');
                         
                         // Находим или создаем div для ошибки
@@ -729,6 +758,8 @@
                             input.parentNode.appendChild(errorDiv);
                         }
                         errorDiv.textContent = message;
+                    } else {
+                        console.log(`Field not found for error: ${field}`);
                     }
                 });
             }
@@ -744,59 +775,25 @@
                 errorDivs.forEach(div => {
                     div.textContent = '';
                 });
+                hideGeneralError();
             }
-            
-            // Функция для получения видимой секции спецификаций
-            function getVisibleSpecificationSection() {
-                const specSections = [
-                    'caseSpecsSection',
-                    'cpuSpecsSection',
-                    'gpuSpecsSection',
-                    'motherboardSpecsSection',
-                    'monitorSpecsSection',
-                    'ssdSpecsSection',
-                    'psuSpecsSection',
-                    'ramSpecsSection',
-                    'wiredKeyboardSpecsSection',
-                    'wirelessKeyboardSpecsSection',
-                    'wiredMouseSpecsSection',
-                    'wirelessMouseSpecsSection'
-                ];
-                
-                for (const sectionId of specSections) {
-                    const section = document.getElementById(sectionId);
-                    if (section && section.style.display !== 'none') {
-                        console.log(`Found visible specification section: ${sectionId}`);
-                        return section;
-                    }
+
+            function showGeneralError(message) {
+                const box = document.getElementById('formGeneralError');
+                if (box) {
+                    box.textContent = message;
+                    box.style.display = 'block';
                 }
-                
-                console.log('No visible specification section found');
-                return null;
+            }
+
+            function hideGeneralError() {
+                const box = document.getElementById('formGeneralError');
+                if (box) {
+                    box.textContent = '';
+                    box.style.display = 'none';
+                }
             }
             
-            // Функция для определения типа спецификации по секции
-            function getSpecTypeFromSection(section) {
-                const sectionId = section.id;
-                const specTypeMap = {
-                    'caseSpecsSection': 'caseSpec',
-                    'cpuSpecsSection': 'cpuSpec',
-                    'gpuSpecsSection': 'gpuSpec',
-                    'motherboardSpecsSection': 'motherboardSpec',
-                    'monitorSpecsSection': 'monitorSpec',
-                    'ssdSpecsSection': 'ssdSpec',
-                    'psuSpecsSection': 'psuSpec',
-                    'ramSpecsSection': 'ramSpec',
-                    'wiredKeyboardSpecsSection': 'wiredKeyboardSpec',
-                    'wirelessKeyboardSpecsSection': 'wirelessKeyboardSpec',
-                    'wiredMouseSpecsSection': 'wiredMouseSpec',
-                    'wirelessMouseSpecsSection': 'wirelessMouseSpec'
-                };
-                
-                const specType = specTypeMap[sectionId];
-                console.log(`Mapped section ${sectionId} to spec type: ${specType}`);
-                return specType;
-            }
         }
         
     })();

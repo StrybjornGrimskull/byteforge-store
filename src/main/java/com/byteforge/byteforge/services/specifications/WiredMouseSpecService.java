@@ -27,8 +27,7 @@ public class WiredMouseSpecService {
                         spec.getUsbConnector(),
                         spec.getWeight(),
                         spec.getRgbLighting(),
-                        spec.getOnboardMemory(),
-                        spec.getWarrantyMonths()
+                        spec.getOnboardMemory()
                 ))
                 .orElseThrow(() -> new RuntimeException("Specification not found with id: " + productId));
     }
@@ -43,13 +42,12 @@ public class WiredMouseSpecService {
         spec.setMaxDpi(parseInt(request.wiredMouseSpec().maxDpi()));
         spec.setAdjustableDpi(Boolean.parseBoolean(request.wiredMouseSpec().adjustableDpi()));
         spec.setButtons(parseInt(request.wiredMouseSpec().buttons()));
-        spec.setCableLength(parseInt(request.wiredMouseSpec().cableType()));
+        spec.setCableLength(parseInt(request.wiredMouseSpec().cableLength()));
         spec.setCableType(request.wiredMouseSpec().cableType());
         spec.setUsbConnector(request.wiredMouseSpec().usbConnector());
-        spec.setWeight(parseInt(request.wiredMouseSpec().rgbLightingMouse()));
-        spec.setRgbLighting(Boolean.parseBoolean(request.wiredMouseSpec().rgbLightingMouse()));
+        spec.setWeight(parseInt(request.wiredMouseSpec().weight()));
+        spec.setRgbLighting(Boolean.parseBoolean(request.wiredMouseSpec().rgbLighting()));
         spec.setOnboardMemory(Boolean.parseBoolean(request.wiredMouseSpec().onboardMemory()));
-        spec.setWarrantyMonths(parseInt(request.wiredMouseSpec().onboardMemory()));
         
         wiredMouseSpecRepository.save(spec);
     }
@@ -68,7 +66,6 @@ public class WiredMouseSpecService {
         if (dto.weight() != null) spec.setWeight(dto.weight());
         if (dto.rgbLighting() != null) spec.setRgbLighting(dto.rgbLighting());
         if (dto.onboardMemory() != null) spec.setOnboardMemory(dto.onboardMemory());
-        if (dto.warrantyMonths() != null) spec.setWarrantyMonths(dto.warrantyMonths());
         wiredMouseSpecRepository.save(spec);
     }
 

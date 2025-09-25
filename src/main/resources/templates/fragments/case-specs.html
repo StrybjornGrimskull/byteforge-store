@@ -14,7 +14,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="formFactor" class="form-label fw-semibold">Form Factor *</label>
-                <select class="form-select" id="formFactor" name="formFactor" required>
+                <select class="form-select" id="formFactor" name="caseSpec.formFactor">
                     <option value="">Select form factor</option>
                     <option value="Mini-ITX">Mini-ITX</option>
                     <option value="Micro-ATX">Micro-ATX</option>
@@ -31,8 +31,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="motherboardSupport" class="form-label fw-semibold">Motherboard Support *</label>
-                <input type="text" class="form-control" id="motherboardSupport" name="motherboardSupport" 
-                       placeholder="Mini-ITX, Micro-ATX, ATX" required>
+                <input type="text" class="form-control" id="motherboardSupport" name="caseSpec.motherboardSupport" 
+                       placeholder="Mini-ITX, Micro-ATX, ATX">
                 <div class="invalid-feedback">
                     Please provide motherboard support information.
                 </div>
@@ -44,8 +44,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="maxGpuLength" class="form-label fw-semibold">Max GPU Length (mm) *</label>
-                <input type="number" class="form-control" id="maxGpuLength" name="maxGpuLength" 
-                       placeholder="350" min="0" required>
+                <input type="number" class="form-control" id="maxGpuLength" name="caseSpec.maxGpuLength" 
+                       placeholder="350" min="0">
                 <div class="invalid-feedback">
                     Please provide maximum GPU length.
                 </div>
@@ -55,8 +55,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="maxCpuCoolerHeight" class="form-label fw-semibold">Max CPU Cooler Height (mm) *</label>
-                <input type="number" class="form-control" id="maxCpuCoolerHeight" name="maxCpuCoolerHeight" 
-                       placeholder="165" min="0" required>
+                <input type="number" class="form-control" id="maxCpuCoolerHeight" name="caseSpec.maxCpuCoolerHeight" 
+                       placeholder="165" min="0">
                 <div class="invalid-feedback">
                     Please provide maximum CPU cooler height.
                 </div>
@@ -68,8 +68,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="fansIncluded" class="form-label fw-semibold">Fans Included *</label>
-                <input type="number" class="form-control" id="fansIncluded" name="fansIncluded" 
-                       placeholder="3" min="0" required>
+                <input type="number" class="form-control" id="fansIncluded" name="caseSpec.fansIncluded" 
+                       placeholder="3" min="0">
                 <div class="invalid-feedback">
                     Please provide number of included fans.
                 </div>
@@ -79,8 +79,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="radiatorSupport" class="form-label fw-semibold">Radiator Support *</label>
-                <input type="text" class="form-control" id="radiatorSupport" name="radiatorSupport" 
-                       placeholder="240mm top, 360mm front" required>
+                <input type="text" class="form-control" id="radiatorSupport" name="caseSpec.radiatorSupport" 
+                       placeholder="240mm top, 360mm front">
                 <div class="invalid-feedback">
                     Please provide radiator support information.
                 </div>

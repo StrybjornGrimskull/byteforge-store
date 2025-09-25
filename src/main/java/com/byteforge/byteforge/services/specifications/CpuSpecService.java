@@ -41,9 +41,9 @@ public class CpuSpecService {
         spec.setThreads(parseInt(request.cpuSpec().threads()));
         spec.setBaseClock(parseBigDecimal(request.cpuSpec().baseClock()));
         spec.setBoostClock(parseBigDecimal(request.cpuSpec().boostClock()));
-        spec.setCacheSize(parseInt(request.cpuSpec().cache()));
+        spec.setCacheSize(parseInt(request.cpuSpec().cacheSize()));
         spec.setTdp(parseInt(request.cpuSpec().tdp()));
-        spec.setIntegratedGpu(parseBoolean(request.cpuSpec().integratedGraphics()));
+        spec.setIntegratedGpu(parseBoolean(request.cpuSpec().integratedGpu()));
         
         cpuSpecRepository.save(spec);
     }

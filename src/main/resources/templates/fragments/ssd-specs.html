@@ -14,8 +14,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="ssdCapacity" class="form-label fw-semibold">Capacity (GB) *</label>
-                <input type="number" class="form-control" id="ssdCapacity" name="capacity" 
-                       placeholder="1000" min="1" required>
+                <input type="number" class="form-control" id="ssdCapacity" name="ssdSpec.capacity" 
+                       placeholder="1000" min="1">
                 <div class="invalid-feedback">
                     Please provide capacity.
                 </div>
@@ -25,7 +25,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="ssdFormFactor" class="form-label fw-semibold">Form Factor *</label>
-                <select class="form-select" id="ssdFormFactor" name="formFactor" required>
+                <select class="form-select" id="ssdFormFactor" name="ssdSpec.formFactor">
                     <option value="">Select form factor</option>
                     <option value="M.2 2280">M.2 2280</option>
                     <option value="M.2 2242">M.2 2242</option>
@@ -44,7 +44,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="ssdInterface" class="form-label fw-semibold">Interface *</label>
-                <select class="form-select" id="ssdInterface" name="interfaceType" required>
+                <select class="form-select" id="ssdInterface" name="ssdSpec.interfaceType">
                     <option value="">Select interface</option>
                     <option value="SATA III">SATA III</option>
                     <option value="PCIe 3.0 x4">PCIe 3.0 x4</option>
@@ -60,8 +60,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="ssdReadSpeed" class="form-label fw-semibold">Read Speed (MB/s) *</label>
-                <input type="number" class="form-control" id="ssdReadSpeed" name="readSpeed" 
-                       placeholder="7000" min="0" required>
+                <input type="number" class="form-control" id="ssdReadSpeed" name="ssdSpec.readSpeed" 
+                       placeholder="7000" min="0">
                 <div class="invalid-feedback">
                     Please provide read speed.
                 </div>
@@ -73,8 +73,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="ssdWriteSpeed" class="form-label fw-semibold">Write Speed (MB/s) *</label>
-                <input type="number" class="form-control" id="ssdWriteSpeed" name="writeSpeed" 
-                       placeholder="6000" min="0" required>
+                <input type="number" class="form-control" id="ssdWriteSpeed" name="ssdSpec.writeSpeed" 
+                       placeholder="6000" min="0">
                 <div class="invalid-feedback">
                     Please provide write speed.
                 </div>
@@ -84,7 +84,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="ssdMemoryType" class="form-label fw-semibold">Memory Type</label>
-                <input type="text" class="form-control" id="ssdMemoryType" name="memoryType" 
+                <input type="text" class="form-control" id="ssdMemoryType" name="ssdSpec.memoryType" 
                        placeholder="TLC, QLC">
                 <div class="invalid-feedback">
                     Please provide memory type.
@@ -97,8 +97,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="ssdEnduranceTbw" class="form-label fw-semibold">Endurance (TBW) *</label>
-                <input type="number" class="form-control" id="ssdEnduranceTbw" name="enduranceTbw" 
-                       placeholder="600" min="0" required>
+                <input type="number" class="form-control" id="ssdEnduranceTbw" name="ssdSpec.enduranceTbw" 
+                       placeholder="600" min="0">
                 <div class="invalid-feedback">
                     Please provide endurance rating.
                 </div>
@@ -108,7 +108,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="ssdThickness" class="form-label fw-semibold">Thickness (mm)</label>
-                <input type="number" class="form-control" id="ssdThickness" name="thickness" 
+                <input type="number" class="form-control" id="ssdThickness" name="ssdSpec.thickness" 
                        placeholder="2.3" step="0.1" min="0">
                 <div class="invalid-feedback">
                     Please provide thickness.
@@ -121,7 +121,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="ssdEncryption" class="form-label fw-semibold">Encryption</label>
-                <input type="text" class="form-control" id="ssdEncryption" name="encryption" 
+                <input type="text" class="form-control" id="ssdEncryption" name="ssdSpec.encryption" 
                        placeholder="AES-256">
                 <div class="invalid-feedback">
                     Please provide encryption type.
@@ -132,7 +132,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <div class="form-check mt-4">
-                    <input class="form-check-input" type="checkbox" id="ssdDramCache" name="dramCache" value="true">
+                    <input class="form-check-input" type="checkbox" id="ssdDramCache" name="ssdSpec.dramCache" value="true">
                     <label class="form-check-label" for="ssdDramCache">
                         DRAM Cache
                     </label>

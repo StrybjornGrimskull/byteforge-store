@@ -47,9 +47,5 @@ public record WirelessMouseSpecDTO(
         @Min(value = 1, message = "Charging time must be at least 1")
         Integer chargingTime,
         
-        Boolean onboardMemory,
-        
-        @NotNull(message = "Warranty months is required")
-        @Min(value = 1, message = "Warranty months must be at least 1")
-        Integer warrantyMonths
+        Boolean onboardMemory
 ) {}

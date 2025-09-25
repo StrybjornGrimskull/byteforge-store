@@ -14,8 +14,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="psuWattage" class="form-label fw-semibold">Wattage (W) *</label>
-                <input type="number" class="form-control" id="psuWattage" name="wattage" 
-                       placeholder="750" min="1" required>
+                <input type="number" class="form-control" id="psuWattage" name="psuSpec.wattage" 
+                       placeholder="750" min="1">
                 <div class="invalid-feedback">
                     Please provide wattage.
                 </div>
@@ -25,7 +25,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="psuFormFactor" class="form-label fw-semibold">Form Factor *</label>
-                <select class="form-select" id="psuFormFactor" name="formFactor" required>
+                <select class="form-select" id="psuFormFactor" name="psuSpec.formFactor">
                     <option value="">Select form factor</option>
                     <option value="ATX">ATX</option>
                     <option value="SFX">SFX</option>
@@ -43,7 +43,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="psuEfficiencyCert" class="form-label fw-semibold">Efficiency Certification *</label>
-                <select class="form-select" id="psuEfficiencyCert" name="efficiencyCert" required>
+                <select class="form-select" id="psuEfficiencyCert" name="psuSpec.efficiencyCert">
                     <option value="">Select certification</option>
                     <option value="80+ Bronze">80+ Bronze</option>
                     <option value="80+ Silver">80+ Silver</option>
@@ -60,7 +60,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="psuModularity" class="form-label fw-semibold">Modularity *</label>
-                <select class="form-select" id="psuModularity" name="modularity" required>
+                <select class="form-select" id="psuModularity" name="psuSpec.modularity">
                     <option value="">Select modularity</option>
                     <option value="Non-modular">Non-modular</option>
                     <option value="Semi-modular">Semi-modular</option>
@@ -77,8 +77,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="psuPcie8pinConnectors" class="form-label fw-semibold">PCIe 8-pin Connectors *</label>
-                <input type="number" class="form-control" id="psuPcie8pinConnectors" name="pcie8pinConnectors" 
-                       placeholder="2" min="0" required>
+                <input type="number" class="form-control" id="psuPcie8pinConnectors" name="psuSpec.pcie8pinConnectors" 
+                       placeholder="2" min="0">
                 <div class="invalid-feedback">
                     Please provide number of PCIe 8-pin connectors.
                 </div>
@@ -88,8 +88,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="psuSataConnectors" class="form-label fw-semibold">SATA Connectors *</label>
-                <input type="number" class="form-control" id="psuSataConnectors" name="sataConnectors" 
-                       placeholder="6" min="0" required>
+                <input type="number" class="form-control" id="psuSataConnectors" name="psuSpec.sataConnectors" 
+                       placeholder="6" min="0">
                 <div class="invalid-feedback">
                     Please provide number of SATA connectors.
                 </div>

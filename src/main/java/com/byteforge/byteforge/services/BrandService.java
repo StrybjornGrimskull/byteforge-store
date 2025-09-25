@@ -32,6 +32,12 @@ public class BrandService {
         return brandRepository.findAllBrandDtosOrderedByName();
     }
 
+    // Получить бренды, у которых есть товары в выбранной категории (или все, если categoryId == null)
+    @Transactional(readOnly = true)
+    public List<BrandDto> getBrandsByCategory(Integer categoryId) {
+        return brandRepository.findBrandDtosByProductsCategoryId(categoryId);
+    }
+
     @Transactional
     public void createBrand(BrandCreateRequestDto request) {
         try {
@@ -57,10 +63,6 @@ public class BrandService {
     }
 
     private String saveLogoFile(MultipartFile logoFile) throws IOException {
-        if (logoFile == null || logoFile.isEmpty()) {
-            throw new IllegalArgumentException("Logo file is required");
-        }
-
         // Проверка MIME типа (безопаснее чем проверка имени файла)
         String contentType = logoFile.getContentType();
         if (contentType == null || !contentType.equals("image/webp")) {

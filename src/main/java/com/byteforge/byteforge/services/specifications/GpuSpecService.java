@@ -36,12 +36,12 @@ public class GpuSpecService {
         spec.setProduct(product);
         spec.setMemorySize(parseInt(request.gpuSpec().memorySize()));
         spec.setMemoryType(request.gpuSpec().memoryType());
-        spec.setBusWidth(parseInt(request.gpuSpec().memoryBus()));
-        spec.setBaseClock(parseInt(request.gpuSpec().gpuBaseClock()));
-        spec.setBoostClock(parseInt(request.gpuSpec().gpuBoostClock()));
-        spec.setTdp(parseInt(request.gpuSpec().gpuTdp()));
+        spec.setBusWidth(parseInt(request.gpuSpec().busWidth()));
+        spec.setBaseClock(parseInt(request.gpuSpec().baseClock()));
+        spec.setBoostClock(parseInt(request.gpuSpec().boostClock()));
+        spec.setTdp(parseInt(request.gpuSpec().tdp()));
         spec.setLength(parseInt(request.gpuSpec().length()));
-        spec.setDisplayOutputs(request.gpuSpec().outputs());
+        spec.setDisplayOutputs(request.gpuSpec().displayOutputs());
         
         gpuSpecRepository.save(spec);
     }
