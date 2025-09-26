@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru" xml:lang="ru">
 <head>
     <title>Categories | ByteForge</title>
     <!-- Bootstrap 5 CSS -->
@@ -7,7 +7,383 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;600&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Фоновое изображение для страницы */
+        body {
+            background-image: url('/uploads/icons/opoy7.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            font-family: 'Ubuntu', sans-serif;
+            color: white;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        h1 { 
+            color: white; 
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-size: 2.5rem;
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border: none;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            height: 300px;
+            width: 420px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0;
+            flex-shrink: 0;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .card-title {
+            color: white;
+            font-weight: 600;
+            line-height: 1.2;
+            font-size: 2rem;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .card-title.ram-title {
+            font-size: 1.8rem;
+        }
+
+        .shop-now {
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .shop-now:hover {
+            color: #ff6b6b;
+            text-decoration: none;
+        }
+
+        .arrow {
+            width: 0;
+            height: 0;
+            border-left: 8px solid #ff6b6b;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .shop-now:hover .arrow {
+            border-left-color: white;
+        }
+
+        .alert-success {
+            background: rgba(34, 197, 94, 0.1);
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .card-body {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            z-index: 2;
+            padding: 8px;
+        }
+
+        .card-content {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            right: 52%;
+            z-index: 2;
+        }
+
+        .card-image {
+            width: 200px;
+            height: 300px;
+            object-fit: contain;
+            object-position: right center;
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 1;
+            flex-shrink: 0;
+        }
+
+        .card-image.keyboard-image {
+            width: 280px; /* Larger width for keyboard */
+        }
+
+        .card-image.mice-image {
+            width: 250px; /* Larger width for mice */
+        }
+
+        /* Keyboard split view styles */
+        .keyboard-split {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 3;
+        }
+
+        .keyboard-split.active {
+            display: flex;
+        }
+
+        .keyboard-split-left, .keyboard-split-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            outline: none;
+            border: none;
+            padding: 0;
+        }
+
+        .keyboard-split-left:focus, .keyboard-split-right:focus {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+        }
+
+        .keyboard-split-left:hover, .keyboard-split-right:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .keyboard-split-left {
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .keyboard-icon {
+            width: 80px;
+            height: 80px;
+            filter: brightness(0) invert(1); /* White color */
+        }
+
+        .keyboard-split-text {
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        /* Mice split view styles */
+        .mice-split {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 3;
+        }
+
+        .mice-split.active {
+            display: flex;
+        }
+
+        .mice-split-left, .mice-split-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            outline: none;
+            border: none;
+            padding: 0;
+        }
+
+        .mice-split-left:focus, .mice-split-right:focus {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+        }
+
+        .mice-split-left:hover, .mice-split-right:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Стили для строки категорий */
+        .categories-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Стили для колонок категорий */
+        .category-col {
+            flex: 0 0 auto;
+            margin-bottom: 0px;
+        }
+
+        .mice-split-left {
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .mice-icon {
+            width: 80px;
+            height: 80px;
+            filter: brightness(0) invert(1); /* White color */
+        }
+
+        .mice-split-text {
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        /* Back arrow styles */
+        .back-arrow {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 4;
+        }
+
+        .back-arrow:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .back-arrow svg {
+            width: 16px;
+            height: 16px;
+            fill: white;
+        }
+
+        .card-image-placeholder {
+            width: 200px;
+            height: 300px;
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 1;
+            flex-shrink: 0;
+            background-position: right center;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .card {
+                min-width: 280px;
+                max-width: 350px;
+            }
+            
+            .card-image,
+            .card-image-placeholder {
+                width: 150px;
+                height: 200px;
+                top: 0;
+                right: 0;
+                object-position: right center;
+            }
+            
+            .card-image.keyboard-image {
+                width: 200px;
+            }
+            
+            .card-image.mice-image {
+                width: 180px;
+            }
+            
+            .card-content {
+                right: 60%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .categories-row {
+                gap: 15px;
+            }
+            
+            .category-col {
+                flex: 0 0 auto;
+                margin-bottom: 15px;
+            }
+            
+            .card {
+                width: 380px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .categories-row {
+                gap: 10px;
+            }
+            
+            .category-col {
+                flex: 0 0 auto;
+                margin-bottom: 10px;
+            }
+            
+            .card {
+                width: 340px;
+            }
+            
+            .card-image,
+            .card-image-placeholder {
+                width: 120px;
+                height: 180px;
+                object-position: right center;
+            }
+            
+            .card-image.keyboard-image {
+                width: 160px;
+            }
+            
+            .card-image.mice-image {
+                width: 140px;
+            }
+            
+            .card-content {
+                right: 55%;
+            }
+            
+            .card-title {
+                font-size: 1.5rem;
+            }
+            
+            .card-title.ram-title {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
 
 </head>
 <body>
@@ -22,12 +398,207 @@
 
 <div class="container mt-4">
     <h1 class="mb-4">Categories</h1>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        <div class="col" th:each="category : ${categories}">
-            <div class="card h-100">
+    <div class="categories-row">
+        <!-- Graphics Cards -->
+        <div class="category-col">
+            <div class="card">
+                <img src="/uploads/icons/grafic cards.png" alt="Graphics Cards" class="card-image">
+                <div class="card-content">
+                    <h5 class="card-title">Graphics<br>Cards</h5>
+                </div>
+                <div class="card-body">
+                    <a href="/products/list?categoryId=1" class="shop-now">
+                        Shop Now
+                        <div class="arrow"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Processors -->
+        <div class="category-col">
+            <div class="card">
+                <img src="/uploads/icons/processors.png" alt="Processors" class="card-image">
+                <div class="card-content">
+                    <h5 class="card-title">Processors</h5>
+                </div>
+                <div class="card-body">
+                    <a href="/products/list?categoryId=2" class="shop-now">
+                        Shop Now
+                        <div class="arrow"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Motherboards -->
+        <div class="category-col">
+            <div class="card">
+                <img src="/uploads/icons/motherboards.png" alt="Motherboards" class="card-image">
+                <div class="card-content">
+                    <h5 class="card-title">Motherboards</h5>
+                </div>
+                <div class="card-body">
+                    <a href="/products/list?categoryId=3" class="shop-now">
+                        Shop Now
+                        <div class="arrow"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- RAM -->
+        <div class="category-col">
+            <div class="card">
+                <img src="/uploads/icons/ram.png" alt="RAM" class="card-image">
+                <div class="card-content">
+                    <h5 class="card-title ram-title">Random <br>memory access</h5>
+                </div>
+                <div class="card-body">
+                    <a href="/products/list?categoryId=4" class="shop-now">
+                        Shop Now
+                        <div class="arrow"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Storage -->
+        <div class="category-col">
+            <div class="card">
+                <img src="/uploads/icons/ssd.png" alt="Solid State Drive" class="card-image">
+                <div class="card-content">
+                    <h5 class="card-title">Solid state<br>drive</h5>
+                </div>
+                <div class="card-body">
+                    <a href="/products/list?categoryId=8" class="shop-now">
+                        Shop Now
+                        <div class="arrow"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Power Supplies -->
+        <div class="category-col">
+            <div class="card">
+                <img src="/uploads/icons/psu.png" alt="Power Supply Unit" class="card-image">
+                <div class="card-content">
+                    <h5 class="card-title">Power supply<br>unit</h5>
+                </div>
+                <div class="card-body">
+                    <a href="/products/list?categoryId=5" class="shop-now">
+                        Shop Now
+                        <div class="arrow"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- PC Cases -->
+        <div class="category-col">
+            <div class="card">
+                <img src="/uploads/icons/cases.png" alt="PC Cases" class="card-image">
+                <div class="card-content">
+                    <h5 class="card-title">PC Cases</h5>
+                </div>
+                <div class="card-body">
+                    <a href="/products/list?categoryId=6" class="shop-now">
+                        Shop Now
+                        <div class="arrow"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monitors -->
+        <div class="category-col">
+            <div class="card">
+                <img src="/uploads/icons/monitors.png" alt="Monitors" class="card-image">
+                <div class="card-content">
+                    <h5 class="card-title">Monitors</h5>
+                </div>
+                <div class="card-body">
+                    <a href="/products/list?categoryId=7" class="shop-now">
+                        Shop Now
+                        <div class="arrow"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Keyboards -->
+        <div class="category-col">
+            <div class="card" id="keyboard-card">
+                <img src="/uploads/icons/keyboards.png" alt="Keyboards" class="card-image keyboard-image">
+                <div class="card-content">
+                    <h5 class="card-title">Keyboards</h5>
+                </div>
+                <div class="card-body">
+                    <a href="#" class="shop-now" id="keyboard-shop-now">
+                        Shop Now
+                        <div class="arrow"></div>
+                    </a>
+                </div>
+                <!-- Split view for keyboard types -->
+                <div class="keyboard-split" id="keyboard-split">
+                    <div class="back-arrow" id="keyboard-back-arrow">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                        </svg>
+                    </div>
+                    <button class="keyboard-split-left" onclick="window.location.href='/products/list?categoryId=9'" aria-label="Перейти к проводным клавиатурам">
+                        <div style="text-align: center;">
+                            <img src="/uploads/icons/usb-svgrepo-com.svg" alt="USB" class="keyboard-icon">
+                            <div class="keyboard-split-text">USB</div>
+                        </div>
+                    </button>
+                    <button class="keyboard-split-right" onclick="window.location.href='/products/list?categoryId=10'" aria-label="Перейти к беспроводным клавиатурам">
+                        <div style="text-align: center;">
+                            <svg class="keyboard-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88z"/>
+                            </svg>
+                            <div class="keyboard-split-text">Bluetooth</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mice -->
+        <div class="category-col">
+            <div class="card" id="mice-card">
+                <img src="/uploads/icons/mice.png" alt="Mice" class="card-image mice-image">
+                <div class="card-content">
+                    <h5 class="card-title">Mice</h5>
+                </div>
                     <div class="card-body">
-                    <h5 class="card-title" th:text="${category.name}">Название категории</h5>
-                        <a th:href="@{/products/list(categoryId=${category.id})}" class="btn btn-primary">Перейти</a>
+                    <a href="#" class="shop-now" id="mice-shop-now">
+                        Shop Now
+                        <div class="arrow"></div>
+                    </a>
+                </div>
+                <!-- Split view for mice types -->
+                <div class="mice-split" id="mice-split">
+                    <div class="back-arrow" id="mice-back-arrow">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                        </svg>
+                    </div>
+                    <button class="mice-split-left" onclick="window.location.href='/products/list?categoryId=11'" aria-label="Перейти к проводным мышкам">
+                        <div style="text-align: center;">
+                            <img src="/uploads/icons/usb-svgrepo-com.svg" alt="USB" class="mice-icon">
+                            <div class="mice-split-text">Wired</div>
+                        </div>
+                    </button>
+                    <button class="mice-split-right" onclick="window.location.href='/products/list?categoryId=12'" aria-label="Перейти к беспроводным мышкам">
+                        <div style="text-align: center;">
+                            <svg class="mice-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88z"/>
+                            </svg>
+                            <div class="mice-split-text">Wireless</div>
+                        </div>
+                    </button>
                 </div>
             </div>
         </div>
@@ -39,6 +610,97 @@
 
 <!-- User Account Script -->
 <div th:replace="~{fragments/navigation :: user-account-script}"></div>
+
+<!-- Keyboard Split View Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Keyboard split view functionality
+        const keyboardShopNow = document.getElementById('keyboard-shop-now');
+        const keyboardSplit = document.getElementById('keyboard-split');
+        const keyboardCard = document.getElementById('keyboard-card');
+        
+        if (keyboardShopNow && keyboardSplit) {
+            keyboardShopNow.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Hide all card content
+                const cardImage = keyboardCard.querySelector('.card-image');
+                const cardContent = keyboardCard.querySelector('.card-content');
+                const cardBody = keyboardCard.querySelector('.card-body');
+                
+                if (cardImage) cardImage.style.display = 'none';
+                if (cardContent) cardContent.style.display = 'none';
+                if (cardBody) cardBody.style.display = 'none';
+                
+                // Show split view
+                keyboardSplit.classList.add('active');
+            });
+        }
+
+        // Mice split view functionality
+        const miceShopNow = document.getElementById('mice-shop-now');
+        const miceSplit = document.getElementById('mice-split');
+        const miceCard = document.getElementById('mice-card');
+        
+        if (miceShopNow && miceSplit) {
+            miceShopNow.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Hide all card content
+                const cardImage = miceCard.querySelector('.card-image');
+                const cardContent = miceCard.querySelector('.card-content');
+                const cardBody = miceCard.querySelector('.card-body');
+                
+                if (cardImage) cardImage.style.display = 'none';
+                if (cardContent) cardContent.style.display = 'none';
+                if (cardBody) cardBody.style.display = 'none';
+                
+                // Show split view
+                miceSplit.classList.add('active');
+            });
+        }
+
+        // Back arrow functionality for keyboards
+        const keyboardBackArrow = document.getElementById('keyboard-back-arrow');
+        if (keyboardBackArrow) {
+            keyboardBackArrow.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Show all card content
+                const cardImage = keyboardCard.querySelector('.card-image');
+                const cardContent = keyboardCard.querySelector('.card-content');
+                const cardBody = keyboardCard.querySelector('.card-body');
+                
+                if (cardImage) cardImage.style.display = 'block';
+                if (cardContent) cardContent.style.display = 'block';
+                if (cardBody) cardBody.style.display = 'block';
+                
+                // Hide split view
+                keyboardSplit.classList.remove('active');
+            });
+        }
+
+        // Back arrow functionality for mice
+        const miceBackArrow = document.getElementById('mice-back-arrow');
+        if (miceBackArrow) {
+            miceBackArrow.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Show all card content
+                const cardImage = miceCard.querySelector('.card-image');
+                const cardContent = miceCard.querySelector('.card-content');
+                const cardBody = miceCard.querySelector('.card-body');
+                
+                if (cardImage) cardImage.style.display = 'block';
+                if (cardContent) cardContent.style.display = 'block';
+                if (cardBody) cardBody.style.display = 'block';
+                
+                // Hide split view
+                miceSplit.classList.remove('active');
+            });
+        }
+    });
+</script>
 
 </body>
 </html>

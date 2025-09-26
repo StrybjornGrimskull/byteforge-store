@@ -111,7 +111,7 @@
 </head>
 <body>
 <!-- Navigation Fragment -->
-<div th:replace="fragments/navigation :: navigation"></div>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
 
 <!-- Main Content -->
 <div class="container py-4">
@@ -178,7 +178,7 @@
 </div>
 
 <!-- Footer Fragment -->
-<th:block th:replace="fragments/footer :: footer"></th:block>
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
 <!-- No external JS needed -->
 
@@ -376,7 +376,7 @@
 </script>
 
 <!-- User Account Script -->
-<div th:replace="fragments/navigation :: user-account-script"></div>
+<div th:replace="~{fragments/navigation :: user-account-script}"></div>
 
 </body>
 </html>

@@ -208,7 +208,7 @@
 </head>
 <body>
 <!-- Navigation Fragment -->
-<div th:replace="fragments/navigation :: navigation"></div>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
 
 <!-- Product Header -->
 <header class="product-header">
@@ -364,7 +364,7 @@
     </div>
 </div>
 <!-- Footer Fragment -->
-<th:block th:replace="fragments/footer :: footer"></th:block>
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
 <!-- Edit Product Modal -->
 <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
@@ -1292,7 +1292,7 @@
 </script>
 
 <!-- User Account Script -->
-<div th:replace="fragments/navigation :: user-account-script"></div>
+<div th:replace="~{fragments/navigation :: user-account-script}"></div>
 
 </body>
 </html>
