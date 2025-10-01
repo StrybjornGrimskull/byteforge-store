@@ -6,6 +6,6 @@ CREATE TABLE notifications (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Индекс для быстрого поиска по пользователю
+-- Index for fast user search
 CREATE INDEX idx_notifications_user_id ON notifications(user_id);
 

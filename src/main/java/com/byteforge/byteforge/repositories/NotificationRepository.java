@@ -16,7 +16,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
            "n.id, n.message, n.isRead, n.createdAt) " +
            "FROM Notification n " +
            "WHERE n.user.id = :userId " +
-           "ORDER BY n.createdAt DESC")
+           "ORDER BY n.isRead ASC, n.createdAt DESC")
     List<NotificationDto> findNotificationDtosByUserId(@Param("userId") Integer userId);
 
     @Query("SELECT new com.byteforge.byteforge.dto.response.NotificationDto(" +

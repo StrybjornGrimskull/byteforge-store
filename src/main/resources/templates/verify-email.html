@@ -477,7 +477,7 @@
                 $submitBtn.prop('disabled', true)
                     .html('<i class="bi bi-arrow-repeat spin me-2"></i>Sending...');
 
-                // Используем GET запрос к MVC endpoint вместо POST к API
+                // Use GET request to MVC endpoint instead of POST to API
                 window.location.href = `/auth/resend-verification?email=${encodeURIComponent(email)}`;
             });
 

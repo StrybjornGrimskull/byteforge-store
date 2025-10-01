@@ -126,6 +126,9 @@
         .card-body {
             padding: 1.5rem;
             background: transparent;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .card-title {
@@ -136,6 +139,17 @@
         .added-date {
             font-size: 0.85rem;
             margin-bottom: 1rem;
+        }
+
+        .card-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-actions {
+            margin-top: auto;
+            padding-top: 1rem;
         }
 
         .btn-remove {
@@ -254,7 +268,7 @@
 </head>
 <body>
 <!-- Navigation Fragment -->
-<div th:replace="fragments/navigation :: navigation"></div>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
 
 <!-- Main Content -->
 <!-- Wishlist Header -->
@@ -283,7 +297,7 @@
 </div>
 
 <!-- Footer Fragment -->
-<th:block th:replace="fragments/footer :: footer"></th:block>
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
 <!-- jQuery and Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -394,15 +408,19 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">${item.productName}</h5>
-                        <p class="product-id d-none">${item.productId}</p>
-                        <p class="added-date mb-3">
-                            <i class="bi bi-calendar me-1"></i>
-                            ${formatDate(item.addedDate)}
-                        </p>
-                        ${stockBadge}
-                        <div class="d-grid gap-2 mt-3">
-                            ${buttonHtml}
+                        <div class="card-content">
+                            <h5 class="card-title">${item.productName}</h5>
+                            <p class="product-id d-none">${item.productId}</p>
+                            <p class="added-date mb-3">
+                                <i class="bi bi-calendar me-1"></i>
+                                ${formatDate(item.addedDate)}
+                            </p>
+                            ${stockBadge}
+                        </div>
+                        <div class="card-actions">
+                            <div class="d-grid gap-2">
+                                ${buttonHtml}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -509,7 +527,7 @@
 </script>
 
 <!-- User Account Script -->
-<div th:replace="fragments/navigation :: user-account-script"></div>
+<div th:replace="~{fragments/navigation :: user-account-script}"></div>
 
 </body>
 </html>

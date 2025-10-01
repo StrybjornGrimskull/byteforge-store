@@ -538,7 +538,7 @@
                         confirmPassword: confirmPassword
                     }),
                     success: function(response) {
-                        // Успешная регистрация - скрываем ошибки и перенаправляем
+                        // Successful registration - hide errors and redirect
                         hideEmailError();
                         window.location.href = `/auth/verify-email?email=${email}`;
                     },

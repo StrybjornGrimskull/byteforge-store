@@ -36,22 +36,33 @@ public class ReviewService {
 
         // Получаем уникальные ID продуктов напрямую из репозитория
         List<Integer> uniqueProductIds = orderProductRepository.findUniqueProductIdsByCustomerId(customer.getId());
-        List<Product> products = productRepository.findAllById(uniqueProductIds);
+        List<Product> allProducts = productRepository.findAllById(uniqueProductIds);
 
-        Set<Integer> reviewedProductIds = new HashSet<>();
+        // Разделяем продукты на две категории
+        List<Product> productsToReview = new ArrayList<>();
+        List<Product> reviewedProducts = new ArrayList<>();
         Map<Integer, Review> userReviews = new HashMap<>();
         
-        for (Product product : products) {
+        for (Product product : allProducts) {
             Optional<Review> existingReview = reviewRepository.findByProductAndCustomer(product, customer);
             if (existingReview.isPresent()) {
-                reviewedProductIds.add(product.getId());
-                userReviews.put(product.getId(), existingReview.get());
+                // Продукт с отзывом (активным или неактивным)
+                if (existingReview.get().isActive()) {
+                    // Только активные отзывы показываем в "My Reviews"
+                    reviewedProducts.add(product);
+                    userReviews.put(product.getId(), existingReview.get());
+                }
+                // Неактивные отзывы не показываем нигде (на модерации)
+            } else {
+                // Продукт без отзыва (можно оставить отзыв)
+                productsToReview.add(product);
             }
         }
 
-        model.put("products", products);
+        model.put("allProducts", allProducts);
+        model.put("productsToReview", productsToReview);
+        model.put("reviewedProducts", reviewedProducts);
         model.put("customer", customer);
-        model.put("reviewedProductIds", reviewedProductIds);
         model.put("userReviews", userReviews);
         return model;
     }
@@ -65,8 +76,12 @@ public class ReviewService {
         List<Integer> uniquePurchasedProductIds = orderProductRepository.findUniqueProductIdsByCustomerId(customer.getId());
         boolean hasPurchased = uniquePurchasedProductIds.contains(productId);
         
-        // Check if customer already reviewed the product
-        boolean hasReviewed = reviewRepository.findReviewDtoByProductAndCustomer(productId, customer.getId()).isPresent();
+        // Check if customer already reviewed the product (any review, active or inactive)
+        Product product = productRepository.findById(productId).orElse(null);
+        boolean hasReviewed = false;
+        if (product != null) {
+            hasReviewed = reviewRepository.findByProductAndCustomer(product, customer).isPresent();
+        }
 
         return hasPurchased && !hasReviewed;
     }

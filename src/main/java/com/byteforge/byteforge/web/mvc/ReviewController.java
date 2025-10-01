@@ -25,9 +25,14 @@ public class ReviewController {
     // Страница: форма создания отзыва
     @GetMapping("/create/{productId}")
     public String createReviewForm(@PathVariable Integer productId, Model model, Authentication authentication) {
-            model.addAttribute("product", reviewService.getProductBasicInfo(productId));
-            model.addAttribute("productId", productId);
-            return "review-form";
+        // Check if customer can review this product
+        if (!reviewService.canCustomerReviewProduct(authentication.getName(), productId)) {
+            return "redirect:/reviews/my-orders?error=already-reviewed";
+        }
+        
+        model.addAttribute("product", reviewService.getProductBasicInfo(productId));
+        model.addAttribute("productId", productId);
+        return "review-form";
     }
 
     // Страница: отзывы по продукту (теперь загружается через API)

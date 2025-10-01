@@ -1,18 +1,15 @@
 package com.byteforge.byteforge.repositories;
 
-import com.byteforge.byteforge.entities.ShoppingCart;
-import com.byteforge.byteforge.entities.WishlistItem;
 import com.byteforge.byteforge.dto.response.ShoppingCartResponseDto;
+import com.byteforge.byteforge.entities.ShoppingCart;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Integer> {

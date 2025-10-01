@@ -90,15 +90,15 @@
 <!-- User Account Script Fragment -->
 <script th:fragment="user-account-script">
     document.addEventListener('DOMContentLoaded', function () {
-        fetch('/api/profile/name', {credentials: 'include'})
+        fetch('/api/profile', {credentials: 'include'})
             .then(response => response.ok ? response.json() : null)
-            .then(customerName => {
+            .then(profile => {
                 const link = document.getElementById('user-account-link');
                 const logoutItem = document.getElementById('logout-item');
 
-                if (customerName && customerName.firstName) {
+                if (profile && profile.firstName) {
                     // Пользователь аутентифицирован
-                    link.innerHTML = '<i class="bi bi-person me-1"></i> ' + customerName.firstName;
+                    link.innerHTML = '<i class="bi bi-person me-1"></i> ' + profile.firstName;
                     link.setAttribute('href', '/profile');
                     link.onclick = null;
                     logoutItem.style.display = 'block'; // Показываем кнопку Sign Out
@@ -109,8 +109,8 @@
                         notificationsItem.style.display = 'block';
                     }
                     
-                    // Загружаем счетчик непрочитанных уведомлений
-                    loadUnreadNotificationsCount();
+                    // Загружаем счетчик непрочитанных уведомлений с уже полученным профилем
+                    loadUnreadNotificationsCount(profile);
                 } else {
                     // Пользователь не аутентифицирован
                     link.innerHTML = '<i class="bi bi-person me-1"></i> Sign In';
@@ -126,7 +126,7 @@
                 }
             })
             .catch(error => {
-                console.error('Error fetching customer name:', error);
+                console.error('Error fetching profile:', error);
                 // В случае ошибки показываем как неаутентифицированного пользователя
                 const logoutItem = document.getElementById('logout-item');
                 const notificationsItem = document.getElementById('notifications-item');
@@ -135,45 +135,40 @@
             });
     });
 
-    function loadUnreadNotificationsCount() {
+    function loadUnreadNotificationsCount(profile) {
         // Проверяем, не находимся ли мы на странице уведомлений
         if (window.location.pathname === '/notifications') {
             return; // Не загружаем счетчик на странице уведомлений
         }
         
-        fetch('/api/profile')
-            .then(response => response.json())
-            .then(profile => {
-                if (profile && profile.userId) {
-                    return fetch(`/api/notifications/user/${profile.userId}/unread/count`);
-                }
-                throw new Error('No user ID');
-            })
-            .then(response => response.json())
-            .then(count => {
-                const bellIcon = document.getElementById('bell-icon');
-                const countSpan = document.getElementById('notification-count');
-                const notificationsItem = document.getElementById('notifications-item');
-                
-                if (bellIcon && countSpan && notificationsItem) {
-                    if (count > 0) {
-                        // Красный колокольчик с белой цифрой
-                        bellIcon.style.color = '#dc3545';
-                        countSpan.textContent = count;
-                        countSpan.style.display = 'inline';
-                        notificationsItem.style.display = 'block';
-                    } else {
-                        // Скрываем колокольчик если нет уведомлений
-                        notificationsItem.style.display = 'none';
+        if (profile && profile.userId) {
+            fetch(`/api/notifications/user/${profile.userId}/unread/count`)
+                .then(response => response.json())
+                .then(count => {
+                    const bellIcon = document.getElementById('bell-icon');
+                    const countSpan = document.getElementById('notification-count');
+                    const notificationsItem = document.getElementById('notifications-item');
+                    
+                    if (bellIcon && countSpan && notificationsItem) {
+                        if (count > 0) {
+                            // Красный колокольчик с белой цифрой
+                            bellIcon.style.color = '#dc3545';
+                            countSpan.textContent = count;
+                            countSpan.style.display = 'inline';
+                            notificationsItem.style.display = 'block';
+                        } else {
+                            // Скрываем колокольчик если нет уведомлений
+                            notificationsItem.style.display = 'none';
+                        }
                     }
-                }
-            })
-            .catch(error => {
-                console.error('Error loading unread notifications count:', error);
-                // В случае ошибки скрываем колокольчик
-                const notificationsItem = document.getElementById('notifications-item');
-                if (notificationsItem) notificationsItem.style.display = 'none';
-            });
+                })
+                .catch(error => {
+                    console.error('Error loading unread notifications count:', error);
+                    // В случае ошибки скрываем колокольчик
+                    const notificationsItem = document.getElementById('notifications-item');
+                    if (notificationsItem) notificationsItem.style.display = 'none';
+                });
+        }
     }
 
     async function logout() {

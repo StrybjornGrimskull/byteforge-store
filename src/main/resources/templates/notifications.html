@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;600&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
         /* Фоновое изображение для страницы */
@@ -25,69 +25,70 @@
             -ms-user-select: none;
         }
 
-        /* Glassmorphism эффект для карточек */
         .card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            border: none;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             border-radius: 15px;
             transition: all 0.3s ease;
+            color: white;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        .new-badge {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+            margin-right: 12px;
+            flex-shrink: 0;
+            align-self: flex-start;
         }
 
-        /* Стили для уведомлений */
-        .notification-item {
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
+        .notification-item.unread .card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(147, 197, 253, 0.2));
+            border: 2px solid rgba(59, 130, 246, 0.5);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2), 0 0 0 1px rgba(59, 130, 246, 0.1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .notification-item.unread {
-            border-left: 4px solid #007bff;
-            background: linear-gradient(135deg, rgba(0, 123, 255, 0.1), rgba(0, 123, 255, 0.05));
+        .notification-item.unread .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 2s infinite;
         }
 
-        .notification-approved {
-            border-left: 4px solid #28a745;
-            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(40, 167, 69, 0.05));
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
-        .notification-rejected {
-            border-left: 4px solid #dc3545;
-            background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(220, 53, 69, 0.05));
+
+
+        /* Улучшенная читаемость текста */
+        .card-body p {
+            color: rgba(255, 255, 255, 0.95) !important;
+            font-weight: 500;
+            line-height: 1.5;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
-        /* Иконки уведомлений */
-        .notification-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
+        .card-body small {
+            color: rgba(255, 255, 255, 0.8) !important;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
-        .notification-icon.approved {
-            background: rgba(40, 167, 69, 0.2);
-            color: #28a745;
-        }
-
-        .notification-icon.rejected {
-            background: rgba(220, 53, 69, 0.2);
-            color: #dc3545;
-        }
-
-        .notification-icon.default {
-            background: rgba(108, 117, 125, 0.2);
-            color: #6c757d;
-        }
-
-        /* Кнопки */
         .btn {
             border-radius: 8px;
             font-weight: 500;
@@ -98,184 +99,41 @@
             transform: translateY(-2px);
         }
 
-        .mark-all-read-btn {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            border: none;
+
+        /* Заголовок в стиле product-details */
+        .notifications-header {
+            background: transparent;
             color: white;
+            padding: 1.5rem 0;
+            margin-bottom: 1.5rem;
         }
 
-        .mark-all-read-btn:hover {
-            background: linear-gradient(135deg, #0056b3, #004085);
-            color: white;
+        .breadcrumb a {
+            text-decoration: none;
+        }
+        
+        /* Стили для хлебных крошек */
+        .breadcrumb-item + .breadcrumb-item::before {
+            color: rgba(255, 255, 255, 0.7);
+            content: "/";
+        }
+        
+        .breadcrumb-item.active {
+            color: rgba(255, 255, 255, 0.5);
         }
 
-        /* Заголовок */
-        .page-header {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
 
-        .page-title {
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 600;
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .page-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.8;
-            margin-bottom: 0;
-        }
-
-        /* Адаптивность */
-        @media (max-width: 768px) {
-            .page-title {
-                font-size: 2rem;
-            }
-            
-            .page-header {
-                padding: 1.5rem;
-            }
-        }
-
-        /* Фиксированная позиция для кнопок действий */
-        .action-buttons {
-            position: sticky;
-            top: 20px;
-            z-index: 10;
-        }
     </style>
 </head>
 <body>
 
 <div th:replace="~{fragments/navigation :: navigation}"></div>
 
-    body {
-        background-image: url('/uploads/icons/opoy7.jpg');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        background-repeat: no-repeat;
-        font-family: 'Ubuntu', sans-serif;
-        color: white;
-        user-select: none;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-    }
-
-    h1 { 
-        color: white; 
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        font-size: 2.5rem;
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: 600;
-    }
-
-    .notifications-header {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-        backdrop-filter: blur(10px);
-        border: none;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        color: white;
-        padding: 1.5rem 0;
-        margin-bottom: 1.5rem;
-    }
-    .notifications-header .breadcrumb {
-        margin-bottom: 0.5rem;
-        background: transparent;
-        padding: 0;
-    }
-    .notifications-header .breadcrumb a {
-        color: rgba(255, 255, 255, 0.8);
-        text-decoration: none;
-        transition: color 0.2s;
-    }
-    .notifications-header .breadcrumb a:hover {
-        color: white;
-        text-decoration: none;
-    }
-    .notifications-header .breadcrumb-item + .breadcrumb-item::before {
-        color: rgba(255, 255, 255, 0.6);
-    }
-    .notifications-header .breadcrumb-item.active {
-        color: rgba(255, 255, 255, 0.6);
-    }
-    .notifications-header h1 {
-        font-size: 1.8rem;
-        font-weight: 600;
-        margin-top: 1rem;
-        color: white;
-    }
-    .notifications-header p {
-        color: rgba(255, 255, 255, 0.9);
-        margin-bottom: 0;
-    }
-    .notification-item {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-        border: none;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        border-left: 4px solid rgba(255, 255, 255, 0.3);
-        transition: all 0.2s;
-        color: white;
-    }
-    .notification-item.unread {
-        border-left-color: #0d6efd;
-        background: linear-gradient(135deg, rgba(13, 110, 253, 0.2), rgba(13, 110, 253, 0.1));
-    }
-    .notification-item:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    }
-    .notification-approved {
-        border-left-color: #198754;
-    }
-    .notification-rejected {
-        border-left-color: #dc3545;
-    }
-    .notification-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-        backdrop-filter: blur(10px);
-    }
-    .notification-icon.approved {
-        background: linear-gradient(135deg, rgba(25, 135, 84, 0.3), rgba(25, 135, 84, 0.1));
-        color: #198754;
-        border: 1px solid rgba(25, 135, 84, 0.3);
-    }
-    .notification-icon.rejected {
-        background: linear-gradient(135deg, rgba(220, 53, 69, 0.3), rgba(220, 53, 69, 0.1));
-        color: #dc3545;
-        border: 1px solid rgba(220, 53, 69, 0.3);
-    }
-    .notification-icon.default {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
-        color: rgba(255, 255, 255, 0.8);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    .mark-all-read-btn {
-        position: sticky;
-        top: 20px;
-        z-index: 10;
-    }
-</style>
-
 <div class="min-vh-100">
     <!-- Notifications Header -->
     <header class="notifications-header">
         <div class="container">
+            <!-- Breadcrumb navigation -->
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a th:href="@{/}" class="text-white">Home</a></li>
@@ -283,10 +141,10 @@
                     <li class="breadcrumb-item active text-white-50" aria-current="page">Notifications</li>
                 </ol>
             </nav>
-            <div class="d-flex align-items-center justify-content-between">
+            <div class="mt-3 d-flex align-items-center justify-content-between">
                 <div>
-                    <h1 class="mb-1">Notifications</h1>
-                    <p>Stay updated with your account activity</p>
+                    <h1 class="page-title mb-0">Notifications</h1>
+                    <p class="page-subtitle mt-2">Stay updated with your account activity</p>
                 </div>
                 <div class="d-flex align-items-center gap-3">
                     <span class="badge bg-warning text-dark fs-6" id="unread-count">0 unread</span>
@@ -320,7 +178,7 @@
                 </div>
 
                 <!-- Notifications List -->
-                <div id="notifications-list" class="d-none">
+                <div id="notifications-container" class="d-none">
                     <!-- Notifications will be loaded here -->
                 </div>
             </div>
@@ -328,8 +186,7 @@
     </div>
 </div>
 
-<th:block th:replace="~{fragments/footer :: footer}"></th:block>
-<script th:replace="~{fragments/navigation :: user-account-script}"></script>
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -339,23 +196,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentUserId = null;
 
     // Helper functions to extract nested ternary operations
-    function getIconClass(isApproved, isRejected) {
-        if (isApproved) return 'approved';
-        if (isRejected) return 'rejected';
-        return 'default';
-    }
-
-    function getIconName(isApproved, isRejected) {
-        if (isApproved) return 'bi-check-circle';
-        if (isRejected) return 'bi-x-circle';
-        return 'bi-bell';
-    }
-
-    function getCardClass(isApproved, isRejected) {
-        if (isApproved) return 'notification-approved';
-        if (isRejected) return 'notification-rejected';
-        return '';
-    }
 
     function handleDeleteAllResponse(allSuccessful) {
         if (allSuccessful) {
@@ -388,33 +228,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
     function loadNotifications() {
-        if (!currentUserId) {
-            console.error('No current user ID available');
-            return;
-        }
-        
-        console.log('Loading notifications for user ID:', currentUserId);
+        if (!currentUserId) return;
+
         fetch(`/api/notifications/user/${currentUserId}`)
             .then(response => {
-                console.log('Notifications response status:', response.status);
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 return response.json();
             })
             .then(notifications => {
-                console.log('Notifications data:', notifications);
-                document.getElementById('loading-state').classList.add('d-none');
-                
-                if (!notifications || notifications.length === 0) {
-                    console.log('No notifications found');
-                    document.getElementById('empty-state').classList.remove('d-none');
-                    return;
-                }
-                
-                console.log('Rendering', notifications.length, 'notifications');
-                document.getElementById('notifications-list').classList.remove('d-none');
-                renderNotifications(notifications);
+                console.log('Notifications loaded:', notifications);
+                displayNotifications(notifications);
                 updateUnreadCount(notifications);
             })
             .catch(error => {
@@ -424,26 +249,31 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    function renderNotifications(notifications) {
-        const container = document.getElementById('notifications-list');
+    function displayNotifications(notifications) {
+        const loadingState = document.getElementById('loading-state');
+        const emptyState = document.getElementById('empty-state');
+        const container = document.getElementById('notifications-container');
+
+        loadingState.classList.add('d-none');
+
+        if (!notifications || notifications.length === 0) {
+            emptyState.classList.remove('d-none');
+            container.classList.add('d-none');
+            return;
+        }
+
+        emptyState.classList.add('d-none');
+        container.classList.remove('d-none');
+
         container.innerHTML = notifications.map(notification => {
-            const isApproved = notification.message.includes('approved') || notification.message.includes('одобрен');
-            const isRejected = notification.message.includes('did not pass moderation') || notification.message.includes('не прошел модерацию');
-            
-            // Extract nested ternary operations
-            const iconClass = getIconClass(isApproved, isRejected);
-            const icon = getIconName(isApproved, isRejected);
             const itemClass = notification.isRead ? 'notification-item' : 'notification-item unread';
-            const cardClass = getCardClass(isApproved, isRejected);
             
             return `
-                <div class="card mb-3 ${itemClass} ${cardClass}" 
+                <div class="card mb-3 ${itemClass}"
                      data-notification-id="${notification.id}">
                     <div class="card-body">
                         <div class="d-flex align-items-start">
-                            <div class="notification-icon ${iconClass} me-3 flex-shrink-0">
-                                <i class="bi ${icon}"></i>
-                            </div>
+                            ${!notification.isRead ? '<div class="new-badge">NEW</div>' : ''}
                             <div class="flex-grow-1">
                                 <p class="mb-2">${notification.message}</p>
                                 <small style="color: rgba(255, 255, 255, 0.7);">
@@ -451,14 +281,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                     ${formatDate(notification.createdAt)}
                                 </small>
                             </div>
-                            <div class="flex-shrink-0 d-flex gap-2">
-                                ${!notification.isRead ? 
-                                    `<button class="btn btn-sm btn-outline-light" onclick="markAsRead(${notification.id})" title="Mark as read">
-                                        <i class="bi bi-check"></i>
-                                    </button>` : 
-                                    `<span class="badge bg-success">Read</span>`
-                                }
-                                <button class="btn btn-sm btn-outline-danger" onclick="deleteNotification(${notification.id})" title="Delete notification">
+                            <div class="d-flex flex-column gap-2">
+                                ${!notification.isRead ? `
+                                    <span class="text-white" style="cursor: pointer;" onclick="markAsRead(${notification.id})">
+                                        Read
+                                    </span>
+                                ` : ''}
+                                <button class="btn btn-outline-danger btn-sm" onclick="deleteNotification(${notification.id})">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </div>
@@ -472,24 +301,20 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateUnreadCount(notifications) {
         const unreadCount = notifications.filter(n => !n.isRead).length;
         const countElement = document.getElementById('unread-count');
-        countElement.textContent = `${unreadCount} unread`;
-        countElement.className = unreadCount > 0 ? 'badge bg-warning text-dark fs-6' : 'badge bg-success fs-6';
+        if (countElement) {
+            countElement.textContent = `${unreadCount} unread`;
+        }
     }
 
     function formatDate(dateString) {
         const date = new Date(dateString);
-        const now = new Date();
-        const diffInHours = (now - date) / (1000 * 60 * 60);
-        
-        if (diffInHours < 1) {
-            return 'Just now';
-        } else if (diffInHours < 24) {
-            return `${Math.floor(diffInHours)} hours ago`;
-        } else if (diffInHours < 48) {
-            return 'Yesterday';
-        } else {
-            return date.toLocaleDateString();
-        }
+        return date.toLocaleDateString('ru-RU', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
     }
 
     window.markAsRead = function(notificationId) {
@@ -498,13 +323,15 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => {
             if (response.ok) {
-                // Update the UI
+                // Update UI
                 const notificationElement = document.querySelector(`[data-notification-id="${notificationId}"]`);
                 if (notificationElement) {
                     notificationElement.classList.remove('unread');
-                    const button = notificationElement.querySelector('button');
-                    if (button) {
-                        button.outerHTML = '<span class="badge bg-success">Read</span>';
+                    notificationElement.classList.add('notification-item');
+                    // Remove mark as read button
+                    const markAsReadBtn = notificationElement.querySelector('button[onclick*="markAsRead"]');
+                    if (markAsReadBtn) {
+                        markAsReadBtn.remove();
                     }
                 }
                 // Reload notifications to update count
@@ -602,6 +429,9 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 </script>
+
+<!-- Navigation Script -->
+<div th:replace="~{fragments/navigation :: user-account-script}"></div>
 
 </body>
 </html>
