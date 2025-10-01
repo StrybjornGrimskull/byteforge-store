@@ -19,17 +19,17 @@ public class PageController {
     @GetMapping("/wishlist")
     @PreAuthorize("isAuthenticated()")
     public String wishlist() {
-        return "wishlist.html";
+        return "wishlist";
     }
 
     @GetMapping("/shopping-cart")
-    public String shopping_cart() {
-        return "shopping-cart.html";
+    public String shoppingCart() {
+        return "shopping-cart";
     }
 
     @GetMapping("/checkout")
     public String checkout() {
-        return "checkout.html";
+        return "checkout";
     }
 
     @GetMapping("/profile")
@@ -38,5 +38,11 @@ public class PageController {
             ProfileResponseDto profile = profileService.getProfileByEmail(email);
             model.addAttribute("user", profile);
         return "profile";
+    }
+
+    @GetMapping("/notifications")
+    @PreAuthorize("isAuthenticated()")
+    public String notifications() {
+        return "notifications";
     }
 }

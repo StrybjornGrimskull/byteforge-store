@@ -34,6 +34,7 @@ public class ProjectSecurityConfig {
                         .requestMatchers("/admin/dashboard/**").hasAnyRole("ADMIN", "MODERATOR")
                         .requestMatchers("/admin/dashboard/reviews").hasAnyRole("ADMIN", "MODERATOR")
                         .requestMatchers("/notices").hasRole("USER")
+                        .requestMatchers("/notifications").authenticated()
                         .requestMatchers("/reviews/**", "/api/reviews/**").authenticated()
                         .requestMatchers("/", "/contact", "/error", "/register", "/invalidSession", "/apiLogin").permitAll()
                 );

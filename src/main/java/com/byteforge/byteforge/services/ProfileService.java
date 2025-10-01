@@ -7,6 +7,7 @@ import com.byteforge.byteforge.entities.Customer;
 import com.byteforge.byteforge.entities.Profile;
 import com.byteforge.byteforge.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ public class ProfileService {
 
 
     @Transactional(readOnly = true)
+    @Cacheable("userProfiles")
     public ProfileResponseDto getProfileByEmail(String email) {
         Customer customer = customerRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("Customer not found"));

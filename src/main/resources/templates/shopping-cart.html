@@ -94,10 +94,13 @@
             position: relative !important;
         }
 
-        .btn-checkout:disabled {
-            background-color: rgba(255, 255, 255, 0.5) !important;
-            color: #666 !important;
-            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+        .btn-checkout:disabled,
+        .btn-checkout.disabled {
+            background-color: rgba(255, 255, 255, 0.3) !important;
+            color: #999 !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+            cursor: not-allowed !important;
+            pointer-events: none !important;
         }
 
         /* Remove hover effects for checkout button */
@@ -254,7 +257,7 @@
 </head>
 <body>
 <!-- Navigation Fragment -->
-<div th:replace="fragments/navigation :: navigation"></div>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
 
 <!-- Main Content -->
 <!-- Shopping Cart Header -->
@@ -315,7 +318,7 @@
 </div>
 
 <!-- Footer Fragment -->
-<th:block th:replace="fragments/footer :: footer"></th:block>
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
 <!-- jQuery and Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -357,7 +360,8 @@
             $('#checkout-btn')
                 .addClass('disabled')
                 .attr('aria-disabled', 'true')
-                .css('opacity', '0.65');
+                .removeAttr('href')
+                .css('pointer-events', 'none');
         }
 
         // Enable checkout button
@@ -365,7 +369,8 @@
             $('#checkout-btn')
                 .removeClass('disabled')
                 .attr('aria-disabled', 'false')
-                .css('opacity', '1');
+                .attr('href', '/checkout')
+                .css('pointer-events', 'auto');
         }
 
         // Load cart items
@@ -533,13 +538,10 @@
         // Initialize cart loading
         loadCartItems();
         
-        // Force enable checkout button initially
-        enableCheckoutButton();
+        // Initially disable checkout button until cart is loaded
+        disableCheckoutButton();
         
-        // Force remove disabled class and attributes
-        $('#checkout-btn').removeClass('disabled').removeAttr('aria-disabled').css('pointer-events', 'auto');
-        
-        // Force update totals after a short delay
+        // Update totals after a short delay to check cart state
         setTimeout(function() {
             updateTotals();
         }, 1000);
@@ -547,7 +549,7 @@
 </script>
 
 <!-- User Account Script -->
-<div th:replace="fragments/navigation :: user-account-script"></div>
+<div th:replace="~{fragments/navigation :: user-account-script}"></div>
 
 </body>
 </html>

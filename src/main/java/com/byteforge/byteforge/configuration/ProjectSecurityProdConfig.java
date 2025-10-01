@@ -58,8 +58,10 @@ public class ProjectSecurityProdConfig {
                         .requestMatchers("/wishlist/**").authenticated()
                         .requestMatchers("/api/profile/**").authenticated()
                         .requestMatchers("/api/orders/**").authenticated()
+                        .requestMatchers("/api/notifications/**").authenticated()
                         .requestMatchers("/checkout/**").authenticated()
                         .requestMatchers("/profile").authenticated()
+                        .requestMatchers("/notifications").authenticated()
                         .requestMatchers("/orders/history").authenticated()
                         .requestMatchers("/favicon.ico").permitAll()
                         .requestMatchers(

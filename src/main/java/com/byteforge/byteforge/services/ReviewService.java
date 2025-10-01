@@ -26,6 +26,7 @@ public class ReviewService {
     private final ProductRepository productRepository;
     private final CustomerRepository customerRepository;
     private final OrderProductRepository orderProductRepository;
+    private final NotificationService notificationService;
 
     @Transactional(readOnly = true)
     public Map<String, Object> prepareMyOrdersModel(String email) {
@@ -124,10 +125,24 @@ public class ReviewService {
                 .orElseThrow(() -> new RuntimeException("Review not found"));
         review.setActive(true);
         reviewRepository.save(review);
+        
+        // Create notification for approved review
+        String message = String.format("Your review for product %s has been approved and is now visible", 
+                review.getProduct().getName());
+        notificationService.createNotification(review.getCustomer().getId(), message);
     }
 
     @Transactional
     public void deleteReview(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+        
+        // Create notification for rejected review before deleting
+        String message = String.format("Your review for product %s did not pass moderation", 
+                review.getProduct().getName());
+        notificationService.createNotification(review.getCustomer().getId(), message);
+        
+        // Delete the review
         reviewRepository.deleteById(reviewId);
     }
 }
