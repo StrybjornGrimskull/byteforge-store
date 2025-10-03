@@ -6,20 +6,34 @@
     <title>Checkout | ByteForge</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; }
-        .confirmation-section { display: none; }
-    </style>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Custom Checkout Styles -->
+    <link rel="stylesheet" th:href="@{/css/checkout.css}">
 </head>
 <body>
 <div th:replace="~{fragments/navigation :: navigation}"></div>
 
-<div class="container py-5">
-    <div class="bg-white p-4 mb-4 text-center mx-auto rounded-3 shadow-sm" style="max-width: 600px;">
-        <h1 class="display-5 fw-bold mb-3"><i class="bi bi-cart-check me-2"></i>CHECKOUT</h1>
-        <p class="mb-0">Complete your purchase with secure checkout</p>
-    </div>
+<div class="container py-4">
+    <!-- Checkout Header -->
+    <header class="product-header">
+        <div class="container">
+            <!-- Breadcrumb navigation -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/}" class="text-white">Home</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/shopping-cart}" class="text-white">Shopping Cart</a></li>
+                    <li class="breadcrumb-item active text-white-50" aria-current="page">Checkout</li>
+                </ol>
+            </nav>
+            <div class="mt-3">
+                <h1 class="mb-0 d-flex align-items-center">
+                    <i class="bi bi-cart-check me-3" style="font-size: 2rem;"></i>
+                    <span>Checkout</span>
+                </h1>
+            </div>
+        </div>
+    </header>
 
     <div class="row justify-content-center">
         <div class="col-lg-8 mx-auto">
@@ -27,16 +41,19 @@
                 <div class="card mb-4">
                     <h4 class="card-header fw-bold mb-4"><i class="bi bi-person-circle me-2"></i>Contact Information</h4>
                     <div class="card-body">
+                        <div class="alert alert-info mb-3">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Note:</strong> Contact information is taken from your profile. 
+                            <a href="/profile" class="alert-link">Update your profile</a> if needed.
+                        </div>
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="firstName" class="form-label"><span class="text-danger">*</span> First Name</label>
-                                <input type="text" class="form-control" id="firstName" name="firstName" required>
-                                <div class="invalid-feedback" id="firstNameError"></div>
+                                <div class="form-control-plaintext" id="firstName" name="firstName"></div>
                             </div>
                             <div class="col-md-6">
                                 <label for="lastName" class="form-label"><span class="text-danger">*</span> Last Name</label>
-                                <input type="text" class="form-control" id="lastName" name="lastName" required>
-                                <div class="invalid-feedback" id="lastNameError"></div>
+                                <div class="form-control-plaintext" id="lastName" name="lastName"></div>
                             </div>
                             <div class="col-md-6">
                                 <label for="email-display" class="form-label">Email</label>
@@ -44,8 +61,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="phone" class="form-label"><span class="text-danger">*</span> Phone Number</label>
-                                <input type="tel" class="form-control" id="phone" name="phoneNumber" required>
-                                <div class="invalid-feedback" id="phoneError"></div>
+                                <div class="form-control-plaintext" id="phone" name="phoneNumber"></div>
                             </div>
                         </div>
                     </div>
@@ -54,21 +70,23 @@
                 <div class="card mb-4">
                     <h4 class="card-header fw-bold mb-4"><i class="bi bi-truck me-2"></i>Shipping Address</h4>
                     <div class="card-body">
+                        <div class="alert alert-info mb-3">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Note:</strong> Shipping address is taken from your profile. 
+                            <a href="/profile" class="alert-link">Update your profile</a> if needed.
+                        </div>
                         <div class="row g-3">
                             <div class="col-12">
                                 <label for="address" class="form-label"><span class="text-danger">*</span> Address</label>
-                                <input type="text" class="form-control" id="address" name="address" required>
-                                <div class="invalid-feedback" id="addressError"></div>
+                                <div class="form-control-plaintext" id="address" name="address"></div>
                             </div>
                             <div class="col-md-6">
                                 <label for="city" class="form-label"><span class="text-danger">*</span> City</label>
-                                <input type="text" class="form-control" id="city" name="city" required>
-                                <div class="invalid-feedback" id="cityError"></div>
+                                <div class="form-control-plaintext" id="city" name="city"></div>
                             </div>
                             <div class="col-md-6">
                                 <label for="postIndex" class="form-label"><span class="text-danger">*</span> Postal Code</label>
-                                <input type="number" class="form-control" id="postIndex" name="postIndex" required>
-                                <div class="invalid-feedback" id="postIndexError"></div>
+                                <div class="form-control-plaintext" id="postIndex" name="postIndex"></div>
                             </div>
                         </div>
                     </div>
@@ -143,49 +161,21 @@
 <script>
     $(function() {
 
-        function showFieldError(field, message) {
-            const fieldMap = {
-                'phoneNumber': 'phone',
-                'firstName': 'firstName',
-                'lastName': 'lastName',
-                'city': 'city',
-                'address': 'address',
-                'postIndex': 'postIndex'
-            };
-
-            const fieldId = fieldMap[field] || field;
-            const $field = $(`#${fieldId}`);
-            const $errorElement = $(`#${fieldId}Error`);
-
-            if ($field.length && $errorElement.length) {
-                $field.addClass('is-invalid');
-                $errorElement.text(message);
-
-                $('html, body').animate({
-                    scrollTop: $field.offset().top - 100
-                }, 500);
-
-                $field.focus();
-            }
-        }
-
-        function clearValidationErrors() {
-            $('.is-invalid').removeClass('is-invalid');
-            $('.invalid-feedback').text('');
-        }
-
         function loadProfileData() {
             $.get('/api/profile', function(profile) {
                 if (profile) {
-                    $('#firstName').val(profile.firstName || '');
-                    $('#lastName').val(profile.lastName || '');
+                    $('#firstName').text(profile.firstName || '');
+                    $('#lastName').text(profile.lastName || '');
                     $('#email-display').text(profile.email || '');
-                    $('#phone').val(profile.phone || '');
-                    $('#city').val(profile.city || '');
-                    $('#address').val(profile.address || '');
-                    $('#postIndex').val(profile.postIndex || '');
+                    $('#phone').text(profile.phoneNumber || profile.phone || '');
+                    $('#city').text(profile.city || '');
+                    $('#address').text(profile.address || '');
+                    $('#postIndex').text(profile.postIndex || '');
                 }
-            }).fail(function() {
+            }).fail(function(xhr, status, error) {
+                console.error('Failed to load profile:', xhr, status, error);
+                alert('Failed to load profile data. Please update your profile first.');
+                window.location.href = '/profile';
             });
         }
 
@@ -200,44 +190,21 @@
                     $btn.prop('disabled', false).text('Place Order');
                 },
                 error: function(xhr) {
-                    handleOrderError(xhr);
+                    let errorMessage = 'An error occurred. Please try again.';
+                    try {
+                        if (xhr.status === 400 && xhr.responseText) {
+                            const errorResponse = JSON.parse(xhr.responseText);
+                            if (errorResponse.message) {
+                                errorMessage = errorResponse.message;
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Error processing error response:', e);
+                    }
+                    alert(errorMessage);
                     $btn.prop('disabled', false).text('Place Order');
                 }
             });
-        }
-
-        function handleOrderError(xhr) {
-            let errorMessage = 'An error occurred. Please try again.';
-            let hasFieldErrors = false;
-
-            try {
-                if (xhr.status === 400 && xhr.responseText) {
-                    const errorResponse = JSON.parse(xhr.responseText);
-                    if (errorResponse.errors && Array.isArray(errorResponse.errors)) {
-                        errorResponse.errors.forEach(error => {
-                            if (error.field && error.defaultMessage) {
-                                showFieldError(error.field, error.defaultMessage);
-                                hasFieldErrors = true;
-                            }
-                        });
-                    }
-                    if (errorResponse.message && !hasFieldErrors) {
-                        errorMessage = errorResponse.message;
-                    }
-                }
-            } catch (e) {
-                console.error('Error processing error response:', e);
-                if (xhr.responseText.includes('Numeric value') && xhr.responseText.includes('out of range')) {
-                    showFieldError('postIndex', 'Invalid post index');
-                    hasFieldErrors = true;
-                } else {
-                    errorMessage = 'Error processing your request';
-                }
-            }
-
-            if (!hasFieldErrors) {
-                alert(errorMessage);
-            }
         }
 
         function showOrderConfirmation(order, orderData) {
@@ -281,24 +248,59 @@
 
         $('#place-order-btn').click(function() {
             const $btn = $(this);
-            clearValidationErrors();
-
             $btn.prop('disabled', true).text('Processing...');
 
             const orderData = {
-                firstName: $('#firstName').val().trim(),
-                lastName: $('#lastName').val().trim(),
+                firstName: $('#firstName').text().trim(),
+                lastName: $('#lastName').text().trim(),
                 email: $('#email-display').text().trim(),
-                phoneNumber: $('#phone').val().trim(),
-                city: $('#city').val().trim(),
-                address: $('#address').val().trim(),
-                postIndex: $('#postIndex').val().trim() // Отправляем как строку
+                phoneNumber: $('#phone').text().trim(),
+                city: $('#city').text().trim(),
+                address: $('#address').text().trim(),
+                postIndex: $('#postIndex').text().trim()
             };
 
             placeOrder(orderData, $btn);
         });
 
+        function checkCartAndDisableButton() {
+            $.get('/api/cart', function(cart) {
+                if (!cart || !cart.items || cart.items.length === 0) {
+                    $('#place-order-btn').prop('disabled', true)
+                        .text('Cart is Empty')
+                        .addClass('btn-secondary')
+                        .removeClass('btn-primary');
+                    
+                    // Показываем сообщение о пустой корзине
+                    if ($('#empty-cart-alert').length === 0) {
+                        $('#checkout-form-container').prepend(`
+                            <div id="empty-cart-alert" class="alert alert-warning mb-4">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                <strong>Your cart is empty!</strong> Please add some products to your cart before proceeding to checkout.
+                                <a href="/products" class="alert-link ms-2">Browse Products</a>
+                            </div>
+                        `);
+                    }
+                } else {
+                    $('#place-order-btn').prop('disabled', false)
+                        .text('Place Order')
+                        .addClass('btn-primary')
+                        .removeClass('btn-secondary');
+                    
+                    // Убираем сообщение о пустой корзине если оно есть
+                    $('#empty-cart-alert').remove();
+                }
+            }).fail(function() {
+                // Если не удалось загрузить корзину, отключаем кнопку
+                $('#place-order-btn').prop('disabled', true)
+                    .text('Unable to Load Cart')
+                    .addClass('btn-secondary')
+                    .removeClass('btn-primary');
+            });
+        }
+
         loadProfileData();
+        checkCartAndDisableButton();
     });
 </script>
 

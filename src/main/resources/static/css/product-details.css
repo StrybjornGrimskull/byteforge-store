@@ -1,0 +1,197 @@
+/* Фоновое изображение для страницы */
+body {
+    background-image: url('/uploads/icons/opoy7.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    font-family: 'Ubuntu', sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Белый текст для описания */
+.product-description {
+    color: white;
+}
+
+/* Белый цвет для цены */
+.price-section {
+    color: white;
+}
+
+/* Белый цвет для статуса товара */
+.stock-status {
+    color: white;
+}
+
+/* Белый цвет для сердца в любом состоянии */
+.wishlist-heart {
+    color: white !important;
+}
+
+/* Стили для кнопки добавления в корзину */
+.btn-cart {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+    border: none;
+    font-weight: 500;
+}
+
+.btn-cart:disabled {
+    background-color: rgba(255, 255, 255, 0.5);
+    color: #666;
+}
+
+/* Remove hover effects for cart button */
+.btn-cart:hover,
+.btn-cart:focus,
+.btn-cart:active,
+.btn-cart:focus-visible,
+.btn-cart:active:focus {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    color: #333 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Современные карточки спецификаций */
+.spec-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.spec-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.spec-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.spec-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+}
+
+.specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.specs-header {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.specs-title {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.specs-title i {
+    margin-right: 0.75rem;
+    font-size: 1.3rem;
+}
+
+/* Стили для логотипа бренда в заголовке */
+.brand-logo {
+    height: 50px !important;
+    width: auto;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+}
+
+.product-image-container {
+    min-height: 400px;
+    max-height: 500px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.nav-tabs .nav-link.active {
+    font-weight: 600;
+    border-bottom: 3px solid var(--primary-color);
+}
+
+.price-section .badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.stock-badge {
+    font-size: 0.9rem;
+}
+
+/* Стили для выпадающей секции */
+.tech-specs-button {
+    text-decoration: none !important;
+    color: white !important;
+}
+
+#techSpecsIcon {
+    transition: transform 0.3s ease;
+}
+
+.product-header {
+    background: transparent;
+    color: white;
+    padding: 1.5rem 0;
+    margin-bottom: 1.5rem;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+}
+
+/* Стили для хлебных крошек */
+.breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.7);
+    content: "/";
+}
+
+.breadcrumb-item.active {
+    color: rgba(255, 255, 255, 0.5);
+}

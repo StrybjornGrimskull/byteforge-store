@@ -27,6 +27,8 @@ public record ProfileRequestDto(
         String address,
 
         @NotNull(message = "Postal Code: Postal code is required")
+        @Min(value = 10000, message = "Postal Code: Postal code must be at least 5 digits")
+        @Max(value = 999999, message = "Postal Code: Postal code must be at most 6 digits")
         Integer postIndex,
 
         @NotNull(message = "Birth Date: Birth date is required")

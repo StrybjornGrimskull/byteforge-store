@@ -1,0 +1,501 @@
+/* Фоновое изображение для страницы */
+body {
+    background-image: url('/uploads/icons/opoy7.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    font-family: 'Ubuntu', sans-serif;
+    color: white;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Белый текст для всех элементов */
+h1, h2, h3, h4, h5, h6 {
+    color: white !important;
+}
+
+p, span, div {
+    color: white !important;
+}
+
+/* Современные карточки как в product-details */
+.card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #6b7280 0%, #9ca3af 100%);
+    opacity: 0.7;
+}
+
+.card-header {
+    background: linear-gradient(135deg, rgba(107, 114, 128, 0.2), rgba(156, 163, 175, 0.2)) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    color: white !important;
+    font-weight: 600;
+}
+
+.card-header h4 {
+    margin: 0;
+    color: white !important;
+    font-size: 1.25rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.card-header i {
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+}
+
+/* Стили для полей только для чтения */
+.form-control-plaintext {
+    color: white !important;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.375rem 0;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Стили для лейблов полей */
+.form-label {
+    color: #d1d5db !important;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Стили для email поля */
+#email-display {
+    color: white !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.375rem 0;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Стили для информационных уведомлений */
+.alert-info {
+    background: linear-gradient(135deg, rgba(156, 163, 175, 0.2), rgba(156, 163, 175, 0.1)) !important;
+    border: 1px solid rgba(156, 163, 175, 0.3);
+    color: white !important;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+}
+
+/* Стили для предупреждающих уведомлений */
+.alert-warning {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1)) !important;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: white !important;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.alert-warning .alert-link {
+    color: #fbbf24 !important;
+    text-decoration: underline;
+}
+
+.alert-warning .alert-link:hover {
+    color: #fcd34d !important;
+}
+
+.alert-info .alert-link {
+    color: #d1d5db !important;
+}
+
+/* Стили для кнопок как в product-details */
+.btn-primary {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+    border: none;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+}
+
+.btn-primary:hover {
+    background-color: rgba(255, 255, 255, 1);
+    color: #333;
+}
+
+.btn-primary:disabled {
+    background-color: rgba(107, 114, 128, 0.5);
+    color: rgba(255, 255, 255, 0.6);
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background-color: rgba(107, 114, 128, 0.5);
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    cursor: not-allowed;
+}
+
+.btn-outline-secondary {
+    background-color: rgba(108, 117, 125, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+}
+
+.btn-outline-secondary:hover {
+    background-color: rgba(108, 117, 125, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: white;
+}
+
+/* Стили для хедера страницы как в product-details */
+.product-header {
+    background: transparent;
+    color: white;
+    padding: 1.5rem 0;
+    margin-bottom: 1.5rem;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+}
+
+/* Стили для хлебных крошек */
+.breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.7);
+    content: "/";
+}
+
+.breadcrumb-item.active {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Стили для заголовка страницы */
+.display-5 {
+    color: white !important;
+    font-weight: 600;
+}
+
+/* Стили для секции подтверждения заказа */
+.confirmation-section {
+    display: none;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.confirmation-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #6b7280 0%, #9ca3af 100%);
+    opacity: 0.7;
+    border-radius: 12px 12px 0 0;
+}
+
+/* Стили для карточки Order Summary */
+.confirmation-section .card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.confirmation-section .card-header {
+    background: linear-gradient(135deg, rgba(107, 114, 128, 0.2), rgba(156, 163, 175, 0.2)) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    color: white !important;
+}
+
+.confirmation-section .card-body {
+    background: transparent;
+}
+
+/* Стили для элементов заказа */
+.confirmation-section h3,
+.confirmation-section h4,
+.confirmation-section h5,
+.confirmation-section h6 {
+    color: white !important;
+}
+
+.confirmation-section p {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.confirmation-section .fw-bold {
+    color: white !important;
+}
+
+/* Стили для иконок */
+.bi-check-circle-fill {
+    color: #9ca3af !important;
+}
+
+/* Стили для элементов заказа */
+#order-number, #order-date, #shipping-address, #confirmation-email {
+    color: white !important;
+}
+
+/* Стили для товаров в заказе */
+#ordered-items {
+    color: white;
+}
+
+#ordered-items img {
+    border-radius: 0.375rem;
+}
+
+/* Стили для общей суммы */
+#order-total {
+    color: white !important;
+}
+
+/* Стили для мелких элементов в секции подтверждения */
+.confirmation-section small {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Стили для разделителей в секции подтверждения */
+.confirmation-section hr {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Стили для текста доставки в секции подтверждения */
+.confirmation-section .text-end h6, 
+.confirmation-section .text-end p {
+    color: white !important;
+}
+
+/* Стили для основного контейнера подтверждения заказа */
+.confirmation-section .bg-white {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.confirmation-section .bg-white::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #6b7280 0%, #9ca3af 100%);
+    opacity: 0.7;
+    border-radius: 1rem 1rem 0 0;
+}
+
+/* Стили для заголовка благодарности */
+.confirmation-section .bg-white h3 {
+    color: white !important;
+    font-weight: 600;
+}
+
+/* Стили для текста благодарности */
+.confirmation-section .bg-white p {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Стили для email в тексте */
+.confirmation-section .bg-white #confirmation-email {
+    color: #d1d5db !important;
+    font-weight: 600;
+}
+
+/* Стили для карточки Order Summary внутри bg-white */
+.confirmation-section .bg-white .card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.confirmation-section .bg-white .card-header {
+    background: linear-gradient(135deg, rgba(107, 114, 128, 0.2), rgba(156, 163, 175, 0.2)) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    color: white !important;
+}
+
+.confirmation-section .bg-white .card-header h5 {
+    color: white !important;
+    margin: 0;
+}
+
+.confirmation-section .bg-white .card-body {
+    background: transparent;
+}
+
+/* Стили для всех заголовков внутри bg-white */
+.confirmation-section .bg-white h4,
+.confirmation-section .bg-white h5,
+.confirmation-section .bg-white h6 {
+    color: white !important;
+}
+
+/* Стили для всех параграфов внутри bg-white */
+.confirmation-section .bg-white p {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Стили для жирного текста внутри bg-white */
+.confirmation-section .bg-white .fw-bold {
+    color: white !important;
+}
+
+/* Стили для мелкого текста внутри bg-white */
+.confirmation-section .bg-white small {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Стили для разделителей внутри bg-white */
+.confirmation-section .bg-white hr {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Стили для ссылок внутри bg-white */
+.confirmation-section .bg-white a {
+    color: #d1d5db !important;
+}
+
+.confirmation-section .bg-white a:hover {
+    color: #e5e7eb !important;
+}
+
+/* Стили для кнопки Back to Home */
+.confirmation-section .bg-white .btn-primary {
+    background-color: rgba(107, 114, 128, 0.8);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.confirmation-section .bg-white .btn-primary:hover {
+    background-color: rgba(107, 114, 128, 1);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.confirmation-section .bg-white .btn-primary i {
+    color: white;
+}
+
+/* Стили для breadcrumb */
+.breadcrumb {
+    background-color: transparent;
+}
+
+.breadcrumb-item a {
+    color: white !important;
+}
+
+.breadcrumb-item.active {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Стили для навигации */
+.navbar {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(10px);
+}
+
+/* Стили для футера */
+footer {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(10px);
+}
+
+/* Стили для ссылок */
+a {
+    color: #d1d5db !important;
+}
+
+a:hover {
+    color: #e5e7eb !important;
+}
+
+/* Стили для текста ошибок и звездочек обязательных полей */
+.text-danger {
+    color: #ef4444 !important;
+}
+
+/* Стили для разделителей */
+hr {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Стили для контейнера */
+.container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Стили для карточек с тенью */
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Стили для элементов списка */
+.fw-bold {
+    color: white !important;
+}
+
+/* Стили для мелкого текста */
+small {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Стили для текста доставки */
+.text-end h6, .text-end p {
+    color: white !important;
+}
+
+/* Стили для заголовков карточек */
+.card-header h5 {
+    margin: 0;
+    color: white !important;
+}
+
+/* Стили для элементов заказа */
+.card-body h6 {
+    color: white !important;
+    font-weight: 600;
+}
+
+.card-body p {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
