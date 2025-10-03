@@ -1,31 +1,36 @@
 package com.byteforge.byteforge.dto.request;
 
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
 public record ProfileRequestDto(
-        @Size(max = 100, message = "First name must not exceed 100 characters")
+        @NotBlank(message = "First Name: First name is required")
+        @Size(max = 100, message = "First Name: First name must not exceed 100 characters")
         String firstName,
 
-        @Size(max = 100, message = "Last name must not exceed 100 characters")
+        @NotBlank(message = "Last Name: Last name is required")
+        @Size(max = 100, message = "Last Name: Last name must not exceed 100 characters")
         String lastName,
 
-        @Size(max = 20, message = "Phone must not exceed 20 characters")
-        @Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{10}$|^$", message = "Phone must be a valid phone number or empty")
+        @NotBlank(message = "Phone Number: Phone number is required")
+        @Size(max = 20, message = "Phone Number: Phone must not exceed 20 characters")
+        @Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{10}$", message = "Phone Number: Phone must be a valid phone number")
         String phone,
 
-        @Size(max = 255, message = "City must not exceed 255 characters")
+        @NotBlank(message = "City: City is required")
+        @Size(max = 255, message = "City: City must not exceed 255 characters")
         String city,
 
-        @Size(max = 1000, message = "Address must not exceed 1000 characters")
+        @NotBlank(message = "Address: Address is required")
+        @Size(max = 1000, message = "Address: Address must not exceed 1000 characters")
         String address,
 
+        @NotNull(message = "Postal Code: Postal code is required")
         Integer postIndex,
 
-        @PastOrPresent(message = "Birth date must be in the past or present")
+        @NotNull(message = "Birth Date: Birth date is required")
+        @PastOrPresent(message = "Birth Date: Birth date must be in the past or present")
         LocalDate birthDate
 ) {
 }
