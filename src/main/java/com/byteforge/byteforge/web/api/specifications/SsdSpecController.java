@@ -23,8 +23,8 @@ public class SsdSpecController {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Void> updateSsdSpec(@PathVariable Integer productId,
-                                              @Valid @RequestBody SsdSpecDTO dto) {
+    public ResponseEntity<?> updateSsdSpec(@PathVariable Integer productId,
+                                           @Valid @RequestBody SsdSpecDTO dto) {
         ssdSpecService.updateSsdSpec(productId, dto);
         return ResponseEntity.ok().build();
     }

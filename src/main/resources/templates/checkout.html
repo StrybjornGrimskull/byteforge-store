@@ -264,8 +264,8 @@
         });
 
         function checkCartAndDisableButton() {
-            $.get('/api/cart', function(cart) {
-                if (!cart || !cart.items || cart.items.length === 0) {
+            $.get('/api/shopping-cart', function(cart) {
+                if (!cart || cart.length === 0) {
                     $('#place-order-btn').prop('disabled', true)
                         .text('Cart is Empty')
                         .addClass('btn-secondary')
@@ -277,7 +277,7 @@
                             <div id="empty-cart-alert" class="alert alert-warning mb-4">
                                 <i class="bi bi-exclamation-triangle me-2"></i>
                                 <strong>Your cart is empty!</strong> Please add some products to your cart before proceeding to checkout.
-                                <a href="/products" class="alert-link ms-2">Browse Products</a>
+                                <a href="/" class="alert-link ms-2">Browse Products</a>
                             </div>
                         `);
                     }

@@ -164,90 +164,10 @@
             <input type="text" class="form-control" id="lastName" maxlength="100">
             <div class="invalid-feedback" id="lastName-error"></div>
           </div>
-            <div class="col-md-12">
-                <fieldset class="form-group" aria-describedby="phoneHelp">
-                    <legend class="col-form-label pt-0 form-label">Phone</legend>
-                    <div class="input-group input-group-sm flex-nowrap align-items-center" aria-label="Phone number input">
-                        <div class="country-select-wrapper" style="position: relative; display: inline-block;">
-                            <select class="form-select" id="phoneCountry" style="width: auto; min-width: 80px; max-width: 80px; padding-left: 25px;">
-                                <option value="1">+1</option>
-                                <option value="7">+7</option>
-                                <option value="20">+20</option>
-                                <option value="27">+27</option>
-                                <option value="30">+30</option>
-                                <option value="31">+31</option>
-                                <option value="32">+32</option>
-                                <option value="33">+33</option>
-                                <option value="34">+34</option>
-                                <option value="36">+36</option>
-                                <option value="39">+39</option>
-                                <option value="40">+40</option>
-                                <option value="41">+41</option>
-                                <option value="43">+43</option>
-                                <option value="44">+44</option>
-                                <option value="45">+45</option>
-                                <option value="46">+46</option>
-                                <option value="47">+47</option>
-                                <option value="48">+48</option>
-                                <option value="49">+49</option>
-                                <option value="52">+52</option>
-                                <option value="55">+55</option>
-                                <option value="60">+60</option>
-                                <option value="61">+61</option>
-                                <option value="62">+62</option>
-                                <option value="63">+63</option>
-                                <option value="64">+64</option>
-                                <option value="65">+65</option>
-                                <option value="66">+66</option>
-                                <option value="81">+81</option>
-                                <option value="82">+82</option>
-                                <option value="84">+84</option>
-                                <option value="86">+86</option>
-                                <option value="90">+90</option>
-                                <option value="91">+91</option>
-                                <option value="351">+351</option>
-                                <option value="353">+353</option>
-                                <option value="358">+358</option>
-                                <option value="359">+359</option>
-                                <option value="370">+370</option>
-                                <option value="371">+371</option>
-                                <option value="372">+372</option>
-                                <option value="373">+373</option>
-                                <option value="375">+375</option>
-                                <option value="380">+380</option>
-                                <option value="385">+385</option>
-                                <option value="386">+386</option>
-                                <option value="420">+420</option>
-                                <option value="421">+421</option>
-                                <option value="966">+966</option>
-                                <option value="971">+971</option>
-                                <option value="972">+972</option>
-                            </select>
-                            <img id="countryFlag" src="https://flagcdn.com/w20/ua.png" style="position: absolute; left: 5px; top: 50%; transform: translateY(-50%); width: 16px; height: 12px; pointer-events: none;">
-                        </div>
-                        <span class="px-1 d-flex align-items-center" style="height: 38px; padding: 0 .25rem; line-height: 1.5;"> - (</span>
-                        <input type="text" class="form-control w-auto digit-only fs-6"
-                               style="width:3ch; min-width:3ch; max-width:3ch; text-align:center; padding:.25rem 0; border:0; background:transparent; box-shadow:none;"
-                               id="phonePart1" inputmode="numeric" pattern="\d{3}"
-                               maxlength="3" size="3" placeholder="XXX" title="3-digit area code" aria-label="Area code">
-                        <span class="px-1 d-flex align-items-center" style="height: 38px; padding: 0 .25rem; line-height: 1.5;">) - </span>
-                        <input type="text" class="form-control w-auto digit-only fs-6"
-                               style="width:3ch; min-width:3ch; max-width:3ch; text-align:center; padding:.25rem 0; border:0; background:transparent; box-shadow:none;"
-                               id="phonePart2" inputmode="numeric" pattern="\d{3}"
-                               maxlength="3" size="3" placeholder="XXX" title="3-digit exchange code" aria-label="Exchange code">
-                        <span class="px-1 d-flex align-items-center" style="height: 38px; padding: 0 .25rem; line-height: 1.5;"> - </span>
-                        <input type="text" class="form-control w-auto digit-only fs-6"
-                               style="width:2ch; min-width:2ch; max-width:2ch; text-align:center; padding:.25rem 0; border:0; background:transparent; box-shadow:none;"
-                               id="phonePart3" inputmode="numeric" pattern="\d{2}"
-                               maxlength="2" size="2" placeholder="XX" title="2-digit subscriber number" aria-label="Subscriber number part 1">
-                        <span class="px-1 d-flex align-items-center" style="height: 38px; padding: 0 .25rem; line-height: 1.5;"> - </span>
-                        <input type="text" class="form-control w-auto digit-only fs-6"
-                               style="width:2ch; min-width:2ch; max-width:2ch; text-align:center; padding:.25rem 0; border:0; background:transparent; box-shadow:none;"
-                               id="phonePart4" inputmode="numeric" pattern="\d{2}"
-                               maxlength="2" size="2" placeholder="XX" title="2-digit subscriber number" aria-label="Subscriber number part 2">
-                    </div>
+          <div class="col-md-6">
+            <label for="phone" class="form-label">Phone Number</label>
+            <input type="tel" class="form-control" id="phone" inputmode="numeric" pattern="[0-9]*" placeholder="Enter phone number" maxlength="15">
                     <div class="invalid-feedback" id="phone-error"></div>
-                </fieldset>
             </div>
           <div class="col-md-6">
             <label for="city" class="form-label">City</label>

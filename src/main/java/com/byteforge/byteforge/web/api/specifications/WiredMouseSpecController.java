@@ -22,8 +22,8 @@ public class WiredMouseSpecController {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Void> updateWiredMouseSpec(@PathVariable Integer productId,
-                                                     @Valid @RequestBody WiredMouseSpecDTO dto) {
+    public ResponseEntity<?> updateWiredMouseSpec(@PathVariable Integer productId,
+                                                  @Valid @RequestBody WiredMouseSpecDTO dto) {
         wiredMouseSpecService.updateWiredMouseSpec(productId, dto);
         return ResponseEntity.ok().build();
     }

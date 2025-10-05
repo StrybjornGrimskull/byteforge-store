@@ -34,7 +34,7 @@ public class ProfileService {
                 profile.getPhone(),
                 profile.getCity(),
                 profile.getAddress(),
-                profile.getPostIndex(),
+                profile.getPostIndex() != null ? profile.getPostIndex().toString() : null,
                 profile.getBirthDate(),
                 profile.getPhone(),
                 customer.getEmail()
@@ -64,7 +64,7 @@ public class ProfileService {
         profile.setPhone(profileDto.phone());
         profile.setCity(profileDto.city());
         profile.setAddress(profileDto.address());
-        profile.setPostIndex(profileDto.postIndex());
+        profile.setPostIndex(profileDto.postIndex() != null ? Integer.valueOf(profileDto.postIndex()) : null);
         profile.setBirthDate(profileDto.birthDate());
 
         customerRepository.save(customer);

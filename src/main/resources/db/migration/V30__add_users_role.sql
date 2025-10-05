@@ -1,8 +1,8 @@
 -- Добавляем пользователей
 INSERT INTO customers (email, password, email_verified) VALUES
-('admin@example.com', '{bcrypt}$2a$12$QbxV6bBuzcpYtnEtEnCgoesRjXVUNplz.TCsjJNhc2fTJI01dOhuu', true), -- password: Password123
-('user1@example.com', '{bcrypt}$2a$12$QbxV6bBuzcpYtnEtEnCgoesRjXVUNplz.TCsjJNhc2fTJI01dOhuu', true),
-('user2@example.com', '{noop}12345', true),
+('admin@example.com', '{bcrypt}$2a$12$QbxV6bBuzcpYtnEtEnCgoesRjXVUNplz.TCsjJNhc2fTJI01dOhuu', true),
+('moderator@example.com', '{bcrypt}$2a$12$QbxV6bBuzcpYtnEtEnCgoesRjXVUNplz.TCsjJNhc2fTJI01dOhuu', true),
+('product_manager@example.com', '{bcrypt}$2a$12$QbxV6bBuzcpYtnEtEnCgoesRjXVUNplz.TCsjJNhc2fTJI01dOhuu', true),
 ('user3@example.com', '{noop}12345', true),
 ('user4@example.com', '{noop}12345', true),
 ('user5@example.com', '{noop}12345', true),
@@ -106,10 +106,17 @@ INSERT INTO customers (email, password, email_verified) VALUES
 
 -- Добавляем роли (связь ManyToOne)
 INSERT INTO authorities (name, customer_id) VALUES
-('ROLE_ADMIN', 1),
 ('ROLE_USER', 1),
+('ROLE_ADMIN', 1),
+('ROLE_MODERATOR', 1),
+('ROLE_PRODUCT_MANAGER', 1),
+
 ('ROLE_USER', 2),
+('ROLE_MODERATOR', 2),
+
 ('ROLE_USER', 3),
+('ROLE_PRODUCT_MANAGER', 3),
+
 ('ROLE_USER', 4),
 ('ROLE_USER', 5),
 ('ROLE_USER', 6),

@@ -60,8 +60,8 @@
             </div>
         </div>
 
-        <!-- Products Card (visible only for ADMIN) -->
-        <div class="col-md-6 col-lg-4" sec:authorize="hasRole('ADMIN')">
+        <!-- Products Card (visible for ADMIN and PRODUCT_MANAGER) -->
+        <div class="col-md-6 col-lg-4" sec:authorize="hasAnyRole('ADMIN', 'PRODUCT_MANAGER')">
             <div class="card dashboard-card h-100">
                 <div class="card-body">
                     <div class="dashboard-icon">

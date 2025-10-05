@@ -22,8 +22,8 @@ public class CpuSpecController {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Void> updateCpuSpec(@PathVariable Integer productId,
-                                              @Valid @RequestBody CpuSpecDTO dto) {
+    public ResponseEntity<?> updateCpuSpec(@PathVariable Integer productId,
+                                           @Valid @RequestBody CpuSpecDTO dto) {
         cpuSpecService.updateCpuSpec(productId, dto);
         return ResponseEntity.ok().build();
     }

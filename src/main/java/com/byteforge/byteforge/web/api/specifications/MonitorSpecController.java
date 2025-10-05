@@ -22,8 +22,8 @@ public class MonitorSpecController {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Void> updateMonitorSpec(@PathVariable Integer productId,
-                                                  @Valid @RequestBody MonitorSpecDTO dto) {
+    public ResponseEntity<?> updateMonitorSpec(@PathVariable Integer productId,
+                                               @Valid @RequestBody MonitorSpecDTO dto) {
         monitorSpecService.updateMonitorSpec(productId, dto);
         return ResponseEntity.ok().build();
     }

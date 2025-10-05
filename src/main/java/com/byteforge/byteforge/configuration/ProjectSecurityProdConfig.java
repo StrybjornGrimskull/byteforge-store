@@ -38,7 +38,7 @@ public class ProjectSecurityProdConfig {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .requiresChannel(rcc -> rcc.anyRequest().requiresSecure()) //HTTPS
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/admin/dashboard/**").hasAnyRole("ADMIN", "MODERATOR")
+                        .requestMatchers("/admin/dashboard/**").hasAnyRole("ADMIN", "MODERATOR","PRODUCT_MANAGER")
                         .requestMatchers("/admin/dashboard/reviews").hasAnyRole("ADMIN", "MODERATOR")
                         .requestMatchers("/api/customers/**").hasRole("ADMIN")
                         .requestMatchers("/admin/users").hasRole("ADMIN")
@@ -76,6 +76,8 @@ public class ProjectSecurityProdConfig {
                                 "/brands",
                                 "/error",
                                 "/auth/**",
+                                "/terms",
+                                "/privacy",
                                 "api/auth/**"
                         ).permitAll()
                 );

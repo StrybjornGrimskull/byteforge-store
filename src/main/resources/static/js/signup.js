@@ -15,7 +15,7 @@ $(function() {
         }
 
         if (password !== confirmPassword) {
-            alert('Passwords do not match');
+            showConfirmPasswordError('Passwords do not match');
             return;
         }
 
@@ -53,7 +53,57 @@ $(function() {
                     $('#email').addClass('error-border');
                     alert('Email already exists. Please use a different email or sign in.');
                 } else if (xhr.status === 400) {
-                    alert('Invalid data provided. Please check your input.');
+                    // Обрабатываем ошибки валидации
+                    try {
+                        const errorData = JSON.parse(xhr.responseText);
+                        if (Array.isArray(errorData)) {
+                            let errorMessage = '';
+                            errorData.forEach(err => {
+                                if (err.field === 'password') {
+                                    showPasswordError(err.message);
+                                } else if (err.field === 'email') {
+                                    errorMessage += 'Email: ' + err.message + '\n';
+                                } else if (err.field === 'firstName') {
+                                    errorMessage += 'First Name: ' + err.message + '\n';
+                                } else if (err.field === 'lastName') {
+                                    errorMessage += 'Last Name: ' + err.message + '\n';
+                                } else {
+                                    errorMessage += err.field + ': ' + err.message + '\n';
+                                }
+                            });
+                            if (errorMessage.trim()) {
+                                alert(errorMessage.trim());
+                            }
+                        } else {
+                            // Обрабатываем текстовые ошибки от сервера
+                            const responseText = xhr.responseText;
+                            if (responseText && responseText.includes('compromised')) {
+                                showPasswordError('Password has been compromised. Please choose a different password.');
+                            } else if (responseText && responseText.includes('Passwords do not match')) {
+                                showConfirmPasswordError('Passwords do not match');
+                            } else if (responseText && responseText.includes('Password must be between 8 and 100 characters')) {
+                                showPasswordError('Password must be between 8 and 100 characters');
+                            } else if (responseText && responseText.includes('Password must contain at least one')) {
+                                showPasswordError('Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character');
+                            } else {
+                                alert('Invalid data provided. Please check your input.');
+                            }
+                        }
+                    } catch (e) {
+                        // Обрабатываем текстовые ошибки от сервера
+                        const responseText = xhr.responseText;
+                        if (responseText && responseText.includes('compromised')) {
+                            showPasswordError('Password has been compromised. Please choose a different password.');
+                        } else if (responseText && responseText.includes('Passwords do not match')) {
+                            showConfirmPasswordError('Passwords do not match');
+                        } else if (responseText && responseText.includes('Password must be between 8 and 100 characters')) {
+                            showPasswordError('Password must be between 8 and 100 characters');
+                        } else if (responseText && responseText.includes('Password must contain at least one')) {
+                            showPasswordError('Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character');
+                        } else {
+                            alert('Invalid data provided. Please check your input.');
+                        }
+                    }
                 } else {
                     alert('An error occurred during registration. Please try again.');
                 }
@@ -77,6 +127,16 @@ $(function() {
     // Clear email error when user starts typing
     $('#email').on('input', function() {
         hideEmailError();
+    });
+    
+    // Clear password error when user starts typing
+    $('#password').on('input', function() {
+        hidePasswordError();
+    });
+    
+    // Clear confirm password error when user starts typing
+    $('#confirmPassword').on('input', function() {
+        hideConfirmPasswordError();
     });
 
     // Password strength indicator (optional enhancement)
@@ -141,5 +201,27 @@ $(function() {
     function hideEmailError() {
         $('#email-error').hide();
         $('#email').removeClass('error-border');
+    }
+    
+    function showPasswordError(message) {
+        $('#password-error-text').text(message);
+        $('#password-error').show();
+        $('#password').addClass('error-border');
+    }
+    
+    function hidePasswordError() {
+        $('#password-error').hide();
+        $('#password').removeClass('error-border');
+    }
+    
+    function showConfirmPasswordError(message) {
+        $('#confirmPassword-error-text').text(message);
+        $('#confirmPassword-error').show();
+        $('#confirmPassword').addClass('error-border');
+    }
+    
+    function hideConfirmPasswordError() {
+        $('#confirmPassword-error').hide();
+        $('#confirmPassword').removeClass('error-border');
     }
 });

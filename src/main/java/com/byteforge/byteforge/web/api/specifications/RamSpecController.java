@@ -22,8 +22,8 @@ public class RamSpecController {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Void> updateRamSpec(@PathVariable Integer productId,
-                                              @Valid @RequestBody RamSpecDTO dto) {
+    public ResponseEntity<?> updateRamSpec(@PathVariable Integer productId,
+                                           @Valid @RequestBody RamSpecDTO dto) {
         ramSpecService.updateRamSpec(productId, dto);
         return ResponseEntity.ok().build();
     }

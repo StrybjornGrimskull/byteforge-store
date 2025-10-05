@@ -22,8 +22,8 @@ public class WirelessKeyboardSpecController {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Void> updateWirelessKeyboardSpec(@PathVariable Integer productId,
-                                                           @Valid @RequestBody WirelessKeyboardSpecDTO dto) {
+    public ResponseEntity<?> updateWirelessKeyboardSpec(@PathVariable Integer productId,
+                                                        @Valid @RequestBody WirelessKeyboardSpecDTO dto) {
         wirelessKeyboardSpecService.updateWirelessKeyboardSpec(productId, dto);
         return ResponseEntity.ok().build();
     }

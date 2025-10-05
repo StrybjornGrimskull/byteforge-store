@@ -22,8 +22,8 @@ public class PsuSpecController {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Void> updatePsuSpec(@PathVariable Integer productId,
-                                              @Valid @RequestBody PsuSpecDTO dto) {
+    public ResponseEntity<?> updatePsuSpec(@PathVariable Integer productId,
+                                           @Valid @RequestBody PsuSpecDTO dto) {
         psuSpecService.updatePsuSpec(productId, dto);
         return ResponseEntity.ok().build();
     }

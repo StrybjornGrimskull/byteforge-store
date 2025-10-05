@@ -22,8 +22,8 @@ public class MotherboardSpecController {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Void> updateMotherboardSpec(@PathVariable Integer productId,
-                                                      @Valid @RequestBody MotherboardSpecDTO dto) {
+    public ResponseEntity<?> updateMotherboardSpec(@PathVariable Integer productId,
+                                                   @Valid @RequestBody MotherboardSpecDTO dto) {
         motherboardSpecService.updateMotherboardSpec(productId, dto);
         return ResponseEntity.ok().build();
     }

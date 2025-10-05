@@ -45,4 +45,14 @@ public class PageController {
     public String notifications() {
         return "notifications";
     }
+
+    @GetMapping("/terms")
+    public String termsOfService() {
+        return "terms";
+    }
+
+    @GetMapping("/privacy")
+    public String privacyPolicy() {
+        return "privacy";
+    }
 }

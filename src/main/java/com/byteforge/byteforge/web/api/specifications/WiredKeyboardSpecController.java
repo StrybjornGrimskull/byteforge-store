@@ -22,8 +22,8 @@ public class WiredKeyboardSpecController {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Void> updateWiredKeyboardSpec(@PathVariable Integer productId,
-                                                        @Valid @RequestBody WiredKeyboardSpecDTO dto) {
+    public ResponseEntity<?> updateWiredKeyboardSpec(@PathVariable Integer productId,
+                                                     @Valid @RequestBody WiredKeyboardSpecDTO dto) {
         wiredKeyboardSpecService.updateWiredKeyboardSpec(productId, dto);
         return ResponseEntity.ok().build();
     }

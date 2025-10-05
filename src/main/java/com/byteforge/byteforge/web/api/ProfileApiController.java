@@ -36,11 +36,11 @@ public class ProfileApiController {
     }
 
     @PutMapping
-    @ResponseStatus(HttpStatus.OK)
-    public void updateProfile(
+    public ResponseEntity<Void> updateProfile(
             @RequestBody @Valid ProfileRequestDto profileDto,
             Authentication authentication) {
         String email = authentication.getName();
         profileService.updateProfile(email, profileDto);
+        return ResponseEntity.ok().build();
     }
 }

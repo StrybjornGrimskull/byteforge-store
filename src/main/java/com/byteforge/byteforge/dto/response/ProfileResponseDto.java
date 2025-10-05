@@ -9,7 +9,7 @@ public record ProfileResponseDto(
         String phone,
         String city,
         String address,
-        Integer postIndex,
+        String postIndex,
         LocalDate birthDate,
         String phoneNumber,
         String email

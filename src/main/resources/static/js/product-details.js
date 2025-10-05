@@ -432,8 +432,10 @@ async function handleSaveEdit(){
         return;
     }
 
-    await updateSpecs(productId);
-    closeModalAndReload();
+    const specSuccess = await updateSpecs(productId);
+    if (specSuccess) {
+        closeModalAndReload();
+    }
 }
 
 function getProductId() {
@@ -526,7 +528,7 @@ async function updateSpecs(productId) {
     const categoryId = parseInt($('#editCategoryId').val() || p.categoryId, 10);
     const specType = getSpecType(categoryId);
     
-    if (!specType) return;
+    if (!specType) return true; // Если нет спецификаций, считаем успехом
     
     const specPayload = collectSpecFormValues();
     const specRes = await fetch(`/api/specifications/${specType}/${productId}`, {
@@ -538,7 +540,10 @@ async function updateSpecs(productId) {
     
     if (!specRes.ok) {
         await handleSpecError(specRes);
+        return false; // Возвращаем false при ошибке
     }
+    
+    return true; // Возвращаем true при успехе
 }
 
 async function handleSpecError(specRes) {
@@ -567,9 +572,14 @@ function resetSpecErrors() {
 function showSpecErrors(errors) {
     errors.forEach(e => {
         const inputId = `spec_${e.field}`.replace(/[^a-zA-Z0-9_-]/g, '_');
-        if (inputId) {
-            $('#' + inputId).addClass('is-invalid');
-            $('#err-' + inputId).text(e.message || 'Invalid value');
+        const $input = $('#' + inputId);
+        if ($input.length) {
+            $input.addClass('is-invalid');
+            // Ищем ближайший элемент invalid-feedback
+            const $errorDiv = $input.siblings('.invalid-feedback');
+            if ($errorDiv.length) {
+                $errorDiv.text(e.message || 'Invalid value');
+            }
         }
     });
 }

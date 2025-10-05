@@ -22,8 +22,8 @@ public class WirelessMouseSpecController {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Void> updateWirelessMouseSpec(@PathVariable Integer productId,
-                                                        @Valid @RequestBody WirelessMouseSpecDTO dto) {
+    public ResponseEntity<?> updateWirelessMouseSpec(@PathVariable Integer productId,
+                                                     @Valid @RequestBody WirelessMouseSpecDTO dto) {
         wirelessMouseSpecService.updateWirelessMouseSpec(productId, dto);
         return ResponseEntity.ok().build();
     }

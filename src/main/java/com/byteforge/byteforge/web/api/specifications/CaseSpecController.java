@@ -22,8 +22,8 @@ public class CaseSpecController {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Void> updateCaseSpec(@PathVariable Integer productId,
-                                               @Valid @RequestBody CaseSpecDTO dto) {
+    public ResponseEntity<?> updateCaseSpec(@PathVariable Integer productId,
+                                            @Valid @RequestBody CaseSpecDTO dto) {
         caseSpecService.updateCaseSpec(productId, dto);
         return ResponseEntity.ok().build();
     }

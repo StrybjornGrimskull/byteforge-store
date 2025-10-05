@@ -32,12 +32,12 @@ public class ProjectSecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/css/**", "/js/**", "/uploads/**", "/favicon.ico").permitAll()
                         .requestMatchers("/admin").hasAnyRole("USER", "ADMIN", "MODERATOR")
-                        .requestMatchers("/admin/dashboard/**").hasAnyRole("ADMIN", "MODERATOR")
+                        .requestMatchers("/admin/dashboard/**").hasAnyRole("ADMIN", "MODERATOR", "PRODUCT_MANAGER")
                         .requestMatchers("/admin/dashboard/reviews").hasAnyRole("ADMIN", "MODERATOR")
                         .requestMatchers("/notices").hasRole("USER")
                         .requestMatchers("/notifications").authenticated()
                         .requestMatchers("/reviews/**", "/api/reviews/**").authenticated()
-                        .requestMatchers("/", "/contact", "/error", "/register", "/invalidSession", "/apiLogin").permitAll()
+                        .requestMatchers("/", "/contact", "/error", "/register", "/invalidSession", "/apiLogin", "/terms", "/privacy").permitAll()
                 );
         http.formLogin(withDefaults());
         return http.build();

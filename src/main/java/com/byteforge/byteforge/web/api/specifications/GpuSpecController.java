@@ -22,8 +22,8 @@ public class GpuSpecController {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Void> updateGpuSpec(@PathVariable Integer productId,
-                                              @Valid @RequestBody GpuSpecDTO dto) {
+    public ResponseEntity<?> updateGpuSpec(@PathVariable Integer productId,
+                                           @Valid @RequestBody GpuSpecDTO dto) {
         gpuSpecService.updateGpuSpec(productId, dto);
         return ResponseEntity.ok().build();
     }
