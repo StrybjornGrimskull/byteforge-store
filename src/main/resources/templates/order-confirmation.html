@@ -2,50 +2,242 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Order Confirmation</title>
+  <title>Order Confirmation - ByteForge</title>
   <!-- Inline styles for email compatibility -->
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
-    .container { max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .header { text-align: center; margin-bottom: 30px; }
-    .header h1 { color: #333; margin: 0; }
-    .order-number { background-color: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 20px; text-align: center; }
-    .order-number p { margin: 0; color: #666; }
-    .order-number strong { color: #333; }
-    .products-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-    .products-table th, .products-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-    .products-table th { background-color: #f8f9fa; font-weight: bold; color: #333; }
-    .total { text-align: right; font-size: 18px; font-weight: bold; color: #333; margin: 20px 0; }
-    .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #666; }
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;600;700&display=swap');
+    
+    body { 
+      font-family: 'Ubuntu', Arial, sans-serif; 
+      margin: 0; 
+      padding: 20px; 
+      background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+      min-height: 100vh;
+    }
+    
+    .email-container { 
+      max-width: 600px; 
+      margin: 0 auto; 
+      background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+      border-radius: 12px; 
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    
+    .header { 
+      text-align: center; 
+      padding: 40px 30px 30px 30px;
+      background: linear-gradient(160deg, #8ceabb 0%, #378f7b 100%);
+      color: white;
+    }
+    
+    .logo {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .cpu-icon {
+      font-size: 2.5rem;
+      color: white;
+    }
+    
+    .header h1 { 
+      color: white; 
+      margin: 20px 0 0 0;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+    
+    .header p {
+      color: rgba(255,255,255,0.9);
+      margin: 10px 0 0 0;
+      font-size: 1rem;
+    }
+    
+    .content {
+      padding: 30px;
+      background: #2d3436;
+    }
+    
+    .order-number { 
+      background: linear-gradient(135deg, rgba(140, 234, 187, 0.1), rgba(55, 143, 123, 0.1));
+      border: 1px solid rgba(140, 234, 187, 0.3);
+      padding: 20px; 
+      border-radius: 8px; 
+      margin-bottom: 25px; 
+      text-align: center; 
+    }
+    
+    .order-number p { 
+      margin: 0; 
+      color: #8ceabb;
+      font-size: 1.1rem;
+    }
+    
+    .order-number strong { 
+      color: white;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+    
+    .section-title {
+      color: #8ceabb;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin: 25px 0 15px 0;
+      border-bottom: 2px solid rgba(140, 234, 187, 0.3);
+      padding-bottom: 8px;
+    }
+    
+    .products-table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin: 20px 0; 
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .products-table th, .products-table td { 
+      padding: 15px; 
+      text-align: left; 
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .products-table th { 
+      background: linear-gradient(135deg, rgba(140, 234, 187, 0.2), rgba(55, 143, 123, 0.2));
+      font-weight: 600; 
+      color: white;
+      font-size: 1rem;
+    }
+    
+    .products-table td {
+      color: rgba(255,255,255,0.9);
+      font-size: 0.95rem;
+    }
+    
+    .total { 
+      text-align: right; 
+      font-size: 1.4rem; 
+      font-weight: 700; 
+      color: #8ceabb;
+      margin: 25px 0;
+      padding: 15px;
+      background: linear-gradient(135deg, rgba(140, 234, 187, 0.1), rgba(55, 143, 123, 0.1));
+      border-radius: 8px;
+      border: 1px solid rgba(140, 234, 187, 0.3);
+    }
+    
+    .footer { 
+      margin-top: 30px; 
+      padding: 25px 30px;
+      background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+      text-align: center; 
+      color: rgba(255,255,255,0.8);
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .footer p {
+      margin: 8px 0;
+      font-size: 0.95rem;
+    }
+    
+    .team-signature {
+      color: #8ceabb;
+      font-weight: 600;
+      margin-top: 15px;
+    }
+    
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(140, 234, 187, 0.3), transparent);
+      margin: 20px 0;
+    }
+    
+    .next-steps-box {
+      background: rgba(255,255,255,0.05);
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    
+    .next-steps-box p {
+      color: rgba(255,255,255,0.9);
+      margin: 0;
+      line-height: 1.6;
+    }
+    
+    .disclaimer {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.6);
+    }
   </style>
 </head>
 <body>
-<div class="container">
+<div class="email-container">
   <div class="header">
-    <h1>Thank you for your order, <span th:text="${customerName}">Customer</span>!</h1>
+    <div class="logo">
+      <span class="cpu-icon">⚙️</span>
+      <span>ByteForge</span>
+    </div>
+    <h1>Thank you for your order!</h1>
+    <p>Hi <span th:text="${customerName}">Customer</span>, your order has been confirmed</p>
   </div>
 
-  <div class="order-number">
-    <p>Your order <strong>#<span th:text="${orderId}">12345</span></strong> has been received.</p>
-  </div>
+  <div class="content">
+    <div class="order-number">
+      <p>Order Number: <strong>#<span th:text="${orderId}">12345</span></strong></p>
+      <p>Status: <strong>Confirmed</strong></p>
+    </div>
 
-  <h3>Order Details:</h3>
-  <table class="products-table">
-    <tr>
-      <th>Product</th>
-    </tr>
-    <tr th:each="product : ${products}">
-      <td th:text="${product}">Product Name</td>
-    </tr>
-  </table>
+    <div class="section-title">📦 Order Details</div>
+    
+    <table class="products-table">
+      <thead>
+        <tr>
+          <th>Product Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="product : ${products}">
+          <td th:text="${product}">Product Name</td>
+        </tr>
+      </tbody>
+    </table>
 
-  <div class="total">
-    Total: €<span th:text="${#numbers.formatDecimal(totalPrice, 1, 2)}">0.00</span>
+    <div class="divider"></div>
+
+    <div class="total">
+      Total Amount: $<span th:text="${#numbers.formatDecimal(totalPrice, 1, 2)}">0.00</span>
+    </div>
+
+    <div class="section-title">📋 Next Steps</div>
+    <div class="next-steps-box">
+      <p>
+        ✅ Your order has been received and is being processed<br>
+        📦 We will notify you when your order ships<br>
+        🚚 Estimated delivery time: 3-5 business days<br>
+        💬 Need help? Contact our support team
+      </p>
+    </div>
   </div>
 
   <div class="footer">
-    <p>We will notify you when your order ships.</p>
-    <p>Best regards,<br><strong>ByteForge Team</strong></p>
+    <p>Thank you for choosing ByteForge!</p>
+    <p>We appreciate your business and look forward to serving you again.</p>
+    <div class="team-signature">
+      Best regards,<br>
+      <strong>ByteForge Team</strong>
+    </div>
+    <div class="divider"></div>
+    <p class="disclaimer">
+      This is an automated email. Please do not reply to this message.
+    </p>
   </div>
 </div>
 </body>

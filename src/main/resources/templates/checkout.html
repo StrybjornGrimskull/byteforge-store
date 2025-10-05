@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;600&display=swap" rel="stylesheet">
     <!-- Custom Checkout Styles -->
     <link rel="stylesheet" th:href="@{/css/checkout.css}">
+    <link rel="stylesheet" th:href="@{/css/order-confirmation.css}">
 </head>
 <body>
 <div th:replace="~{fragments/navigation :: navigation}"></div>
@@ -103,50 +104,129 @@
             </div>
 
             <div id="order-confirmation" class="confirmation-section">
-                <div class="bg-white p-4 text-center mx-auto rounded-3 shadow-sm" style="max-width: 600px;">
-                    <div class="mb-4">
-                        <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
-                    </div>
-                    <h3 class="fw-bold mb-3">Thank you for your order!</h3>
-                    <p class="mb-4">Your order has been placed successfully. We've sent a confirmation email to <span id="confirmation-email" class="fw-bold"></span></p>
-
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h5 class="mb-0">Order Summary</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h6 class="fw-bold">Order Number</h6>
-                                    <p id="order-number">Loading...</p>
-                                    <h6 class="fw-bold">Order Date</h6>
-                                    <p id="order-date">Loading...</p>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <!-- Success Header -->
+                            <div class="text-center mb-5">
+                                <div class="success-animation mb-4">
+                                    <div class="success-circle">
+                                        <i class="bi bi-check-lg"></i>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <h6 class="fw-bold">Shipping Address</h6>
-                                    <p id="shipping-address">Loading...</p>
+                                <h2 class="fw-bold mb-3">Order Confirmed!</h2>
+                                <p class="lead">Thank you for choosing ByteForge. Your order has been placed successfully.</p>
+                                <div class="alert border-0 shadow-sm">
+                                    <i class="bi bi-envelope-check me-2"></i>
+                                    A confirmation email has been sent to <strong id="confirmation-email"></strong>
                                 </div>
                             </div>
-                            <hr>
-                            <h6 class="fw-bold mb-3">Items Ordered</h6>
-                            <div id="ordered-items"></div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h6 class="fw-bold">Delivery Method</h6>
-                                    <p>Standard Delivery (3-5 business days)</p>
+
+                            <!-- Order Details Card -->
+                            <div class="card border-0 shadow-lg mb-4">
+                                <div class="card-header bg-gradient text-white py-3">
+                                    <h4 class="mb-0 d-flex align-items-center">
+                                        <i class="bi bi-receipt me-2"></i>
+                                        Order Details
+                                    </h4>
                                 </div>
-                                <div class="col-md-6 text-end">
-                                    <h6 class="fw-bold">Total</h6>
-                                    <h4 id="order-total">€0.00</h4>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4">
+                                            <div class="info-section">
+                                                <h6 class="text-primary fw-bold mb-2">
+                                                    <i class="bi bi-hash me-1"></i> Order Number
+                                                </h6>
+                                                <p class="mb-3 fs-5 fw-bold text-dark" id="order-number">Loading...</p>
+                                                
+                                                <h6 class="text-primary fw-bold mb-2">
+                                                    <i class="bi bi-calendar-event me-1"></i> Order Date
+                                                </h6>
+                                                <p class="mb-3" id="order-date">Loading...</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-4">
+                                            <div class="info-section">
+                                                <h6 class="text-primary fw-bold mb-2">
+                                                    <i class="bi bi-geo-alt me-1"></i> Shipping Address
+                                                </h6>
+                                                <div id="shipping-address" class="address-box p-3 bg-light rounded">Loading...</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
+
+                            <!-- Items Ordered -->
+                            <div class="card border-0 shadow-lg mb-4">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0 d-flex align-items-center">
+                                        <i class="bi bi-box-seam me-2"></i>
+                                        Items Ordered
+                                    </h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div id="ordered-items" class="p-4"></div>
+                                    <div class="border-top p-4 bg-light">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-6">
+                                                <div class="delivery-info">
+                                                    <i class="bi bi-truck text-primary me-2"></i>
+                                                    <span class="fw-bold">Standard Delivery</span>
+                                                    <br>
+                                                    <small class="text-muted">3-5 business days</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 text-end">
+                                                <h4 class="text-success mb-0" id="order-total">€0.00</h4>
+                                                <small class="text-muted">Total Amount</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Next Steps -->
+                            <div class="card border-0 shadow-sm mb-4">
+                                <div class="card-body p-4">
+                                    <h5 class="mb-3 d-flex align-items-center">
+                                        <i class="bi bi-list-check me-2 text-primary"></i>
+                                        What's Next?
+                                    </h5>
+                                    <div class="row">
+                                        <div class="col-md-4 text-center mb-3">
+                                            <div class="step-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
+                                                <i class="bi bi-1-circle"></i>
+                                            </div>
+                                            <h6 class="fw-bold">Order Processing</h6>
+                                            <small class="text-muted">We're preparing your order</small>
+                                        </div>
+                                        <div class="col-md-4 text-center mb-3">
+                                            <div class="step-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
+                                                <i class="bi bi-2-circle"></i>
+                                            </div>
+                                            <h6 class="fw-bold">Shipping</h6>
+                                            <small class="text-muted">We'll notify you when it ships</small>
+                                        </div>
+                                        <div class="col-md-4 text-center mb-3">
+                                            <div class="step-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
+                                                <i class="bi bi-3-circle"></i>
+                                            </div>
+                                            <h6 class="fw-bold">Delivery</h6>
+                                            <small class="text-muted">Enjoy your new products!</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="text-center">
+                                <a href="/" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-house-door me-2"></i> Continue Shopping
+                                </a>
                             </div>
                         </div>
                     </div>
-
-                    <a href="/" class="btn btn-primary">
-                        <i class="bi bi-house-door me-1"></i> Back to Home
-                    </a>
                 </div>
             </div>
         </div>
@@ -157,6 +237,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/order-confirmation.js}"></script>
 
 <script>
     $(function() {
@@ -219,42 +300,8 @@
         }
 
         function showOrderConfirmation(order, orderData) {
-            $('#checkout-form-container').hide();
-            $('#order-confirmation').show();
-            $('#order-number').text('#' + (order.id || '0000'));
-            $('#order-date').text(new Date(order.createdAt || Date.now()).toLocaleString());
-            $('#shipping-address').html(`
-            ${orderData.firstName} ${orderData.lastName}<br>
-            ${orderData.address}<br>
-            ${orderData.city}, ${orderData.postIndex}
-        `);
-            $('#confirmation-email').text(orderData.email);
-
-            if (order.orderProducts && order.orderProducts.length > 0) {
-                let itemsHtml = '';
-                let total = 0;
-
-                order.orderProducts.forEach(item => {
-                    const product = item.product;
-                    const itemTotal = product.price * item.quantity;
-                    total += itemTotal;
-
-                    itemsHtml += `
-                    <div class="d-flex mb-3">
-                        <div class="me-3" style="width: 60px; height: 60px; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
-                            <img src="/uploads/${product.imageUrl}" alt="${product.name}" style="max-width: 100%; max-height: 100%;">
-                        </div>
-                        <div class="flex-grow-1">
-                            <div>${product.name}</div>
-                            <small>Qty: ${item.quantity}</small>
-                        </div>
-                        <div>€${itemTotal.toFixed(2)}</div>
-                    </div>`;
-                });
-
-                $('#ordered-items').html(itemsHtml);
-                $('#order-total').text('€' + total.toFixed(2));
-            }
+            // Use the enhanced function from external JS file
+            showEnhancedOrderConfirmation(order, orderData);
         }
 
         $('#place-order-btn').click(function() {

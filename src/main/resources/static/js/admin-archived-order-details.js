@@ -25,6 +25,12 @@ function formatCurrency(amount) {
 // Load order details
 async function loadOrderDetails() {
     const orderId = getOrderIdFromUrl();
+    
+    if (!orderId) {
+        showError('Order ID not found in URL');
+        return;
+    }
+    
     const loadingSpinner = document.getElementById('loadingSpinner');
     const orderDetails = document.getElementById('orderDetails');
 

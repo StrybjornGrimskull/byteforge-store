@@ -28,4 +28,15 @@ public class OrderController {
         model.addAttribute("orders", completedOrders);
         return "order-history";
     }
+
+    @GetMapping("/my-orders-reviews")
+    public String showMyOrdersAndReviews(Authentication authentication, Model model) {
+        if (authentication == null) {
+            return "redirect:/auth/login";
+        }
+        String email = authentication.getName();
+        List<OrderResponseDto> completedOrders = orderService.getCompletedOrdersForUser(email);
+        model.addAttribute("orders", completedOrders);
+        return "my-orders-reviews";
+    }
 } 
