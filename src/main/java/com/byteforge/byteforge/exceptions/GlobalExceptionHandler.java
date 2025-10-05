@@ -34,14 +34,14 @@ public class GlobalExceptionHandler {
         e.getBindingResult().getFieldErrors().forEach(error ->
                 errors.add(Map.of(
                         "field", error.getField(),
-                        "message", error.getDefaultMessage()
+                        "message", error.getDefaultMessage() != null ? error.getDefaultMessage() : "Validation error"
                 ))
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGeneralException(Exception e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }

@@ -1,5 +1,7 @@
 package com.byteforge.byteforge.services;
 
+import com.byteforge.byteforge.constants.ApplicationConstants;
+import com.byteforge.byteforge.exceptions.EmailSendingException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -22,7 +25,7 @@ public class EmailService {
 
     public void sendVerificationEmail(String to, String token, String appUrl) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("thungar@mail.ru");
+        message.setFrom(ApplicationConstants.FROM_EMAIL);
         message.setTo(to);
         message.setSubject("Email Verification");
         message.setText("Please click the following link to verify your email: " 
@@ -30,11 +33,11 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    public void sendOrderConfirmationEmail(String to, String customerName, Long orderId, List<String> productNames, double totalPrice) {
+    public void sendOrderConfirmationEmail(String to, String customerName, Long orderId, List<String> productNames, BigDecimal totalPrice) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-            helper.setFrom("thungar@mail.ru");
+            helper.setFrom(ApplicationConstants.FROM_EMAIL);
             helper.setTo(to);
             helper.setSubject("Order Confirmation");
 
@@ -51,13 +54,13 @@ public class EmailService {
             helper.setText(html, true);
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            throw new RuntimeException("Failed to send order confirmation email", e);
+            throw new EmailSendingException("Failed to send order confirmation email", e);
         }
     }
 
     public void sendPasswordResetEmail(String to, String token, String appUrl) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("thungar@mail.ru");
+        message.setFrom(ApplicationConstants.FROM_EMAIL);
         message.setTo(to);
         message.setSubject("Password Reset Request");
         message.setText("To reset your password, click the link below:\n"

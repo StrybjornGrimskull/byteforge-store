@@ -1,0 +1,268 @@
+body {
+    background-image: url('../uploads/icons/opoy7.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    font-family: 'Ubuntu', sans-serif;
+    color: white;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.review-header {
+    background: transparent;
+    color: white;
+    padding: 1.5rem 0;
+    margin-bottom: 1.5rem;
+}
+.breadcrumb {
+    margin-bottom: 0.5rem;
+    background: transparent;
+    padding: 0;
+}
+.breadcrumb a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+}
+.breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.6);
+}
+.breadcrumb-item.active {
+    color: rgba(255, 255, 255, 0.6);
+}
+.review-header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    color: white;
+}
+
+.card {
+    background: linear-gradient(145deg, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
+    border: none;
+    border-radius: 25px;
+    box-shadow: 
+        20px 20px 40px rgba(0, 0, 0, 0.6),
+        -20px -20px 40px rgba(255, 255, 255, 0.05),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    color: white;
+    position: relative;
+}
+
+.card-header {
+    background: linear-gradient(145deg, rgba(40, 40, 40, 0.9), rgba(25, 25, 25, 0.9));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 25px 25px 0 0;
+    color: white;
+}
+
+.card-body {
+    color: white;
+}
+
+.form-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+legend {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    padding: 0;
+}
+
+.form-control, .form-select {
+    background: linear-gradient(145deg, rgba(40, 40, 40, 0.9), rgba(25, 25, 25, 0.9));
+    border: none;
+    border-radius: 12px;
+    color: white;
+    box-shadow: 
+        inset 4px 4px 8px rgba(0, 0, 0, 0.4),
+        inset -4px -4px 8px rgba(255, 255, 255, 0.03);
+}
+
+.form-control:focus, .form-select:focus {
+    background: linear-gradient(145deg, rgba(40, 40, 40, 0.9), rgba(25, 25, 25, 0.9));
+    border: none;
+    box-shadow: 
+        inset 4px 4px 8px rgba(0, 0, 0, 0.4),
+        inset -4px -4px 8px rgba(255, 255, 255, 0.03);
+    color: white;
+    outline: none;
+}
+
+/* Стили для опций select */
+.form-select option {
+    background: rgba(40, 40, 40, 0.95);
+    color: white;
+    padding: 8px 12px;
+}
+
+.form-select option:hover {
+    background: rgba(60, 60, 60, 0.95);
+    color: white;
+}
+
+.form-select option:checked {
+    background: rgba(59, 130, 246, 0.3);
+    color: white;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.btn {
+    background: linear-gradient(145deg, rgba(40, 40, 40, 0.9), rgba(25, 25, 25, 0.9));
+    border: none;
+    color: white;
+    border-radius: 15px;
+    font-weight: 500;
+    padding: 12px 24px;
+    box-shadow: 
+        6px 6px 12px rgba(0, 0, 0, 0.4),
+        -6px -6px 12px rgba(255, 255, 255, 0.03),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.btn:active,
+.btn:focus,
+.btn:hover {
+    transform: none;
+    outline: none;
+    background: linear-gradient(145deg, rgba(40, 40, 40, 0.9), rgba(25, 25, 25, 0.9));
+    border: none;
+    color: white;
+    box-shadow: 
+        6px 6px 12px rgba(0, 0, 0, 0.4),
+        -6px -6px 12px rgba(255, 255, 255, 0.03),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.alert {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: white;
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1));
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.invalid-feedback {
+    color: rgba(239, 68, 68, 0.8);
+}
+
+.text-primary {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.border-top {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Star Rating Styles */
+.rating-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.star-rating {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.star-input {
+    display: none;
+}
+
+.star-label {
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.3);
+    transition: color 0.2s ease;
+    user-select: none;
+}
+
+.star-label:hover {
+    color: #ffc107;
+}
+
+.star-label.active {
+    color: #ffc107;
+}
+
+.star-label i {
+    transition: transform 0.2s ease;
+}
+
+.star-label:hover i {
+    transform: scale(1.1);
+}
+
+.rating-text {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+/* Success Animation */
+.success-icon {
+    font-size: 2rem;
+    color: #22c55e;
+    animation: checkmark 0.6s ease-in-out;
+}
+
+@keyframes checkmark {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.alert-success h5 {
+    color: #22c55e;
+    font-weight: 600;
+}
+
+.alert-success p {
+    color: rgba(255, 255, 255, 0.9);
+}

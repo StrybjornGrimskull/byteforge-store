@@ -1,0 +1,25 @@
+/* Admin Dashboard Styles */
+.dashboard-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 100%;
+}
+
+.dashboard-card .card-body {
+    padding: 2rem;
+    text-align: center;
+}
+
+.dashboard-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #0d6efd;
+}
+
+.welcome-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}

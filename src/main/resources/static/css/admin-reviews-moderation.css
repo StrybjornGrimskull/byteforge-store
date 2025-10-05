@@ -1,0 +1,121 @@
+/* Admin Reviews Moderation Styles */
+.page-header {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+}
+
+.review-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s ease-in-out;
+}
+
+.review-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.review-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 10px 10px 0 0;
+    padding: 1rem;
+}
+
+.rating-stars {
+    color: #ffc107;
+    font-size: 1.2rem;
+}
+
+.product-info {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.review-text {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    min-height: 100px;
+}
+
+.review-actions {
+    background-color: #f8f9fa;
+    border-radius: 0 0 10px 10px;
+    padding: 1rem;
+}
+
+.btn-approve {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.btn-approve:hover {
+    background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
+    transform: translateY(-1px);
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.btn-delete:hover {
+    background: linear-gradient(135deg, #c82333 0%, #e85d04 100%);
+    transform: translateY(-1px);
+}
+
+.loading-spinner {
+    display: none;
+    text-align: center;
+    padding: 2rem;
+}
+
+.error-message {
+    display: none;
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.success-message {
+    display: none;
+    background-color: #d4edda;
+    color: #155724;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.no-reviews {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+}
+
+.no-reviews i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: #dee2e6;
+}

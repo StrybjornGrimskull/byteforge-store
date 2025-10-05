@@ -1,6 +1,6 @@
 /* Фоновое изображение для страницы */
 body {
-    background-image: url('/uploads/icons/opoy7.jpg');
+    background-image: url('../uploads/icons/opoy7.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

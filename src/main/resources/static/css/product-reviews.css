@@ -1,0 +1,114 @@
+/* Фоновое изображение для страницы */
+body {
+    background-image: url('../uploads/icons/opoy7.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    font-family: 'Ubuntu', sans-serif !important;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    color: white;
+}
+
+/* Белый текст для всех элементов */
+.product-description,
+.price-section,
+.stock-status,
+h1, h2, h3, h4, h5, h6,
+.card-title,
+.card-text,
+.no-reviews h3,
+.no-reviews p {
+    color: white;
+}
+
+/* Стеклянные карточки отзывов */
+.card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.card-body {
+    background: transparent;
+}
+
+.rating {
+    color: #ffc107;
+    font-size: 1.2rem;
+}
+
+/* Прозрачный хедер */
+.product-header {
+    background: transparent;
+    color: white;
+    padding: 1.5rem 0;
+    margin-bottom: 0;
+}
+
+.product-header h1 {
+    margin: 0;
+    font-weight: 600;
+    color: white;
+}
+
+.breadcrumb a {
+    text-decoration: none !important;
+}
+
+.breadcrumb a:hover {
+    text-decoration: none !important;
+}
+
+/* Стили для хлебных крошек */
+.breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.7);
+    content: "/";
+}
+
+.breadcrumb-item.active {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Стеклянная карточка для пустого состояния */
+.no-reviews {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+    text-align: center;
+}
+
+.no-reviews i {
+    color: white !important;
+}
+
+.no-reviews h3 {
+    color: white !important;
+}
+
+.no-reviews p {
+    color: white !important;
+}
+
+/* Стили для текста отзывов */
+.card-text {
+    color: white;
+}
+
+.text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
+}

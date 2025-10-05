@@ -1,0 +1,143 @@
+body {
+    background-image: url('../uploads/icons/opoy7.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    font-family: 'Ubuntu', sans-serif;
+    color: white;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.review-header {
+    background: transparent;
+    color: white;
+    padding: 1.5rem 0;
+    margin-bottom: 1.5rem;
+}
+.breadcrumb {
+    margin-bottom: 0.5rem;
+    background: transparent;
+    padding: 0;
+}
+.breadcrumb a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+}
+.breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.6);
+}
+.breadcrumb-item.active {
+    color: rgba(255, 255, 255, 0.6);
+}
+.review-header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-top: 1rem;
+    color: white;
+}
+.review-header p {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0;
+}
+
+.card {
+    background: linear-gradient(145deg, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
+    border: none;
+    border-radius: 25px;
+    box-shadow: 
+        20px 20px 40px rgba(0, 0, 0, 0.6),
+        -20px -20px 40px rgba(255, 255, 255, 0.05),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    color: white;
+    position: relative;
+}
+
+.card-body {
+    color: white;
+}
+
+.card-title {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+}
+
+.card-text {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.text-muted {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.btn {
+    background: linear-gradient(145deg, rgba(40, 40, 40, 0.9), rgba(25, 25, 25, 0.9));
+    border: none;
+    color: white;
+    border-radius: 15px;
+    font-weight: 500;
+    padding: 12px 24px;
+    box-shadow: 
+        6px 6px 12px rgba(0, 0, 0, 0.4),
+        -6px -6px 12px rgba(255, 255, 255, 0.03),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.btn:active,
+.btn:focus,
+.btn:hover {
+    transform: none;
+    outline: none;
+}
+
+.badge {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.2));
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    color: white;
+}
+
+.rating .bi-star-fill {
+    color: #ffc107 !important;
+}
+
+.rating .bi-star {
+    color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Tab styles */
+.nav-tabs {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.nav-tabs .nav-link {
+    background: transparent;
+    border: 1px solid transparent;
+    color: rgba(255, 255, 255, 0.7);
+    border-radius: 12px 12px 0 0;
+    margin-right: 4px;
+}
+
+.nav-tabs .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.nav-tabs .nav-link.active {
+    background: linear-gradient(145deg, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
+    border-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    box-shadow: 
+        6px 6px 12px rgba(0, 0, 0, 0.4),
+        -6px -6px 12px rgba(255, 255, 255, 0.03),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.tab-content {
+    background: transparent;
+}

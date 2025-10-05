@@ -92,7 +92,7 @@ public class OrderService {
                 order.getFirstName(),
                 savedOrder.getId(),
                 productNames,
-                totalPrice.doubleValue()
+                totalPrice
         );
 
         // 9. Возвращаем DTO

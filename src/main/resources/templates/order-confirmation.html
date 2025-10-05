@@ -3,69 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <title>Order Confirmation</title>
+  <!-- Inline styles for email compatibility -->
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f7fafc;
-    }
-    .container {
-      background-color: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
-      padding: 25px;
-    }
-    .header {
-      color: #2c3e50;
-      border-bottom: 2px solid #3498db;
-      padding-bottom: 10px;
-      margin-bottom: 20px;
-    }
-    .order-number {
-      background-color: #f8f9fa;
-      border-left: 4px solid #3498db;
-      padding: 15px;
-      margin-bottom: 20px;
-      border-radius: 0 4px 4px 0;
-    }
-    .products-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-    }
-    .products-table th {
-      background-color: #3498db;
-      color: white;
-      padding: 12px;
-      text-align: left;
-    }
-    .products-table td {
-      padding: 12px;
-      border-bottom: 1px solid #e9ecef;
-    }
-    .products-table tr:nth-child(even) {
-      background-color: #f8f9fa;
-    }
-    .total {
-      font-size: 1.2em;
-      font-weight: bold;
-      margin-top: 20px;
-      text-align: right;
-      padding: 15px;
-      background-color: #f1f8fe;
-      border-radius: 4px;
-    }
-    .footer {
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid #eee;
-      color: #7f8c8d;
-    }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+    .container { max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .header { text-align: center; margin-bottom: 30px; }
+    .header h1 { color: #333; margin: 0; }
+    .order-number { background-color: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 20px; text-align: center; }
+    .order-number p { margin: 0; color: #666; }
+    .order-number strong { color: #333; }
+    .products-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    .products-table th, .products-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+    .products-table th { background-color: #f8f9fa; font-weight: bold; color: #333; }
+    .total { text-align: right; font-size: 18px; font-weight: bold; color: #333; margin: 20px 0; }
+    .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #666; }
   </style>
 </head>
 <body>
@@ -89,7 +40,7 @@
   </table>
 
   <div class="total">
-    Total: $<span th:text="${#numbers.formatDecimal(totalPrice, 1, 2)}">0.00</span>
+    Total: €<span th:text="${#numbers.formatDecimal(totalPrice, 1, 2)}">0.00</span>
   </div>
 
   <div class="footer">

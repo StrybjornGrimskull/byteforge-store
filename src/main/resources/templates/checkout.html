@@ -193,13 +193,24 @@
                     let errorMessage = 'An error occurred. Please try again.';
                     try {
                         if (xhr.status === 400 && xhr.responseText) {
-                            const errorResponse = JSON.parse(xhr.responseText);
-                            if (errorResponse.message) {
-                                errorMessage = errorResponse.message;
+                            // Try to parse as JSON first
+                            try {
+                                const errorResponse = JSON.parse(xhr.responseText);
+                                if (errorResponse.message) {
+                                    errorMessage = errorResponse.message;
+                                }
+                            } catch (jsonError) {
+                                // If not JSON, treat as plain text
+                                console.log('Failed to parse JSON error response:', jsonError);
+                                errorMessage = xhr.responseText;
                             }
+                        } else if (xhr.responseText) {
+                            // For other status codes, try to get the message
+                            errorMessage = xhr.responseText;
                         }
                     } catch (e) {
-                        console.error('Error processing error response:', e);
+                        // Keep default error message
+                        console.log('Error processing response:', e);
                     }
                     alert(errorMessage);
                     $btn.prop('disabled', false).text('Place Order');

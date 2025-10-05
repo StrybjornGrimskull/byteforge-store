@@ -1,0 +1,95 @@
+body {
+    background-image: url('../uploads/icons/opoy7.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    font-family: 'Ubuntu', sans-serif;
+    color: white;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+h1 { color: white; }
+
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 30px;
+    justify-content: flex-start;
+}
+
+.product-item {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.05));
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    width: calc(33.333% - 16px);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    color: white;
+}
+
+.product-item img {
+    display: block;
+    margin: 0 auto 12px auto;
+    background: transparent;
+    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Fixed image box to prevent layout shift */
+.product-image-box {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    border-radius: 8px;
+}
+.image-placeholder {
+    width: 260px;
+    height: 180px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+}
+
+.product-item h6 { color: white; }
+.product-item .btn { font-weight: 500; }
+
+.breadcrumb a { text-decoration: none; }
+.breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.7);
+    content: "/";
+}
+.breadcrumb-item.active { color: rgba(255, 255, 255, 0.5); }
+
+/* Replace default blue (primary) with white visuals on this page */
+.btn-primary {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    color: #333 !important;
+    border: none !important;
+}
+a { color: #ffffff !important; }
+
+/* Gray label for Brand/Price only */
+.meta-label { color: #6c757d; }
+.meta-value { color: #ffffff; }
+
+@media (max-width: 992px) {
+    .product-item { width: calc(50% - 12px); }
+}
+
+@media (max-width: 576px) {
+    .product-item { width: 100%; }
+}

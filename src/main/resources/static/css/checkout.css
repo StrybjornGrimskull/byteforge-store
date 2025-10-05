@@ -1,6 +1,6 @@
 /* Фоновое изображение для страницы */
 body {
-    background-image: url('/uploads/icons/opoy7.jpg');
+    background-image: url('../uploads/icons/opoy7.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -363,10 +363,6 @@ p, span, div {
     color: white !important;
 }
 
-/* Стили для всех параграфов внутри bg-white */
-.confirmation-section .bg-white p {
-    color: rgba(255, 255, 255, 0.9) !important;
-}
 
 /* Стили для жирного текста внутри bg-white */
 .confirmation-section .bg-white .fw-bold {
@@ -423,9 +419,6 @@ p, span, div {
     color: white !important;
 }
 
-.breadcrumb-item.active {
-    color: rgba(255, 255, 255, 0.7) !important;
-}
 
 /* Стили для навигации */
 .navbar {

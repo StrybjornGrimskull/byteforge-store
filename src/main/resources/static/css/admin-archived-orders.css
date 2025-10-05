@@ -1,0 +1,78 @@
+/* Admin Archived Orders Styles */
+.order-card {
+    transition: transform 0.2s ease-in-out;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.order-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.order-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 1px solid #dee2e6;
+}
+
+.order-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.search-container {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.load-more-btn {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    border: none;
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.load-more-btn:hover {
+    background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
+    transform: translateY(-1px);
+}
+
+.load-more-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.no-orders {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+}
+
+.no-orders i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: #dee2e6;
+}
+
+.order-meta {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.order-price {
+    font-weight: bold;
+    color: #28a745;
+}
+
+.archived-badge {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    color: white;
+}
