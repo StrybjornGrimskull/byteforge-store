@@ -1,6 +1,9 @@
 package com.byteforge.byteforge.configuration;
 
-
+import com.byteforge.byteforge.constants.ApplicationConstants;
+import com.byteforge.byteforge.filter.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -8,38 +11,94 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @Configuration
-@Profile("!prod")
+@EnableWebSecurity
+@Profile("prod")
+@RequiredArgsConstructor
 public class ProjectSecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthFilter;
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .csrf(AbstractHttpConfigurer::disable)
-                // .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class) // УБРАТЬ или добавить null-check в фильтр!
-                .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()) // Только HTTP, для продакшена лучше requiresSecure()
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/css/**", "/js/**", "/uploads/**", "/favicon.ico").permitAll()
-                        .requestMatchers("/admin").hasAnyRole("USER", "ADMIN", "MODERATOR")
-                        .requestMatchers("/admin/dashboard/**").hasAnyRole("ADMIN", "MODERATOR", "PRODUCT_MANAGER")
-                        .requestMatchers("/admin/dashboard/reviews").hasAnyRole("ADMIN", "MODERATOR")
-                        .requestMatchers("/notices").hasRole("USER")
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)// Не используем сессии
+                )
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(requests -> requests
+                        // === ЗАКРЫТЫЙ ДОСТУП (РОЛИ) ===
+                        .requestMatchers("/api/customers/**").hasRole(ApplicationConstants.ROLE_ADMIN)
+                        .requestMatchers("/admin/dashboard/users").hasRole(ApplicationConstants.ROLE_ADMIN)
+                        .requestMatchers("/admin/dashboard/reviews/**").hasAnyRole(ApplicationConstants.ROLE_ADMIN, ApplicationConstants.ROLE_MODERATOR)
+                        .requestMatchers("/admin/dashboard/products/**").hasAnyRole(ApplicationConstants.ROLE_ADMIN, ApplicationConstants.ROLE_PRODUCT_MANAGER)
+                        .requestMatchers("/admin/dashboard/**").hasAnyRole(ApplicationConstants.ROLE_ADMIN, ApplicationConstants.ROLE_MODERATOR, ApplicationConstants.ROLE_PRODUCT_MANAGER)
+                        .requestMatchers("/api/reviews/pending/**").hasAnyRole(ApplicationConstants.ROLE_ADMIN, ApplicationConstants.ROLE_MODERATOR)
+                        .requestMatchers("/api/reviews/{reviewId}/approve").hasAnyRole(ApplicationConstants.ROLE_ADMIN, ApplicationConstants.ROLE_MODERATOR)
+                        .requestMatchers("/api/reviews/{reviewId}").hasAnyRole(ApplicationConstants.ROLE_ADMIN, ApplicationConstants.ROLE_MODERATOR)
+                        .requestMatchers("/notices").hasRole(ApplicationConstants.ROLE_USER)
+
+                        // === АВТОРИЗИРОВАННЫЙ ДОСТУП ===
+                        .requestMatchers("/api/reviews/**").authenticated()
+                        .requestMatchers("/reviews/**").authenticated()
+                        .requestMatchers("/api/wishlist/**").authenticated()
+                        .requestMatchers("/api/shopping-cart/**").authenticated()
+                        .requestMatchers("/shopping-cart/**").authenticated()
+                        .requestMatchers("/wishlist/**").authenticated()
+                        .requestMatchers("/api/profile/**").authenticated()
+                        .requestMatchers("/api/orders/**").authenticated()
+                        .requestMatchers("/api/notifications/**").authenticated()
+                        .requestMatchers("/checkout/**").authenticated()
+                        .requestMatchers("/profile").authenticated()
                         .requestMatchers("/notifications").authenticated()
-                        .requestMatchers("/reviews/**", "/api/reviews/**").authenticated()
-                        .requestMatchers("/", "/contact", "/error", "/register", "/invalidSession", "/apiLogin", "/terms", "/privacy").permitAll()
+                        .requestMatchers("/orders/history").authenticated()
+
+                        // === ПУБЛИЧНЫЙ ДОСТУП ===
+                        .requestMatchers("/api/brands/**").permitAll()
+                        .requestMatchers("/api/categories/**").permitAll()
+                        .requestMatchers("/api/specifications/**").permitAll()
+                        .requestMatchers("/api/products/**").permitAll()
+                        .requestMatchers("/favicon.ico").permitAll()
+                        .requestMatchers(
+                                "/",
+                                "/login",
+                                "/register",
+                                "/contact",
+                                "/products/**",
+                                "/uploads/**",
+                                "/uploads/logo/**",
+                                "/static/**",
+                                "/css/**",
+                                "/js/**",
+                                "/brands",
+                                "/error",
+                                "/auth/**",
+                                "/terms",
+                                "/privacy",
+                                "api/auth/**"
+                        ).permitAll()
                 );
-        http.formLogin(withDefaults());
+
+       http.exceptionHandling(exception -> exception
+                .authenticationEntryPoint((request, response, authException) -> {
+                    if (request.getRequestURI().startsWith("/api/")) {
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                    } else {
+                        response.sendRedirect("/auth/login?redirect=" + request.getRequestURI());
+                    }
+                })
+        );
         return http.build();
     }
 
@@ -49,11 +108,6 @@ public class ProjectSecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    /**
-     * From Spring Security 6.3 version
-     *
-     * @return
-     */
     @Bean
     public CompromisedPasswordChecker compromisedPasswordChecker() {
         return new HaveIBeenPwnedRestApiPasswordChecker();
@@ -61,12 +115,12 @@ public class ProjectSecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder) {
+                                                       PasswordEncoder passwordEncoder) {
         ByteForgeUsernamePwdAuthenticationProvider authenticationProvider =
                 new ByteForgeUsernamePwdAuthenticationProvider(userDetailsService, passwordEncoder);
         ProviderManager providerManager = new ProviderManager(authenticationProvider);
         providerManager.setEraseCredentialsAfterAuthentication(false);
-        return  providerManager;
+        return providerManager;
     }
 
 }

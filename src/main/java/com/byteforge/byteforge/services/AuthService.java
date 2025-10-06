@@ -46,12 +46,19 @@ public class AuthService {
             // Пользователь не подтвердил email
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
-                    "Email not verified"
+                    "Your account is not activated. Please check your email and verify your account."
             );
         } catch (BadCredentialsException e) {
+            // Неверные учетные данные
             throw new ResponseStatusException(
                     HttpStatus.UNAUTHORIZED,
-                    "Invalid credentials"
+                    "Invalid email or password. Please try again."
+            );
+        } catch (Exception e) {
+            // Общая ошибка
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "An error occurred during authentication. Please try again."
             );
         }
     }

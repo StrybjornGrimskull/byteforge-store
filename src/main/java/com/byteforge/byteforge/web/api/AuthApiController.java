@@ -1,5 +1,6 @@
 package com.byteforge.byteforge.web.api;
 
+import com.byteforge.byteforge.dto.AuthErrorResponse;
 import com.byteforge.byteforge.dto.LoginRequest;
 import com.byteforge.byteforge.dto.request.ConsumerRequestDto;
 import com.byteforge.byteforge.services.AuthService;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -20,10 +22,26 @@ public class AuthApiController {
     private final CustomerService customerService;
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest,
-                                      HttpServletResponse response) {
-        authService.login(loginRequest, response);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest,
+                                   HttpServletResponse response) {
+        try {
+            authService.login(loginRequest, response);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (ResponseStatusException e) {
+            if (e.getStatusCode() == HttpStatus.FORBIDDEN) {
+                // Account disabled (email not verified)
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(AuthErrorResponse.disabled(e.getReason()));
+            } else if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                // Bad credentials
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(AuthErrorResponse.badCredentials(e.getReason()));
+            } else {
+                // Generic error
+                return ResponseEntity.status(e.getStatusCode())
+                        .body(AuthErrorResponse.generic(e.getReason()));
+            }
+        }
     }
 
     @PostMapping("/register")

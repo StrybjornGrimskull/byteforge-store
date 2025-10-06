@@ -1,19 +1,37 @@
 $(function() {
+    const $loginForm = $('#loginForm');
+    
     // Функция для показа сообщений об ошибках
-    function showErrorMessage(message) {
+    function showErrorMessage(message, errorType = 'error') {
         // Удаляем предыдущие сообщения об ошибках
-        $('.alert-error').remove();
+        $('.alert-error, .alert-warning').remove();
+        
+        // Определяем класс и иконку в зависимости от типа ошибки
+        const alertClass = errorType === 'disabled' ? 'alert-warning' : 'alert-error';
+        const iconClass = errorType === 'disabled' ? 'bi-envelope-exclamation-fill' : 'bi-exclamation-triangle-fill';
         
         // Создаем новое сообщение об ошибке
-        const errorAlert = $(`
-            <div class="alert alert-error">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        let errorAlert = $(`
+            <div class="alert ${alertClass}">
+                <i class="bi ${iconClass} me-2"></i>
                 ${message}
             </div>
         `);
         
+        // Если это ошибка неактивного аккаунта, добавляем кнопку для повторной отправки
+        if (errorType === 'disabled') {
+            errorAlert.append(`
+                <div class="mt-2">
+                    <a href="/auth/resend-verification" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-envelope me-1"></i>
+                        Resend verification email
+                    </a>
+                </div>
+            `);
+        }
+        
         // Вставляем сообщение перед формой
-        $('#loginForm').before(errorAlert);
+        $loginForm.before(errorAlert);
         
         // Прокручиваем к сообщению об ошибке
         $('html, body').animate({
@@ -21,7 +39,7 @@ $(function() {
         }, 500);
     }
     
-    $('#loginForm').on('submit', function(e) {
+    $loginForm.on('submit', function(e) {
         e.preventDefault();
         
         const email = $('#email').val();
@@ -49,21 +67,31 @@ $(function() {
                 email: email,
                 password: password
             }),
-            success: function(response) {
+            success: function() {
                 // Успешный логин - JWT токен уже установлен в HttpOnly cookie
                 // Simply redirect to the main page
                 window.location.href = '/';
             },
             error: function(xhr) {
-                if (xhr.status === 403) {
-                    // Показываем сообщение об ошибке для неверифицированного пользователя
-                    showErrorMessage('Invalid email or password. Please check your credentials and try again.');
+                let errorMessage = 'An error occurred. Please try again.';
+                let errorType = 'error';
+                
+                // Пытаемся получить детальную информацию об ошибке из ответа
+                if (xhr.responseJSON?.message) {
+                    errorMessage = xhr.responseJSON.message;
+                    if (xhr.responseJSON.errorType) {
+                        errorType = xhr.responseJSON.errorType;
+                    }
+                } else if (xhr.status === 403) {
+                    // Fallback для старых ответов без детальной информации
+                    errorMessage = 'Your account is not activated. Please check your email and verify your account.';
+                    errorType = 'disabled';
                 } else if (xhr.status === 401) {
-                    // Показываем сообщение об ошибке вместо alert
-                    showErrorMessage('Invalid email or password. Please check your credentials and try again.');
-                } else {
-                    showErrorMessage('An error occurred. Please try again.');
+                    errorMessage = 'Invalid email or password. Please try again.';
+                    errorType = 'badCredentials';
                 }
+                
+                showErrorMessage(errorMessage, errorType);
             },
             complete: function() {
                 $submitBtn.prop('disabled', false).html(originalText);

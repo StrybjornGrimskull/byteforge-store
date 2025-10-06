@@ -1,5 +1,6 @@
 package com.byteforge.byteforge.web.mvc;
 
+import com.byteforge.byteforge.constants.ApplicationConstants;
 import com.byteforge.byteforge.dto.request.ConsumerRequestDto;
 import com.byteforge.byteforge.services.CustomerService;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +20,19 @@ public class AuthController {
     private final CustomerService customerService;
 
     @GetMapping("/login")
-    public String showLoginPage(
-            @RequestParam(required = false) String error,
-            Model model) {
+    public String showLoginPage(@RequestParam(required = false) String error, @RequestParam(required = false) String message, Model model) {
 
         if (error != null) {
-            model.addAttribute("loginError", "Invalid email or password");
+            if ("disabled".equals(error)) {
+                model.addAttribute(ApplicationConstants.LOGIN_ERROR_ATTRIBUTE, message != null ? message : "Your account is not activated. Please check your email and verify your account.");
+                model.addAttribute(ApplicationConstants.ERROR_TYPE_ATTRIBUTE, "disabled");
+            } else if ("badCredentials".equals(error)) {
+                model.addAttribute(ApplicationConstants.LOGIN_ERROR_ATTRIBUTE, message != null ? message : "Invalid email or password. Please try again.");
+                model.addAttribute(ApplicationConstants.ERROR_TYPE_ATTRIBUTE, "badCredentials");
+            } else {
+                model.addAttribute(ApplicationConstants.LOGIN_ERROR_ATTRIBUTE, message != null ? message : "Invalid email or password");
+                model.addAttribute(ApplicationConstants.ERROR_TYPE_ATTRIBUTE, ApplicationConstants.ERROR_ATTRIBUTE);
+            }
         }
         return "login";
     }
@@ -37,28 +45,33 @@ public class AuthController {
     @PostMapping("/signup")
     public String registerUser(ConsumerRequestDto registrationDto, RedirectAttributes redirectAttributes) {
         customerService.registerNewUser(registrationDto);
-        redirectAttributes.addAttribute("email", registrationDto.email());
+        redirectAttributes.addAttribute(ApplicationConstants.EMAIL_ATTRIBUTE, registrationDto.email());
         return "redirect:/auth/verify-email";
     }
 
     @GetMapping("/verify-email")
     public String showVerifyEmailPage(@RequestParam String email, Model model) {
-        model.addAttribute("email", email);
+        model.addAttribute(ApplicationConstants.EMAIL_ATTRIBUTE, email);
         return "verify-email";
     }
 
     @GetMapping("/resend-verification")
+    public String showResendVerificationPage() {
+        return "resend-verification";
+    }
+
+    @PostMapping("/resend-verification")
     public String resendVerificationEmail(@RequestParam String email, Model model) {
         try {
             customerService.resendVerificationEmail(email);
-            model.addAttribute("email", email);
+            model.addAttribute(ApplicationConstants.EMAIL_ATTRIBUTE, email);
             model.addAttribute("resent", true);
-            model.addAttribute("message", "Verification email sent successfully!");
+            model.addAttribute(ApplicationConstants.MESSAGE_ATTRIBUTE, "Verification email sent successfully!");
         } catch (RuntimeException e) {
-            model.addAttribute("email", email);
-            model.addAttribute("error", "Failed to send verification email: " + e.getMessage());
+            model.addAttribute(ApplicationConstants.EMAIL_ATTRIBUTE, email);
+            model.addAttribute(ApplicationConstants.ERROR_ATTRIBUTE, "Failed to send verification email: " + e.getMessage());
         }
-        return "verify-email";
+        return "resend-verification";
     }
 
     @GetMapping("/verify")
@@ -69,7 +82,7 @@ public class AuthController {
             return "verification-result";
         } catch (RuntimeException e) {
             model.addAttribute("verified", false);
-            model.addAttribute("error", e.getMessage());
+            model.addAttribute(ApplicationConstants.ERROR_ATTRIBUTE, e.getMessage());
             return "verification-result";
         }
     }
@@ -83,9 +96,9 @@ public class AuthController {
     public String processForgotPassword(@RequestParam String email, RedirectAttributes redirectAttributes) {
         try {
             customerService.generatePasswordResetToken(email);
-            redirectAttributes.addFlashAttribute("message", "A password reset link has been sent to your email.");
+            redirectAttributes.addFlashAttribute(ApplicationConstants.MESSAGE_ATTRIBUTE, "A password reset link has been sent to your email.");
         } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute(ApplicationConstants.ERROR_ATTRIBUTE, e.getMessage());
         }
         return "redirect:/auth/forgot-password";
     }
@@ -97,20 +110,17 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
-    public String processResetPassword(@RequestParam String token,
-                                       @RequestParam String password,
-                                       @RequestParam String confirmPassword,
-                                       RedirectAttributes redirectAttributes) {
+    public String processResetPassword(@RequestParam String token, @RequestParam String password, @RequestParam String confirmPassword, RedirectAttributes redirectAttributes) {
         if (!password.equals(confirmPassword)) {
-            redirectAttributes.addFlashAttribute("error", "Passwords do not match.");
+            redirectAttributes.addFlashAttribute(ApplicationConstants.ERROR_ATTRIBUTE, "Passwords do not match.");
             return "redirect:/auth/reset-password?token=" + token;
         }
         try {
             customerService.resetPassword(token, password);
-            redirectAttributes.addFlashAttribute("message", "Your password has been reset successfully.");
+            redirectAttributes.addFlashAttribute(ApplicationConstants.MESSAGE_ATTRIBUTE, "Your password has been reset successfully.");
             return "redirect:/auth/login";
         } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute(ApplicationConstants.ERROR_ATTRIBUTE, e.getMessage());
             return "redirect:/auth/reset-password?token=" + token;
         }
     }

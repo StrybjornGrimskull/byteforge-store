@@ -31,9 +31,16 @@
             <p class="subtitle">Sign in to your account to continue</p>
 
             <!-- Error/Success Messages -->
-            <div th:if="${param.error}" class="alert alert-error">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                Invalid email or password. Please try again.
+            <div th:if="${loginError}" class="alert" 
+                 th:classappend="${errorType == 'disabled'} ? 'alert-warning' : 'alert-danger'">
+                <i th:class="${errorType == 'disabled'} ? 'bi bi-envelope-exclamation-fill me-2' : 'bi bi-exclamation-triangle-fill me-2'"></i>
+                <span th:text="${loginError}">Error message</span>
+                <div th:if="${errorType == 'disabled'}" class="mt-2">
+                    <a href="/auth/verify-email" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-envelope me-1"></i>
+                        Resend verification email
+                    </a>
+                </div>
             </div>
             
             <div th:if="${param.logout}" class="alert alert-success">

@@ -190,7 +190,7 @@ public class OrderService {
                                         )
                                 ))
                                 .toList(),
-                        order.getCustomer().getId()
+                        order.getCustomer() != null ? order.getCustomer().getId() : null
                 ));
     }
 
@@ -219,7 +219,7 @@ public class OrderService {
                                         )
                                 ))
                                 .toList(),
-                        order.getCustomer().getId()
+                        order.getCustomer() != null ? order.getCustomer().getId() : null
                 ));
     }
     
@@ -248,7 +248,7 @@ public class OrderService {
                                         )
                                 ))
                                 .toList(),
-                        order.getCustomer().getId()
+                        order.getCustomer() != null ? order.getCustomer().getId() : null
                 ))
                 .orElseThrow(() -> new RuntimeException(ApplicationConstants.ORDER_NOT_FOUND));
     }
@@ -278,7 +278,7 @@ public class OrderService {
                                         )
                                 ))
                                 .toList(),
-                        order.getCustomer().getId()
+                        order.getCustomer() != null ? order.getCustomer().getId() : null
                 ))
                 .orElseThrow(() -> new RuntimeException(ApplicationConstants.ORDER_NOT_FOUND));
     }

@@ -53,7 +53,6 @@ public class CustomerService {
          customer.setProfile(profile);
 
         Customer savedCustomer = customerRepository.save(customer);
-
         Authority authority = new Authority("ROLE_USER", savedCustomer);
         authorityRepository.save(authority);
 
