@@ -252,6 +252,9 @@
                     $('#city').text(profile.city || '');
                     $('#address').text(profile.address || '');
                     $('#postIndex').text(profile.postIndex || '');
+                    
+                    // После загрузки профиля проверяем кнопку
+                    checkCartAndDisableButton();
                 }
             }).fail(function(xhr, status, error) {
                 console.error('Failed to load profile:', xhr, status, error);
@@ -306,6 +309,20 @@
 
         $('#place-order-btn').click(function() {
             const $btn = $(this);
+            
+            // Если кнопка показывает "Complete Profile", перенаправляем на профиль
+            if ($btn.text().includes('Complete Profile')) {
+                window.location.href = '/profile';
+                return;
+            }
+            
+            // Проверяем валидность полей перед отправкой
+            if (!validateFormFields()) {
+                alert('Please complete your profile information before placing an order.');
+                window.location.href = '/profile';
+                return;
+            }
+            
             $btn.prop('disabled', true).text('Processing...');
 
             const orderData = {
@@ -320,6 +337,25 @@
 
             placeOrder(orderData, $btn);
         });
+
+        function validateFormFields() {
+            const firstName = $('#firstName').text().trim();
+            const lastName = $('#lastName').text().trim();
+            const phone = $('#phone').text().trim();
+            const address = $('#address').text().trim();
+            const city = $('#city').text().trim();
+            const postIndex = $('#postIndex').text().trim();
+            
+            // Debug information
+            console.log('Validating fields:', {
+                firstName, lastName, phone, address, city, postIndex
+            });
+            
+            const isValid = firstName && lastName && phone && address && city && postIndex;
+            console.log('Form is valid:', isValid);
+            
+            return isValid;
+        }
 
         function checkCartAndDisableButton() {
             $.get('/api/shopping-cart', function(cart) {
@@ -340,10 +376,20 @@
                         `);
                     }
                 } else {
-                    $('#place-order-btn').prop('disabled', false)
-                        .text('Place Order')
-                        .addClass('btn-primary')
-                        .removeClass('btn-secondary');
+                    // Проверяем валидность полей формы
+                    const isFormValid = validateFormFields();
+                    
+                    if (isFormValid) {
+                        $('#place-order-btn').prop('disabled', false)
+                            .text('Place Order')
+                            .addClass('btn-primary')
+                            .removeClass('btn-secondary');
+                    } else {
+                        $('#place-order-btn').prop('disabled', true)
+                            .text('Complete Profile')
+                            .addClass('btn-secondary')
+                            .removeClass('btn-primary');
+                    }
                     
                     // Убираем сообщение о пустой корзине если оно есть
                     $('#empty-cart-alert').remove();
@@ -357,8 +403,8 @@
             });
         }
 
+        // Сначала загружаем профиль, затем проверяем корзину и кнопку
         loadProfileData();
-        checkCartAndDisableButton();
     });
 </script>
 
