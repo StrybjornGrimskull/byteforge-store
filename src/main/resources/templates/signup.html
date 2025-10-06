@@ -44,23 +44,27 @@
             <form id="signupForm">
                 <div class="name-fields">
                     <div class="form-field">
-                        <i class="bi bi-person input-icon"></i>
                         <input type="text" 
-                               class="form-input" 
+                               class="form-input name-input" 
                                id="firstName" 
                                name="firstName" 
-                               placeholder="First Name" 
-                               required>
+                               placeholder="First Name">
+                        <div id="firstName-error" class="error-message">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                            <span id="firstName-error-text"></span>
+                        </div>
                     </div>
 
                     <div class="form-field">
-                        <i class="bi bi-person input-icon"></i>
                         <input type="text" 
-                               class="form-input" 
+                               class="form-input name-input" 
                                id="lastName" 
                                name="lastName" 
-                               placeholder="Last Name" 
-                               required>
+                               placeholder="Last Name">
+                        <div id="lastName-error" class="error-message">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                            <span id="lastName-error-text"></span>
+                        </div>
                     </div>
                 </div>
 
@@ -69,22 +73,22 @@
                            class="form-input email-input" 
                            id="email" 
                            name="email" 
-                           placeholder="Enter your email" 
-                           required>
+                           placeholder="Enter your email">
                     <div id="email-error" class="error-message">
                         <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                        <span>This email is already registered</span>
+                        <span id="email-error-text">This email is already registered</span>
                     </div>
                 </div>
 
                 <div class="password-container">
                 <div class="form-field">
-                    <input type="password" 
-                               class="form-input password-input" 
-                           id="password" 
-                           name="password" 
-                           placeholder="Create a password" 
-                           required>
+                    <div class="password-field-wrapper">
+                        <input type="password" 
+                                   class="form-input password-input" 
+                               id="password" 
+                               name="password" 
+                               placeholder="Create a password">
+                    </div>
                         <div id="password-error" class="error-message">
                             <i class="bi bi-exclamation-triangle-fill me-1"></i>
                             <span id="password-error-text"></span>
@@ -92,12 +96,13 @@
                 </div>
 
                 <div class="form-field">
-                    <input type="password" 
-                               class="form-input password-input" 
-                           id="confirmPassword" 
-                           name="confirmPassword" 
-                           placeholder="Confirm password" 
-                           required>
+                    <div class="password-field-wrapper">
+                        <input type="password" 
+                                   class="form-input password-input" 
+                               id="confirmPassword" 
+                               name="confirmPassword" 
+                               placeholder="Confirm password">
+                    </div>
                         <div id="confirmPassword-error" class="error-message">
                             <i class="bi bi-exclamation-triangle-fill me-1"></i>
                             <span id="confirmPassword-error-text"></span>
@@ -106,7 +111,7 @@
                 </div>
 
                 <div class="terms-checkbox">
-                    <input type="checkbox" id="terms" name="terms" required>
+                    <input type="checkbox" id="terms" name="terms">
                     <label for="terms">
                         I agree to the <a href="/terms" target="_blank">Terms of Service</a> and 
                         <a href="/privacy" target="_blank">Privacy Policy</a>

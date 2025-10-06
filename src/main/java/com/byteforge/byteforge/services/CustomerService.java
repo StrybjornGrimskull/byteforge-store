@@ -6,6 +6,9 @@ import com.byteforge.byteforge.dto.response.CustomerRoleManagementDto;
 import com.byteforge.byteforge.entities.Authority;
 import com.byteforge.byteforge.entities.Customer;
 import com.byteforge.byteforge.entities.Profile;
+import com.byteforge.byteforge.exceptions.EmailAlreadyExistsException;
+import com.byteforge.byteforge.exceptions.PasswordCompromisedException;
+import com.byteforge.byteforge.exceptions.PasswordMismatchException;
 import com.byteforge.byteforge.repositories.AuthorityRepository;
 import com.byteforge.byteforge.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -117,16 +120,15 @@ public class CustomerService {
             throw new RuntimeException("Password reset token has expired");
         }
         
-        // Проверка пароля на компрометацию (только в продакшн профиле)
-        if (compromisedPasswordChecker != null) {
-            try {
-                if (compromisedPasswordChecker.check(newPassword).isCompromised()) {
-                    throw new RuntimeException("Password has been compromised. Please choose a different password.");
-                }
-            } catch (Exception e) {
-                // Если API недоступно, логируем ошибку но не блокируем сброс пароля
-                System.err.println("Warning: Could not check password against HaveIBeenPwned API: " + e.getMessage());
-            }
+        // Проверка пароля через HaveIBeenPwned API
+        var result = compromisedPasswordChecker.check(newPassword);
+        if (result.isCompromised()) {
+            String detailedMessage = String.format(
+                "Password '%s' has been found in data breaches and is not secure. " +
+                "Please choose a different password that hasn't been compromised.",
+                newPassword
+            );
+            throw new PasswordCompromisedException(detailedMessage);
         }
 
         customer.setPassword(passwordEncoder.encode(newPassword));
@@ -142,33 +144,24 @@ public class CustomerService {
     private void validateRegistration(ConsumerRequestDto registrationDto) {
         // Проверка совпадения паролей
         if (!registrationDto.password().equals(registrationDto.confirmPassword())) {
-            throw new RuntimeException("Passwords do not match");
+            throw new PasswordMismatchException("Passwords do not match");
         }
 
         // Проверка существования email
         if (customerRepository.findByEmail(registrationDto.email()).isPresent()) {
-            throw new RuntimeException("Email already exists");
+            throw new EmailAlreadyExistsException("Email already exists");
         }
         
-        // Проверка пароля на компрометацию (только в продакшн профиле)
-        if (compromisedPasswordChecker != null) {
-            try {
-                if (compromisedPasswordChecker.check(registrationDto.password()).isCompromised()) {
-                    throw new RuntimeException("Password has been compromised. Please choose a different password.");
-                }
-            } catch (Exception e) {
-                // Если API недоступно, логируем ошибку но не блокируем регистрацию
-                System.err.println("Warning: Could not check password against HaveIBeenPwned API: " + e.getMessage());
-            }
-        }
         
-        // Ручная валидация пароля (после проверки HaveIBeenPwned API)
-        String password = registrationDto.password();
-        if (password.length() < 8 || password.length() > 100) {
-            throw new RuntimeException("Password must be between 8 and 100 characters");
-        }
-        if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&].*$")) {
-            throw new RuntimeException("Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character");
+        // Проверка пароля через HaveIBeenPwned API (дополнительная проверка компрометации)
+        var result = compromisedPasswordChecker.check(registrationDto.password());
+        if (result.isCompromised()) {
+            String detailedMessage = String.format(
+                "Password '%s' has been found in data breaches and is not secure. " +
+                "Please choose a different password that hasn't been compromised.",
+                registrationDto.password()
+            );
+            throw new PasswordCompromisedException(detailedMessage);
         }
     }
 

@@ -28,15 +28,8 @@ public class AuthApiController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid ConsumerRequestDto registrationDto) {
-        try {
-            customerService.registerNewUser(registrationDto);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (RuntimeException e) {
-            if (e.getMessage().contains("Email already exists")) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        customerService.registerNewUser(registrationDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/logout")
