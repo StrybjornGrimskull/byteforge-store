@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -18,7 +17,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.server.ResponseStatusException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -41,146 +41,128 @@ class AuthServiceTest {
     private AuthService authService;
 
     private LoginRequest validLoginRequest;
-    private String testEmail;
-    private String testPassword;
-    private String testJwtToken;
+    private LoginRequest invalidLoginRequest;
+    private static final String TEST_EMAIL = "test@example.com";
+    private static final String TEST_PASSWORD = "password123";
+    private static final String TEST_JWT_TOKEN = "test.jwt.token";
 
     @BeforeEach
     void setUp() {
-        testEmail = "test@example.com";
-        testPassword = "password123";
-        testJwtToken = "test-jwt-token";
-        validLoginRequest = new LoginRequest(testEmail, testPassword);
+        validLoginRequest = new LoginRequest(TEST_EMAIL, TEST_PASSWORD);
+        invalidLoginRequest = new LoginRequest("wrong@example.com", "wrongpassword");
     }
 
     @Test
-    void login_ShouldSetJwtCookie_WhenAuthenticationSucceeds() {
+    void login_SuccessfulAuthentication_ShouldSetJwtCookie() {
         // Arrange
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
-        when(authentication.getName()).thenReturn(testEmail);
-        when(jwtUtils.generateToken(testEmail)).thenReturn(testJwtToken);
-        ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
+        when(authentication.getName()).thenReturn(TEST_EMAIL);
+        when(jwtUtils.generateToken(TEST_EMAIL)).thenReturn(TEST_JWT_TOKEN);
 
         // Act
         authService.login(validLoginRequest, response);
 
         // Assert
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(jwtUtils).generateToken(testEmail);
-        verify(response).addCookie(cookieCaptor.capture());
-        
-        Cookie jwtCookie = cookieCaptor.getValue();
-        assertEquals("jwt", jwtCookie.getName());
-        assertEquals(testJwtToken, jwtCookie.getValue());
-        assertTrue(jwtCookie.isHttpOnly());
-        assertTrue(jwtCookie.getSecure());
-        assertEquals("/", jwtCookie.getPath());
-        assertEquals(24 * 60 * 60, jwtCookie.getMaxAge());
+        verify(jwtUtils).generateToken(TEST_EMAIL);
+        verify(response).addCookie(argThat(cookie ->
+                "jwt".equals(cookie.getName()) &&
+                        TEST_JWT_TOKEN.equals(cookie.getValue()) &&
+                        cookie.isHttpOnly() &&
+                        cookie.getSecure() &&
+                        "/".equals(cookie.getPath()) &&
+                        cookie.getMaxAge() == 24 * 60 * 60
+        ));
     }
 
     @Test
-    void login_ShouldThrowResponseStatusException_WhenUserIsDisabled() {
+    void login_DisabledUser_ShouldThrowForbiddenException() {
         // Arrange
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenThrow(new DisabledException("User is disabled"));
+                .thenThrow(new DisabledException("Account disabled"));
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-                authService.login(validLoginRequest, response));
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> authService.login(validLoginRequest, response));
 
         assertEquals(403, exception.getStatusCode().value());
-        assertEquals("Email not verified", exception.getReason());
+        assertEquals("Your account is not activated. Please check your email and verify your account.",
+                exception.getReason());
+
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(jwtUtils, never()).generateToken(any());
-        verify(response, never()).addCookie(any());
+        verifyNoInteractions(jwtUtils);
+        verify(response, never()).addCookie(any(Cookie.class));
     }
 
     @Test
-    void login_ShouldThrowResponseStatusException_WhenBadCredentials() {
+    void login_BadCredentials_ShouldThrowUnauthorizedException() {
         // Arrange
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new BadCredentialsException("Bad credentials"));
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-                authService.login(validLoginRequest, response));
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> authService.login(invalidLoginRequest, response));
 
         assertEquals(401, exception.getStatusCode().value());
-        assertEquals("Invalid credentials", exception.getReason());
+        assertEquals("Invalid email or password. Please try again.", exception.getReason());
+
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(jwtUtils, never()).generateToken(any());
-        verify(response, never()).addCookie(any());
+        verifyNoInteractions(jwtUtils);
+        verify(response, never()).addCookie(any(Cookie.class));
     }
 
     @Test
-    void login_ShouldCreateCorrectAuthenticationToken() {
+    void login_GenericException_ShouldThrowInternalServerError() {
         // Arrange
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenReturn(authentication);
-        when(authentication.getName()).thenReturn(testEmail);
-        when(jwtUtils.generateToken(testEmail)).thenReturn(testJwtToken);
-        ArgumentCaptor<UsernamePasswordAuthenticationToken> tokenCaptor = 
-                ArgumentCaptor.forClass(UsernamePasswordAuthenticationToken.class);
+                .thenThrow(new RuntimeException("Unexpected error"));
 
-        // Act
-        authService.login(validLoginRequest, response);
+        // Act & Assert
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> authService.login(validLoginRequest, response));
 
-        // Assert
-        verify(authenticationManager).authenticate(tokenCaptor.capture());
-        UsernamePasswordAuthenticationToken capturedToken = tokenCaptor.getValue();
-        assertEquals(testEmail, capturedToken.getPrincipal());
-        assertEquals(testPassword, capturedToken.getCredentials());
+        assertEquals(500, exception.getStatusCode().value());
+        assertEquals("An error occurred during authentication. Please try again.", exception.getReason());
+
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verifyNoInteractions(jwtUtils);
+        verify(response, never()).addCookie(any(Cookie.class));
     }
 
     @Test
     void logout_ShouldSetExpiredJwtCookie() {
-        // Arrange
-        ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
-
         // Act
         authService.logout(response);
 
         // Assert
-        verify(response).addCookie(cookieCaptor.capture());
-        Cookie jwtCookie = cookieCaptor.getValue();
-        assertEquals("jwt", jwtCookie.getName());
-        assertNull(jwtCookie.getValue());
-        assertTrue(jwtCookie.isHttpOnly());
-        assertTrue(jwtCookie.getSecure());
-        assertEquals("/", jwtCookie.getPath());
-        assertEquals(0, jwtCookie.getMaxAge());
+        verify(response).addCookie(argThat(cookie ->
+                "jwt".equals(cookie.getName()) &&
+                        cookie.getValue() == null &&
+                        cookie.isHttpOnly() &&
+                        cookie.getSecure() &&
+                        "/".equals(cookie.getPath()) &&
+                        cookie.getMaxAge() == 0
+        ));
     }
 
     @Test
-    void login_ShouldThrowBadCredentialsException_WhenEmailIsEmpty() {
+    void login_ShouldUseCorrectAuthenticationToken() {
         // Arrange
-        LoginRequest emptyEmailRequest = new LoginRequest("", testPassword);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenThrow(new BadCredentialsException("Bad credentials"));
+                .thenReturn(authentication);
+        when(authentication.getName()).thenReturn(TEST_EMAIL);
+        when(jwtUtils.generateToken(TEST_EMAIL)).thenReturn(TEST_JWT_TOKEN);
 
-        // Act & Assert
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-                authService.login(emptyEmailRequest, response));
+        // Act
+        authService.login(validLoginRequest, response);
 
-        assertEquals(401, exception.getStatusCode().value());
-        assertEquals("Invalid credentials", exception.getReason());
-        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-    }
-
-    @Test
-    void login_ShouldThrowBadCredentialsException_WhenPasswordIsEmpty() {
-        // Arrange
-        LoginRequest emptyPasswordRequest = new LoginRequest(testEmail, "");
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenThrow(new BadCredentialsException("Bad credentials"));
-
-        // Act & Assert
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-                authService.login(emptyPasswordRequest, response));
-
-        assertEquals(401, exception.getStatusCode().value());
-        assertEquals("Invalid credentials", exception.getReason());
-        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        // Assert
+        verify(authenticationManager).authenticate(argThat(token ->
+                token instanceof UsernamePasswordAuthenticationToken &&
+                        TEST_EMAIL.equals(token.getPrincipal()) &&
+                        TEST_PASSWORD.equals(token.getCredentials())
+        ));
     }
 }

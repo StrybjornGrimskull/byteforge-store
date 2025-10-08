@@ -34,7 +34,7 @@ ByteForge - это интернет-магазин компьютерных ко
 
 ### 1. Клонирование репозитория
 ```bash
-git clone <https://github.com/StrybjornGrimskull/byteforge-store>
+git clone https://github.com/StrybjornGrimskull/byteforge-store
 cd byteforge
 ```
 
@@ -43,18 +43,7 @@ cd byteforge
 docker-compose up -d db
 ```
 
-### 3. Настройка переменных окружения
-Создайте файл `.env` в корне проекта:
-```env
-DATABASE_HOST=localhost
-DATABASE_PORT=5432
-DATABASE_NAME=byteforge_db
-DATABASE_USERNAME=byteforge
-DATABASE_PASSWORD=root
-SPRING_APP_NAME=ByteForgeOnlineStore
-```
-
-### 4. Сборка и запуск приложения
+### 3. Сборка и запуск приложения
 ```bash
 # Сборка проекта
 ./mvnw clean install
@@ -63,9 +52,17 @@ SPRING_APP_NAME=ByteForgeOnlineStore
 ./mvnw spring-boot:run
 ```
 
-### 5. Доступ к приложению
+### 4. Доступ к приложению
 - **Веб-интерфейс**: https://localhost:8443
 - **API**: https://localhost:8443/api
+
+⚠️ **Важно**: Приложение использует самоподписанный SSL сертификат для разработки. При первом заходе браузер покажет предупреждение о безопасности. Это нормально для локальной разработки:
+
+1. **Chrome/Edge**: Нажмите "Дополнительно" → "Перейти на localhost (небезопасно)"
+2. **Firefox**: Нажмите "Дополнительно" → "Принять риск и продолжить"
+3. **Safari**: Нажмите "Показать подробности" → "Посетить этот веб-сайт"
+
+Для продакшена обязательно замените самоподписанный сертификат на реальный!
 
 ## 📧 Настройка Email сервиса
 
@@ -120,14 +117,11 @@ spring.mail.properties.mail.smtp.starttls.enable=true
 
 ## 🧪 Тестирование
 
-```bash
-# Запуск всех тестов
-./mvnw test
-
-# Запуск тестов с покрытием
-./mvnw test jacoco:report
-```
-
+Пользователи для тестов
+- admin@example.com / Milesisuq@12032
+- moderator@example.com / Milesisuq@12032
+- product_manager@example.com / Milesisuq@12032
+-
 ## 📁 Структура проекта
 
 ```
@@ -142,6 +136,7 @@ src/
 │   │   ├── filter/           # JWT фильтр
 │   │   ├── repositories/     # JPA репозитории
 │   │   ├── services/         # Бизнес-логика
+|   |   ├── utils /           # Вспомогательные классы
 │   │   └── web/              # Контроллеры
 │   └── resources/
 │       ├── db/migration/     # Flyway миграции
@@ -160,57 +155,6 @@ src/
 Для HTTPS используется самоподписанный сертификат `keystore.p12`:
 - Пароль: `changeit`
 - Для продакшена замените на реальный сертификат
-
-## 🐛 Отладка
-
-### Логирование
-```bash
-# Включить debug логи
-export SPRING_SECURITY_LOG_LEVEL=DEBUG
-./mvnw spring-boot:run
-```
-
-### База данных
-```bash
-# Подключение к PostgreSQL
-docker exec -it byteforge_db psql -U byteforge -d byteforge_db
-```
-
-## 📝 API документация
-
-### Аутентификация
-- `POST /api/auth/login` - вход в систему
-- `POST /api/auth/register` - регистрация
-- `POST /api/auth/logout` - выход
-- `POST /api/auth/check-email` - проверка email
-
-### Товары
-- `GET /api/products` - список товаров
-- `GET /api/products/{id}` - детали товара
-- `POST /api/products` - создание товара (ADMIN)
-
-### Заказы
-- `GET /api/orders` - список заказов пользователя
-- `POST /api/orders` - создание заказа
-
-## 🤝 Вклад в проект
-
-1. Fork проекта
-2. Создайте feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit изменения (`git commit -m 'Add some AmazingFeature'`)
-4. Push в branch (`git push origin feature/AmazingFeature`)
-5. Откройте Pull Request
-
-## 📄 Лицензия
-
-Этот проект лицензирован под MIT License - см. файл [LICENSE](LICENSE) для деталей.
-
-## 📞 Поддержка
-
-Если у вас есть вопросы или проблемы:
-1. Проверьте [Issues](https://github.com/your-repo/issues)
-2. Создайте новый Issue с подробным описанием
-3. Обратитесь к документации Spring Boot
 
 ---
 
