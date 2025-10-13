@@ -1,10 +1,12 @@
 package com.byteforge.byteforge.exceptions;
 
+import com.byteforge.byteforge.dto.AuthErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +55,23 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PasswordCompromisedException.class)
     public ResponseEntity<String> handlePasswordCompromisedException(PasswordCompromisedException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<?> handleResponseStatusException(ResponseStatusException e) {
+        if (e.getStatusCode() == HttpStatus.FORBIDDEN) {
+            // Account disabled (email not verified)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(AuthErrorResponse.disabled("Your account is not activated. Please check your email and verify your account."));
+        } else if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+            // Bad credentials
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(AuthErrorResponse.badCredentials("Invalid email or password. Please try again."));
+        } else {
+            // Generic error
+            return ResponseEntity.status(e.getStatusCode())
+                    .body(AuthErrorResponse.generic(e.getReason()));
+        }
     }
 
     @ExceptionHandler(RuntimeException.class)

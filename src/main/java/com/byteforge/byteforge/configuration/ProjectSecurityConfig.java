@@ -1,6 +1,5 @@
 package com.byteforge.byteforge.configuration;
 
-import com.byteforge.byteforge.constants.ApplicationConstants;
 import com.byteforge.byteforge.filter.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -37,17 +36,18 @@ public class ProjectSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)// Не используем сессии
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(requests -> requests
+                .requiresChannel(rcc -> rcc.anyRequest().requiresSecure()) //HTTPS
+                .authorizeHttpRequests((requests) -> requests
                         // === ЗАКРЫТЫЙ ДОСТУП (РОЛИ) ===
-                        .requestMatchers("/api/customers/**").hasRole(ApplicationConstants.ROLE_ADMIN)
-                        .requestMatchers("/admin/dashboard/users").hasRole(ApplicationConstants.ROLE_ADMIN)
-                        .requestMatchers("/admin/dashboard/reviews/**").hasAnyRole(ApplicationConstants.ROLE_ADMIN, ApplicationConstants.ROLE_MODERATOR)
-                        .requestMatchers("/admin/dashboard/products/**").hasAnyRole(ApplicationConstants.ROLE_ADMIN, ApplicationConstants.ROLE_PRODUCT_MANAGER)
-                        .requestMatchers("/admin/dashboard/**").hasAnyRole(ApplicationConstants.ROLE_ADMIN, ApplicationConstants.ROLE_MODERATOR, ApplicationConstants.ROLE_PRODUCT_MANAGER)
-                        .requestMatchers("/api/reviews/pending/**").hasAnyRole(ApplicationConstants.ROLE_ADMIN, ApplicationConstants.ROLE_MODERATOR)
-                        .requestMatchers("/api/reviews/{reviewId}/approve").hasAnyRole(ApplicationConstants.ROLE_ADMIN, ApplicationConstants.ROLE_MODERATOR)
-                        .requestMatchers("/api/reviews/{reviewId}").hasAnyRole(ApplicationConstants.ROLE_ADMIN, ApplicationConstants.ROLE_MODERATOR)
-                        .requestMatchers("/notices").hasRole(ApplicationConstants.ROLE_USER)
+                        .requestMatchers("/api/customers/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/dashboard/users").hasRole("ADMIN")
+                        .requestMatchers("/admin/dashboard/reviews/**").hasAnyRole("ADMIN", "MODERATOR")
+                        .requestMatchers("/admin/dashboard/products/**").hasAnyRole("ADMIN", "PRODUCT_MANAGER")
+                        .requestMatchers("/admin/dashboard/**").hasAnyRole("ADMIN", "MODERATOR","PRODUCT_MANAGER")
+                        .requestMatchers("/api/reviews/pending/**").hasAnyRole("ADMIN", "MODERATOR")
+                        .requestMatchers("/api/reviews/{reviewId}/approve").hasAnyRole("ADMIN", "MODERATOR")
+                        .requestMatchers("/api/reviews/{reviewId}").hasAnyRole("ADMIN", "MODERATOR")
+                        .requestMatchers("/notices").hasRole("USER")
 
                         // === АВТОРИЗИРОВАННЫЙ ДОСТУП ===
                         .requestMatchers("/api/reviews/**").authenticated()
@@ -84,9 +84,9 @@ public class ProjectSecurityConfig {
                                 "/brands",
                                 "/error",
                                 "/auth/**",
+                                "/api/auth/**",
                                 "/terms",
-                                "/privacy",
-                                "api/auth/**"
+                                "/privacy"
                         ).permitAll()
                 );
 

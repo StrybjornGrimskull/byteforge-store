@@ -111,7 +111,12 @@ public class CustomerService {
     }
 
     @Transactional
-    public void resetPassword(String token, String newPassword) {
+    public void resetPassword(String token, String newPassword, String confirmPassword) {
+        // Валидация совпадения паролей
+        if (!newPassword.equals(confirmPassword)) {
+            throw new PasswordMismatchException("Passwords do not match");
+        }
+        
         Customer customer = customerRepository.findByPasswordResetToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid password reset token"));
 

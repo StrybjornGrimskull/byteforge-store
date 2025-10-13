@@ -255,6 +255,41 @@ class CustomerServiceTest {
     }
 
     @Test
+    void resetPassword_ShouldResetPasswordSuccessfully() {
+        // Arrange
+        testCustomer.setPasswordResetToken("reset-token");
+        testCustomer.setPasswordResetTokenExpiry(LocalDateTime.now().plusHours(1));
+        
+        when(customerRepository.findByPasswordResetToken(anyString())).thenReturn(Optional.of(testCustomer));
+        when(passwordEncoder.encode(anyString())).thenReturn("newEncodedPassword");
+        when(customerRepository.save(any(Customer.class))).thenReturn(testCustomer);
+        when(compromisedPasswordChecker.check(anyString())).thenAnswer(invocation -> {
+            CompromisedPasswordDecision mockDecision = mock(CompromisedPasswordDecision.class);
+            when(mockDecision.isCompromised()).thenReturn(false);
+            return mockDecision;
+        });
+
+        // Act
+        customerService.resetPassword("reset-token", "newPassword123", "newPassword123");
+
+        // Assert
+        verify(customerRepository).findByPasswordResetToken("reset-token");
+        verify(compromisedPasswordChecker).check("newPassword123");
+        verify(passwordEncoder).encode("newPassword123");
+        verify(customerRepository).save(testCustomer);
+    }
+
+    @Test
+    void resetPassword_ShouldThrowExceptionWhenPasswordsDoNotMatch() {
+        // Arrange & Act & Assert
+        assertThrows(PasswordMismatchException.class, () -> 
+                customerService.resetPassword("reset-token", "password123", "differentPassword"));
+        
+        verify(customerRepository, never()).findByPasswordResetToken(anyString());
+        verify(customerRepository, never()).save(any(Customer.class));
+    }
+
+    @Test
     void resetPassword_ShouldThrowExceptionWhenTokenExpired() {
         // Arrange
         testCustomer.setPasswordResetToken("reset-token");
@@ -264,9 +299,22 @@ class CustomerServiceTest {
 
         // Act & Assert
         assertThrows(RuntimeException.class, () -> 
-                customerService.resetPassword("reset-token", "newPassword123"));
+                customerService.resetPassword("reset-token", "newPassword123", "newPassword123"));
         
         verify(customerRepository).findByPasswordResetToken("reset-token");
+        verify(customerRepository, never()).save(any(Customer.class));
+    }
+
+    @Test
+    void resetPassword_ShouldThrowExceptionWhenTokenNotFound() {
+        // Arrange
+        when(customerRepository.findByPasswordResetToken(anyString())).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(RuntimeException.class, () -> 
+                customerService.resetPassword("invalid-token", "newPassword123", "newPassword123"));
+        
+        verify(customerRepository).findByPasswordResetToken("invalid-token");
         verify(customerRepository, never()).save(any(Customer.class));
     }
 

@@ -27,10 +27,9 @@
             <h2>Resend Verification</h2>
             <p class="subtitle">Enter your email to receive a new verification link</p>
 
-            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-            <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+            <div id="message-container" style="display: none;"></div>
 
-            <form th:action="@{/auth/resend-verification}" method="post">
+            <form id="resendForm">
                 <div class="form-field">
                     <i class="bi bi-envelope input-icon"></i>
                     <input type="email" 
@@ -52,5 +51,10 @@
             </div>
         </div>
     </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Resend Verification Script -->
+    <script th:src="@{/js/resend-verification.js}"></script>
 </body>
 </html>

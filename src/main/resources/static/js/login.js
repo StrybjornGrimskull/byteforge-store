@@ -1,6 +1,4 @@
 $(function() {
-    const $loginForm = $('#loginForm');
-    
     // Функция для показа сообщений об ошибках
     function showErrorMessage(message, errorType = 'error') {
         // Удаляем предыдущие сообщения об ошибках
@@ -31,7 +29,7 @@ $(function() {
         }
         
         // Вставляем сообщение перед формой
-        $loginForm.before(errorAlert);
+        $('#loginForm').before(errorAlert);
         
         // Прокручиваем к сообщению об ошибке
         $('html, body').animate({
@@ -39,7 +37,7 @@ $(function() {
         }, 500);
     }
     
-    $loginForm.on('submit', function(e) {
+    $('#loginForm').on('submit', function(e) {
         e.preventDefault();
         
         const email = $('#email').val();
@@ -67,7 +65,7 @@ $(function() {
                 email: email,
                 password: password
             }),
-            success: function() {
+            success: function(response) {
                 // Успешный логин - JWT токен уже установлен в HttpOnly cookie
                 // Simply redirect to the main page
                 window.location.href = '/';
@@ -76,19 +74,25 @@ $(function() {
                 let errorMessage = 'An error occurred. Please try again.';
                 let errorType = 'error';
                 
-                // Пытаемся получить детальную информацию об ошибке из ответа
-                if (xhr.responseJSON?.message) {
-                    errorMessage = xhr.responseJSON.message;
-                    if (xhr.responseJSON.errorType) {
-                        errorType = xhr.responseJSON.errorType;
-                    }
-                } else if (xhr.status === 403) {
-                    // Fallback для старых ответов без детальной информации
+                // Обработка HTTP статусов
+                if (xhr.status === 403) {
+                    // Account disabled (email not verified)
                     errorMessage = 'Your account is not activated. Please check your email and verify your account.';
                     errorType = 'disabled';
                 } else if (xhr.status === 401) {
+                    // Bad credentials
                     errorMessage = 'Invalid email or password. Please try again.';
                     errorType = 'badCredentials';
+                }
+                
+                // Пытаемся получить детальную информацию из responseJSON
+                if (xhr.responseJSON) {
+                    if (xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    if (xhr.responseJSON.errorType) {
+                        errorType = xhr.responseJSON.errorType;
+                    }
                 }
                 
                 showErrorMessage(errorMessage, errorType);

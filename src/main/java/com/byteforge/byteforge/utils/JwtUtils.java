@@ -1,6 +1,5 @@
 package com.byteforge.byteforge.utils;
 
-import com.byteforge.byteforge.constants.ApplicationConstants;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +14,7 @@ public class JwtUtils {
     private final SecretKey key;
     private final long expiration;
 
-    public JwtUtils(@Value("${jwt.secret:${" + ApplicationConstants.JWT_SECRET_KEY + ":" + ApplicationConstants.JWT_SECRET_DEFAULT_VALUE + "}}") String secret,
+    public JwtUtils(@Value("${jwt.secret}") String secret,
                     @Value("${jwt.expiration}") long expiration) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
         this.expiration = expiration;

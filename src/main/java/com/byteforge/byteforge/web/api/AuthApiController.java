@@ -1,6 +1,5 @@
 package com.byteforge.byteforge.web.api;
 
-import com.byteforge.byteforge.dto.AuthErrorResponse;
 import com.byteforge.byteforge.dto.LoginRequest;
 import com.byteforge.byteforge.dto.request.ConsumerRequestDto;
 import com.byteforge.byteforge.services.AuthService;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -22,30 +20,14 @@ public class AuthApiController {
     private final CustomerService customerService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest,
-                                   HttpServletResponse response) {
-        try {
-            authService.login(loginRequest, response);
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (ResponseStatusException e) {
-            if (e.getStatusCode() == HttpStatus.FORBIDDEN) {
-                // Account disabled (email not verified)
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(AuthErrorResponse.disabled(e.getReason()));
-            } else if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                // Bad credentials
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(AuthErrorResponse.badCredentials(e.getReason()));
-            } else {
-                // Generic error
-                return ResponseEntity.status(e.getStatusCode())
-                        .body(AuthErrorResponse.generic(e.getReason()));
-            }
-        }
+    public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest,
+                                      HttpServletResponse response) {
+        authService.login(loginRequest, response);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody @Valid ConsumerRequestDto registrationDto) {
+    public ResponseEntity<Void> register(@RequestBody @Valid ConsumerRequestDto registrationDto) {
         customerService.registerNewUser(registrationDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -61,4 +43,33 @@ public class AuthApiController {
         boolean exists = customerService.emailExists(email);
         return ResponseEntity.ok(exists);
     }
+
+    @PostMapping("/verify")
+    public ResponseEntity<MessageResponse> verifyEmail(@RequestParam String token) {
+        customerService.verifyEmail(token);
+        return ResponseEntity.ok(new MessageResponse("Email verified successfully"));
+    }
+
+    @PostMapping("/resend-verification")
+    public ResponseEntity<MessageResponse> resendVerificationEmail(@RequestParam String email) {
+        customerService.resendVerificationEmail(email);
+        return ResponseEntity.ok(new MessageResponse("Verification email sent successfully"));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<MessageResponse> forgotPassword(@RequestParam String email) {
+        customerService.generatePasswordResetToken(email);
+        return ResponseEntity.ok(new MessageResponse("A password reset link has been sent to your email"));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<MessageResponse> resetPassword(@RequestParam String token,
+                                                         @RequestParam String password,
+                                                         @RequestParam String confirmPassword) {
+        customerService.resetPassword(token, password, confirmPassword);
+        return ResponseEntity.ok(new MessageResponse("Your password has been reset successfully"));
+    }
+
+    // DTO для ответов
+    private record MessageResponse(String message) {}
 }
