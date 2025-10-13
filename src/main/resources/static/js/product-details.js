@@ -1,16 +1,187 @@
 // Глобальная переменная для отслеживания загрузки спецификаций
 var specsLoaded = false;
+// Глобальная переменная с данными продукта (будет загружена через API)
+window.productData = null;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Не загружаем спецификации автоматически при загрузке страницы
-    // Они будут загружены при нажатии на выпадающее меню
-
-    // Если в шаблоне есть данные о продукте, сохраняем их
-    if (window.productData && window.productData.spec) {
-        specsLoaded = true;
-        // Не рендерим спецификации сразу, они будут отображены при открытии выпадающего меню
+    // Извлекаем ID продукта из URL
+    const productId = getProductIdFromUrl();
+    
+    if (productId) {
+        // Загружаем данные продукта
+        loadProductData(productId);
+    } else {
+        console.error('Product ID not found in URL');
+        document.getElementById('product-description').textContent = 'Error: Product not found';
     }
 });
+
+// Получение ID продукта из URL
+function getProductIdFromUrl() {
+    const pathParts = window.location.pathname.split('/');
+    return pathParts[pathParts.length - 1];
+}
+
+// Загрузка всех данных продукта
+async function loadProductData(productId) {
+    try {
+        // Параллельная загрузка данных продукта и рейтинга
+        const [productResponse, reviewStatsResponse] = await Promise.all([
+            fetch(`/api/products/${productId}`),
+            fetch(`/api/reviews/product/${productId}/stats`)
+        ]);
+
+        if (!productResponse.ok) {
+            throw new Error('Product not found');
+        }
+
+        const product = await productResponse.json();
+        const reviewStats = reviewStatsResponse.ok ? await reviewStatsResponse.json() : { averageRating: null, reviewCount: 0 };
+
+        // Сохраняем данные глобально
+        window.productData = product;
+
+        // Рендерим страницу
+        renderProductPage(product, reviewStats);
+    } catch (error) {
+        console.error('Error loading product:', error);
+        document.getElementById('product-description').textContent = 'Error loading product details';
+    }
+}
+
+// Рендеринг всей страницы продукта
+function renderProductPage(product, reviewStats) {
+    // Обновляем заголовок страницы
+    document.getElementById('page-title').textContent = `${product.name} Details | ByteForge`;
+
+    // Обновляем breadcrumb
+    const categoryLink = document.getElementById('breadcrumb-category');
+    categoryLink.href = `/products/list?categoryId=${product.categoryId}`;
+    categoryLink.textContent = product.categoryName;
+    document.getElementById('breadcrumb-product').textContent = product.name;
+
+    // Обновляем заголовок с логотипом бренда
+    const brandLogo = document.getElementById('brand-logo');
+    brandLogo.src = `/uploads/${product.brandLogo}`;
+    brandLogo.alt = product.brandName;
+    
+    // Убираем название бренда из заголовка если оно в начале
+    const displayName = product.name.startsWith(product.brandName + ' ')
+        ? product.name.substring(product.brandName.length + 1)
+        : product.name;
+    document.getElementById('product-name-header').textContent = displayName;
+
+    // Обновляем главное изображение
+    const mainImage = document.getElementById('product-main-image');
+    mainImage.src = `/uploads/${product.imageUrl}`;
+    mainImage.alt = product.name;
+
+    // Обновляем скидку
+    if (product.discountPercentage > 0) {
+        document.getElementById('discount-percentage').textContent = `-${product.discountPercentage}`;
+        document.getElementById('discount-badge').style.display = 'flex';
+    }
+
+    // Обновляем цены
+    renderPrices(product);
+
+    // Обновляем описание
+    document.getElementById('product-description').textContent = product.shortDescription;
+
+    // Обновляем статус наличия
+    const stockStatus = document.getElementById('stock-status');
+    stockStatus.textContent = product.stockQuantity > 0 ? 'In stock' : 'Out of stock';
+
+    // Обновляем рейтинг
+    renderRating(reviewStats, product.id);
+
+    // Обновляем кнопки
+    const cartBtn = document.getElementById('cartBtn');
+    const wishlistBtn = document.getElementById('wishlistBtn');
+    
+    cartBtn.dataset.productId = product.id;
+    cartBtn.dataset.stockQuantity = product.stockQuantity;
+    cartBtn.disabled = product.stockQuantity <= 0;
+    
+    wishlistBtn.dataset.productId = product.id;
+
+    // Обновляем базовые характеристики
+    renderBasicSpecs(product);
+    
+    // Инициализируем функционал корзины и вишлиста после загрузки данных
+    initializeCart();
+    initializeWishlist();
+}
+
+// Рендеринг цен
+function renderPrices(product) {
+    const priceSection = document.getElementById('price-section');
+    
+    if (product.discountPercentage > 0) {
+        priceSection.innerHTML = `
+            <div class="d-flex flex-column">
+                <span class="text-decoration-line-through fs-6 mb-1">€${formatPrice(product.originalPrice)}</span>
+                <span class="fw-bold fs-3">€${formatPrice(product.price)}</span>
+            </div>
+        `;
+    } else {
+        priceSection.innerHTML = `
+            <span class="fw-bold fs-3">€${formatPrice(product.originalPrice)}</span>
+        `;
+    }
+}
+
+// Форматирование цены
+function formatPrice(price) {
+    return Number(price).toFixed(2);
+}
+
+// Рендеринг рейтинга
+function renderRating(reviewStats, productId) {
+    const ratingSection = document.getElementById('rating-section');
+    
+    if (reviewStats.averageRating != null) {
+        const formattedRating = Number(reviewStats.averageRating).toFixed(1);
+        const reviewText = reviewStats.reviewCount > 0 
+            ? `(<a href="/reviews/product/${productId}" class="text-white text-decoration-none">${reviewStats.reviewCount} reviews</a>)`
+            : '';
+        
+        ratingSection.innerHTML = `
+            <span class="fs-5 text-warning">
+                <i class="bi bi-star-fill"></i>
+                <span>${formattedRating}</span>
+                <span class="text-white ms-2" style="font-size:1rem;">
+                    ${reviewText}
+                </span>
+            </span>
+        `;
+    } else {
+        ratingSection.innerHTML = '<span class="text-white">No ratings yet</span>';
+    }
+}
+
+// Рендеринг базовых характеристик
+function renderBasicSpecs(product) {
+    const grid = document.getElementById('basic-specs-grid');
+    grid.innerHTML = `
+        <div class="spec-card">
+            <div class="spec-label">Category</div>
+            <div class="spec-value">${product.categoryName}</div>
+        </div>
+        <div class="spec-card">
+            <div class="spec-label">Brand</div>
+            <div class="spec-value">${product.brandName}</div>
+        </div>
+        <div class="spec-card">
+            <div class="spec-label">Release Year</div>
+            <div class="spec-value">${product.releaseYear}</div>
+        </div>
+        <div class="spec-card">
+            <div class="spec-label">Warranty</div>
+            <div class="spec-value">${product.warrantyMonths} months</div>
+        </div>
+    `;
+}
 
 function renderSpecifications(spec, categoryId) {
     const grid = document.getElementById('techSpecsGrid');
@@ -239,7 +410,7 @@ function toggleTechSpecs() {
         icon.classList.add('bi-chevron-up');
 
         // Always load specifications
-        const productId = window.location.pathname.split('/').pop();
+        const productId = getProductIdFromUrl();
         const categoryId = window.productData?.categoryId;
 
         if (categoryId) {
@@ -322,7 +493,12 @@ function updateCalculatedPrice(){
 }
 
 function prefillEditModal() {
-    const p = window.productData || {};
+    if (!window.productData) {
+        console.error('Product data not loaded yet');
+        return;
+    }
+    
+    const p = window.productData;
     $('#editName').val(p.name || '');
     $('#editPrice').val(p.price ?? '');
     $('#editOriginalPrice').val(p.originalPrice ?? '');
@@ -331,7 +507,6 @@ function prefillEditModal() {
     $('#editStockQuantity').val(p.stockQuantity ?? '');
     $('#editReleaseYear').val(p.releaseYear || '');
     $('#editWarrantyMonths').val(p.warrantyMonths || '');
-    $('#editImageUrl').val(p.imageUrl || '');
     
     // Populate Category and Brand selects (derive IDs from productData)
     populateCategoriesAndBrands();
@@ -339,7 +514,7 @@ function prefillEditModal() {
     // Calculate current price from original and discount
     updateCalculatedPrice();
 
-    const productId = p.id || window.location.pathname.split('/').pop();
+    const productId = p.id || getProductIdFromUrl();
     const categoryId = p.categoryId;
     const container = document.getElementById('editSpecsContainer');
     container.innerHTML = '<div class="col-12 text-muted">Loading specifications...</div>';
@@ -439,8 +614,7 @@ async function handleSaveEdit(){
 }
 
 function getProductId() {
-    const p = window.productData || {};
-    return p.id || window.location.pathname.split('/').pop();
+    return window.productData?.id || getProductIdFromUrl();
 }
 
 function buildFormData() {
@@ -751,17 +925,17 @@ async function initializeCart() {
     }
 }
 
-// Initialize cart
+// Note: Cart initialization now happens after product data is loaded
+// Event listener is added here for reuse
 document.addEventListener('DOMContentLoaded', function() {
     const cartBtn = document.getElementById('cartBtn');
     if (cartBtn) {
-        initializeCart();
         cartBtn.addEventListener('click', handleCartClick);
     }
 });
 
 // Wishlist functionality
-document.addEventListener('DOMContentLoaded', function() {
+function initializeWishlist() {
     const wishlistBtn = document.getElementById('wishlistBtn');
     if (!wishlistBtn) return;
     
@@ -830,7 +1004,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateWishlistButton(isInWishlist) {
-        const icon = wishlistBtn.querySelector('i');
+        // Находим кнопку заново на случай если она была обновлена
+        const btn = document.getElementById('wishlistBtn');
+        if (!btn) return;
+        
+        const icon = btn.querySelector('i');
+        if (!icon) return;
+        
         if (isInWishlist) {
             icon.classList.remove('bi-heart');
             icon.classList.add('bi-heart-fill');
@@ -840,7 +1020,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Initialize wishlist
-    checkWishlistStatus();
+    // Add event listener to the button
     wishlistBtn.addEventListener('click', handleWishlistClick);
-});
+    
+    // Initialize wishlist status
+    checkWishlistStatus();
+}

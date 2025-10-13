@@ -29,14 +29,11 @@
 
     <!-- Форма поиска и фильтров -->
     <form id="filterForm" class="row g-3 mb-4 align-items-end" onsubmit="event.preventDefault(); loadProducts();">
-        <input type="hidden" name="categoryId" id="categoryIdHidden" th:value="${categoryId}">
         <div class="col-md-3">
             <label for="categoryId" class="form-label">Category</label>
             <select name="categoryId" id="categoryId" class="form-select" onchange="updateBrands();">
                 <option value="">All Categories</option>
-                <option th:each="category : ${categories}"
-                        th:value="${category.id}"
-                        th:text="${category.name}"></option>
+                <!-- Categories will be loaded dynamically via JavaScript -->
             </select>
         </div>
         <div class="col-md-4">
@@ -47,7 +44,7 @@
             <label for="brandId" class="form-label">Brand</label>
             <select name="brandId" id="brandId" class="form-select">
                 <option value="">All Brands</option>
-                <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}"></option>
+                <!-- Brands will be loaded dynamically via JavaScript -->
             </select>
         </div>
         <div class="col-md-3">

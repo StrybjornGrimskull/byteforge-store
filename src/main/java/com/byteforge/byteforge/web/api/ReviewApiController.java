@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+record ReviewStatsDto(Double averageRating, Long reviewCount) {}
+
 @RestController
 @RequestMapping("/api/reviews")
 @RequiredArgsConstructor
@@ -33,6 +35,14 @@ public class ReviewApiController {
     public ResponseEntity<List<ReviewDto>> getProductReviews(@PathVariable Integer productId) {
         List<ReviewDto> reviews = reviewService.getActiveReviewsByProductId(productId);
         return ResponseEntity.ok(reviews);
+    }
+
+    @GetMapping("/product/{productId}/stats")
+    public ResponseEntity<ReviewStatsDto> getProductReviewStats(@PathVariable Integer productId) {
+        Double averageRating = reviewService.getAverageRatingByProductId(productId);
+        long reviewCount = reviewService.getActiveReviewCountByProductId(productId);
+        ReviewStatsDto stats = new ReviewStatsDto(averageRating, reviewCount);
+        return ResponseEntity.ok(stats);
     }
 
     @GetMapping("/can-review/{productId}")

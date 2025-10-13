@@ -7,20 +7,66 @@ document.addEventListener("DOMContentLoaded", function () {
     const urlParams = new URLSearchParams(window.location.search);
     const urlCategoryId = urlParams.get('categoryId');
 
-    // Устанавливаем категорию в select
-    if (urlCategoryId) {
-        document.getElementById('categoryId').value = urlCategoryId;
-        updateBrands();
-    }
-
-    // Загружаем продукты с учетом категории из URL
-    loadProducts();
+    // Загружаем категории и бренды
+    loadCategories().then(() => {
+        // Устанавливаем категорию в select если есть в URL
+        if (urlCategoryId) {
+            document.getElementById('categoryId').value = urlCategoryId;
+            updateBrands();
+        } else {
+            // Загружаем все бренды если категория не выбрана
+            loadBrands();
+        }
+        
+        // Загружаем продукты с учетом категории из URL
+        loadProducts();
+    });
 
     // Добавляем обработчик для кнопки "Load More"
     document.getElementById('loadMoreBtn').addEventListener('click', function() {
         loadMoreProducts();
     });
 });
+
+async function loadCategories() {
+    try {
+        const response = await fetch('/api/categories');
+        if (!response.ok) throw new Error('Failed to load categories');
+        const categories = await response.json();
+        
+        const categorySelect = document.getElementById('categoryId');
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.id;
+            option.textContent = category.name;
+            categorySelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error loading categories:', error);
+    }
+}
+
+async function loadBrands(categoryId = '') {
+    try {
+        const url = categoryId 
+            ? `/api/brands/by-category?categoryId=${categoryId}`
+            : '/api/brands';
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Failed to load brands');
+        const brands = await response.json();
+        
+        const brandSelect = document.getElementById('brandId');
+        brandSelect.innerHTML = '<option value="">All Brands</option>';
+        brands.forEach(brand => {
+            const option = document.createElement('option');
+            option.value = brand.id;
+            option.textContent = brand.name;
+            brandSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error loading brands:', error);
+    }
+}
 
 function getFilterParams() {
     const params = new URLSearchParams();
@@ -115,27 +161,7 @@ function scrollToTop() {
 
 function updateBrands() {
     const categoryId = document.getElementById('categoryId').value;
-    // Обновляем скрытое поле при изменении категории
-    document.getElementById('categoryIdHidden').value = categoryId;
-
-    fetch('/api/brands/by-category?categoryId=' + categoryId)
-        .then(response => {
-            if (!response.ok) throw new Error('Network error');
-            return response.json();
-        })
-        .then(brands => {
-            const brandSelect = document.getElementById('brandId');
-            brandSelect.innerHTML = '<option value="">All Brands</option>';
-            brands.forEach(brand => {
-                const option = document.createElement('option');
-                option.value = brand.id;
-                option.textContent = brand.name;
-                brandSelect.appendChild(option);
-            });
-        })
-        .catch(() => {
-            // Silent error handling
-        });
+    loadBrands(categoryId);
 }
 
 function createProductHtml(product) {
