@@ -1,6 +1,7 @@
 package com.byteforge.byteforge.web.api;
 
 import com.byteforge.byteforge.dto.LoginRequest;
+import com.byteforge.byteforge.dto.MessageResponse;
 import com.byteforge.byteforge.dto.request.ConsumerRequestDto;
 import com.byteforge.byteforge.services.AuthService;
 import com.byteforge.byteforge.services.CustomerService;
@@ -69,7 +70,4 @@ public class AuthApiController {
         customerService.resetPassword(token, password, confirmPassword);
         return ResponseEntity.ok(new MessageResponse("Your password has been reset successfully"));
     }
-
-    // DTO для ответов
-    private record MessageResponse(String message) {}
 }
