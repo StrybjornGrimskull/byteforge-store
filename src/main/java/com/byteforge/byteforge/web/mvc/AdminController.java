@@ -79,10 +79,4 @@ public class AdminController {
     public String addProduct() {
         return "admin-add-product";
     }
-
-    @GetMapping("/stock")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String stockManagement() {
-        return "admin-stock-management";
-    }
 }
