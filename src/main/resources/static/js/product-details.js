@@ -851,8 +851,7 @@ const cartApi = {
             credentials: 'include'
         });
         if (response.status === 401) {
-            const current = window.location.pathname + window.location.search;
-            window.location.href = `/login?redirect=${encodeURIComponent(current)}`;
+            window.location.href = '/auth/login';
             return false;
         }
         if (!response.ok) {
@@ -868,8 +867,7 @@ const cartApi = {
             credentials: 'include'
         });
         if (response.status === 401) {
-            const current = window.location.pathname + window.location.search;
-            window.location.href = `/login?redirect=${encodeURIComponent(current)}`;
+            window.location.href = '/auth/login';
             return false;
         }
         return true;
@@ -957,8 +955,7 @@ function initializeWishlist() {
                 credentials: 'include'
             });
             if (response.status === 401) {
-                const current = window.location.pathname + window.location.search;
-                window.location.href = `/login?redirect=${encodeURIComponent(current)}`;
+                window.location.href = '/auth/login';
                 return false;
             }
             if (!response.ok) {
@@ -974,8 +971,7 @@ function initializeWishlist() {
                 credentials: 'include'
             });
             if (response.status === 401) {
-                const current = window.location.pathname + window.location.search;
-                window.location.href = `/login?redirect=${encodeURIComponent(current)}`;
+                window.location.href = '/auth/login';
                 return false;
             }
             return true;

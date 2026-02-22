@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:15-alpine
@@ -12,6 +10,43 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U byteforge"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  app:
+    build: .
+    container_name: byteforge_app
+    ports:
+      - "8443:8443"  # SSL порт
+    environment:
+      # Важно! Используем имя сервиса db как хост
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=byteforge_db
+      - DATABASE_USERNAME=byteforge
+      - DATABASE_PASSWORD=root
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./keystore.p12:/app/keystore.p12  # если нужно
+
+  mailcrab:
+    image: marlonb/mailcrab:latest
+    #        environment:
+    #            ENABLE_TLS_AUTH: true # optionally enable TLS for the SMTP server
+    #            MAILCRAB_PREFIX: emails # optionally prefix the webinterface with a path
+    #        volumes:
+    #           key.pem:/app/key.pem:ro # optionally provide your own keypair for TLS, else a pair will be generated
+    #           cert.pem:/app/cert.pem:ro
+    ports:
+      - '1080:1080'
+      - '1025:1025'
+    networks: [default]
 volumes:
   pgdata:
+
