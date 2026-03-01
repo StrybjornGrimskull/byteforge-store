@@ -24,7 +24,8 @@ public class Order {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "orders_seq")
+    @SequenceGenerator(name = "orders_seq", sequenceName = "orders_id_seq", allocationSize = 1)
     Long id;
 
     @Column(name = "total_price", nullable = false, precision = 12, scale = 2)

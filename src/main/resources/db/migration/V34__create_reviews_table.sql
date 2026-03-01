@@ -1,5 +1,8 @@
+-- Create sequence
+CREATE SEQUENCE reviews_id_seq;
+
 CREATE TABLE reviews (
-    id BIGSERIAL PRIMARY KEY,
+    id BIGINT PRIMARY KEY DEFAULT nextval('reviews_id_seq'),
     product_id BIGINT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
     customer_id INT NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
     user_first_name VARCHAR(100) NOT NULL,
@@ -11,3 +14,6 @@ CREATE TABLE reviews (
 
 -- Ограничение: один отзыв на продукт от одного пользователя
 CREATE UNIQUE INDEX uniq_review_per_product_per_customer ON reviews(product_id, customer_id); 
+
+-- Set sequence ownership
+ALTER SEQUENCE reviews_id_seq OWNED BY reviews.id; 

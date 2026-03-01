@@ -18,7 +18,8 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE)
 public class Authority {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "authorities_seq")
+    @SequenceGenerator(name = "authorities_seq", sequenceName = "authorities_id_seq", allocationSize = 1)
     Integer id;
 
     String name;

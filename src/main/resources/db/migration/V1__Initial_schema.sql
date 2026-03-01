@@ -1,19 +1,25 @@
 -- Main tables (common for all products)
+
+-- Create sequences
+CREATE SEQUENCE categories_id_seq;
+CREATE SEQUENCE brands_id_seq;
+CREATE SEQUENCE products_id_seq;
+
 CREATE TABLE categories (
-    id SERIAL PRIMARY KEY,
+    id INT PRIMARY KEY DEFAULT nextval('categories_id_seq'),
     name VARCHAR(100) NOT NULL UNIQUE,  
     slug VARCHAR(100) NOT NULL UNIQUE   
 );
 
 CREATE TABLE brands (
-    id SERIAL PRIMARY KEY,
+    id INT PRIMARY KEY DEFAULT nextval('brands_id_seq'),
     name VARCHAR(100) NOT NULL UNIQUE, 
     logo_url VARCHAR(255)
 );
 
 
 CREATE TABLE products (
-    id SERIAL PRIMARY KEY,
+    id INT PRIMARY KEY DEFAULT nextval('products_id_seq'),
     name VARCHAR(255) NOT NULL,
     discount_percentage INT NOT NULL DEFAULT 0,
     original_price DECIMAL(10,2) NOT NULL,
@@ -185,4 +191,8 @@ CREATE TABLE stock_quantity(
     product_id INT PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
     quantity INT DEFAULT 0
 );
- 
+
+-- Set sequence ownership
+ALTER SEQUENCE categories_id_seq OWNED BY categories.id;
+ALTER SEQUENCE brands_id_seq OWNED BY brands.id;
+ALTER SEQUENCE products_id_seq OWNED BY products.id;

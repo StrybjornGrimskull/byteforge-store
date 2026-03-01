@@ -20,7 +20,8 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE)
 public class Brand {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "brands_seq")
+    @SequenceGenerator(name = "brands_seq", sequenceName = "brands_id_seq", allocationSize = 1)
     Integer id;
 
     @Column(nullable = false, length = 100, unique = true)

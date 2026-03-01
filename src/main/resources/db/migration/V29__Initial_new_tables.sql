@@ -1,6 +1,10 @@
+-- Создаем sequences
+CREATE SEQUENCE customers_id_seq;
+CREATE SEQUENCE authorities_id_seq;
+
 -- Создаем таблицу customers
 CREATE TABLE customers (
-    id SERIAL PRIMARY KEY,
+    id INT PRIMARY KEY DEFAULT nextval('customers_id_seq'),
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -12,7 +16,7 @@ CREATE TABLE customers (
 
 -- Создаем таблицу authorities
 CREATE TABLE authorities (
-    id SERIAL PRIMARY KEY,
+    id INT PRIMARY KEY DEFAULT nextval('authorities_id_seq'),
     name VARCHAR(50) NOT NULL,
     customer_id INT REFERENCES customers(id) ON DELETE CASCADE
 );
@@ -28,3 +32,7 @@ CREATE TABLE profiles (
     post_index INT,
     birth_date DATE
 );
+
+-- Set sequence ownership
+ALTER SEQUENCE customers_id_seq OWNED BY customers.id;
+ALTER SEQUENCE authorities_id_seq OWNED BY authorities.id;

@@ -20,7 +20,8 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE)
 public class ShoppingCart {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "shopping_cart_seq")
+    @SequenceGenerator(name = "shopping_cart_seq", sequenceName = "shopping_cart_id_seq", allocationSize = 1)
     Integer id;
 
     @ManyToOne

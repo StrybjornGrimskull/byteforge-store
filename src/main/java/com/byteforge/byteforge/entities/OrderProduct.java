@@ -19,7 +19,8 @@ import static lombok.AccessLevel.PRIVATE;
 public class OrderProduct {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_products_seq")
+    @SequenceGenerator(name = "order_products_seq", sequenceName = "order_products_id_seq", allocationSize = 1)
     Long id;
 
     @ManyToOne

@@ -20,7 +20,8 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE)
 public class WishlistItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wishlist_items_seq")
+    @SequenceGenerator(name = "wishlist_items_seq", sequenceName = "wishlist_items_id_seq", allocationSize = 1)
     Integer id;
 
     @ManyToOne

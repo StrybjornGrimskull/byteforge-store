@@ -3,7 +3,7 @@ package com.byteforge.byteforge.services.specifications;
 import com.byteforge.byteforge.dto.request.ProductCreateRequestDto;
 import com.byteforge.byteforge.dto.specifications.RamSpecDTO;
 import com.byteforge.byteforge.entities.Product;
-import com.byteforge.byteforge.entities.RamSpec;
+import com.byteforge.byteforge.entities.specifications.RamSpec;
 import com.byteforge.byteforge.repositories.RamSpecRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

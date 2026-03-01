@@ -20,7 +20,8 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE)
 public class Notification {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "notifications_seq")
+    @SequenceGenerator(name = "notifications_seq", sequenceName = "notifications_id_seq", allocationSize = 1)
     Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
