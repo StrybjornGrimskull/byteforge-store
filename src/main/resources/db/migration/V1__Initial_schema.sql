@@ -1,5 +1,5 @@
 -- Main tables (common for all products)
-
+-- Тест
 -- Create sequences
 CREATE SEQUENCE categories_id_seq;
 CREATE SEQUENCE brands_id_seq;
